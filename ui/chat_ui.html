@@ -59,18 +59,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     <script>
         //   var socket = io.connect( 'http://' + document.domain + ':' + location.port )
-        // var socket = io.connect( 'http://localhost:' + 5000 )
+        // var socket = io.connect('http://localhost:' + 5000)
         var socket = io.connect('http://192.168.1.12:5000')
             // broadcast a message
         socket.on('connect', function() {
-                socket.emit('my event', {
+                socket.emit('token', {
                     data: 'User Connected'
                 })
                 var form = $('form').on('submit', function(e) {
                     e.preventDefault()
                     let user_name = $('input.username').val()
                     let user_input = $('input.message').val()
-                    socket.emit('my event', {
+                    socket.emit('token', {
                             user_name: user_name,
                             message: user_input
                         })
