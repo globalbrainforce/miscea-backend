@@ -4,7 +4,14 @@
 from flask import request
 from library.common import Common
 from flask_socketio import SocketIO, emit
-from __main__ import SOCKETIO
+
+try:
+
+    from __main__ import SOCKETIO
+
+except ImportError:
+
+    from app import SOCKETIO
 
 @SOCKETIO.on('auth')
 def auth(json):
