@@ -11,7 +11,7 @@ try:
 
 except ImportError:
 
-    from flask_socketio import SocketIO as SOCKETIO
+    from app import SOCKETIO
 
 @SOCKETIO.on('connect')
 def connect():
