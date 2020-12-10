@@ -4,7 +4,7 @@
 from flask import request
 from library.common import Common
 from flask_socketio import SocketIO, emit
-from __main__ import SOCKETIO
+# from __main__ import SOCKETIO
 
 @SOCKETIO.on('connect')
 def connect():
