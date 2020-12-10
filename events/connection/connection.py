@@ -1,10 +1,17 @@
-# pylint: disable=no-name-in-module
+
 """ CONNECTION """
 
 from flask import request
 from library.common import Common
 from flask_socketio import SocketIO, emit
-# from __main__ import SOCKETIO
+
+try:
+
+    from __main__ import SOCKETIO
+
+except ImportError:
+
+    from flask_socketio import SocketIO as SOCKETIO
 
 @SOCKETIO.on('connect')
 def connect():
