@@ -17,7 +17,7 @@ except ImportError:
 def connect():
     """ CONNECT """
     print("*"*100)
-    print("ARGS: ", request.args)
+    print('Client Connected!')
     print("ARGS: ", request.sid)
     emit('my response', {'data': 'Connected'})
     print("*"*100)
@@ -26,6 +26,6 @@ def connect():
 def disconnect():
     """ DISCONNECT """
     print("*"*100)
-    print('Client disconnected')
+    print('Client Disconnected!')
     print("ARGS: ", request.sid)
     print("*"*100)
