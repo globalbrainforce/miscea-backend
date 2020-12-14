@@ -60,6 +60,7 @@
     <script>
         // var socket = io.connect('http://localhost:' + 5000)
         var socket = io.connect('http://3.126.150.165:8085')
+            // var socket = io.connect('http://192.168.1.12:5000')
             // broadcast a message
         socket.on('connect', function() {
                 socket.emit('auth', {
