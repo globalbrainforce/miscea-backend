@@ -19,7 +19,9 @@ def auth(json):
 
     clients = []
     clients.append(request.sid)
+    print("*"*100)
     print('Auth recived my event: ' + str(json))
+    print("*"*100)
 
     if not 'token' in json.keys():
 
