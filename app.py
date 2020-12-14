@@ -8,10 +8,10 @@ from flask_cors import CORS
 # https://flask-socketio.readthedocs.io/en/latest/
 # https://github.com/socketio/socket.io-client
 
-application = Flask(__name__, template_folder='ui')
-CORS(application)
+APP = Flask(__name__, template_folder='ui')
+CORS(APP)
 
-SOCKETIO = SocketIO(application, cors_allowed_origins="*")
+SOCKETIO = SocketIO(APP, cors_allowed_origins="*")
 
 # CONNECTION EVENTS
 from events.connection import connection
@@ -23,7 +23,7 @@ from events.auth import auth
 from events.message import message
 
 
-@application.route('/')
+@APP.route('/')
 def home():
     """ HTML """
     return render_template('chat_ui.html')
