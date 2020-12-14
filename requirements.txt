@@ -14,6 +14,7 @@ cryptography==2.6.1
 distro-info==0.21
 docutils==0.14
 entrypoints==0.3
+eventlet==0.30.0
 flasgger==0.9.1
 Flask==1.1.1
 Flask-Cors==3.0.8
