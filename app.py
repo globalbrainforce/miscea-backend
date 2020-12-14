@@ -29,4 +29,4 @@ def home():
     return render_template('chat_ui.html')
 
 if __name__ == '__main__':
-    SOCKETIO.run(APP, host='0.0.0.0', debug=True)
+    SOCKETIO.run(APP, host='0.0.0.0', port=5000)
