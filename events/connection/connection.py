@@ -22,6 +22,10 @@ def connect():
     emit('my response', {'data': 'Connected'})
     print("*"*100)
 
+    x = 'Client Connected!'
+    with open('/home/admin/miscea-backend/logs.txt',"a+") as output_file:
+        output_file.write('{0}\n'.format(x))
+
 @SOCKETIO.on('disconnect')
 def disconnect():
     """ DISCONNECT """
