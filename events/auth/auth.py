@@ -4,6 +4,7 @@
 from flask import request
 from library.common import Common
 from flask_socketio import SocketIO, emit
+from library.utils import Utils
 
 try:
 
@@ -13,15 +14,18 @@ except ImportError:
 
     from app import SOCKETIO
 
+utils = Utils()
+
 @SOCKETIO.on('auth')
 def auth(json):
     """ authentication """
 
     clients = []
     clients.append(request.sid)
-    print("*"*100)
-    print('Auth recived my event: ' + str(json))
-    print("*"*100)
+
+    utils.data_log(divider=True)
+    utils.data_log('Auth recived my event: {0}'.format(json))
+    utils.data_log(divider=True)
 
     if not 'token' in json.keys():
 

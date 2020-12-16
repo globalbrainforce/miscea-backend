@@ -22,7 +22,7 @@ def connect():
 
     utils.data_log(divider=True)
     utils.data_log(data='Client Connected!')
-    utils.data_log(data="ARGS: {0}".format(request.sid))
+    utils.data_log(data="Client ID: {0}".format(request.sid))
     utils.data_log(divider=True)
 
     emit('my response', {'data': 'Connected'})
@@ -30,7 +30,7 @@ def connect():
 @SOCKETIO.on('disconnect')
 def disconnect():
     """ DISCONNECT """
-    print("*"*100)
-    print('Client Disconnected!')
-    print("ARGS: ", request.sid)
-    print("*"*100)
+    utils.data_log(divider=True)
+    utils.data_log(data='Client Disconnected!')
+    utils.data_log(data="Client ID: {0}".format(request.sid))
+    utils.data_log(divider=True)
