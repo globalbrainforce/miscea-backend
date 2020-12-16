@@ -3,6 +3,7 @@
 
 from flask import request
 from library.common import Common
+from library.utils import Utils
 from flask_socketio import SocketIO, emit
 
 try:
@@ -13,18 +14,18 @@ except ImportError:
 
     from app import SOCKETIO
 
+utils = Utils()
+
 @SOCKETIO.on('connect')
 def connect():
     """ CONNECT """
-    print("*"*100)
-    print('Client Connected!')
-    print("ARGS: ", request.sid)
-    emit('my response', {'data': 'Connected'})
-    print("*"*100)
 
-    x = 'Client Connected!'
-    with open('/home/admin/miscea-backend/logs.txt',"a+") as output_file:
-        output_file.write('{0}\n'.format(x))
+    utils.data_log(divider=True)
+    utils.data_log(data='Client Connected!')
+    utils.data_log(data="ARGS: {0}".format(request.sid))
+    utils.data_log(divider=True)
+
+    emit('my response', {'data': 'Connected'})
 
 @SOCKETIO.on('disconnect')
 def disconnect():
