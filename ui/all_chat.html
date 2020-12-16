@@ -31,7 +31,7 @@
 
 <body>
 
-    <div class="text-center well"><b>My Super Python Chat App</b></div>
+    <div class="text-center well"><b>All Chat</b></div>
 
     <div class="container">
         <div class="col-sm-8">
@@ -80,7 +80,7 @@
             //         })
             //     })
             // capture message
-        socket.on('my response', function(msg) {
+        socket.on('chats', function(msg) {
             console.log(msg)
             if (typeof msg.top_id !== 'undefined') {
                 $('h1').remove()
