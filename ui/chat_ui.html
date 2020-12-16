@@ -84,7 +84,7 @@
             console.log(msg)
             if (typeof msg.top_id !== 'undefined') {
                 $('h1').remove()
-                $('div.message_holder').append('<div class="msg_bbl"><b style="color: #000">' + msg.user_name + '</b> ' + msg.message + '</div>')
+                $('div.message_holder').append('<div class="msg_bbl"><b style="color: #000">' + msg.top_id + '</b> ' + msg.message + '</div>')
             }
         })
     </script>
