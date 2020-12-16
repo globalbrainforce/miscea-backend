@@ -24,7 +24,7 @@ def auth(json):
     clients.append(request.sid)
 
     utils.data_log(divider=True)
-    utils.data_log('Auth recived my event: {0}'.format(json))
+    utils.data_log('Auth recived: {0}'.format(json))
     utils.data_log(divider=True)
 
     if not 'token' in json.keys():

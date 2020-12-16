@@ -23,7 +23,7 @@ def message(json):
     clients = []
     clients.append(request.sid)
     utils.data_log(divider=True)
-    utils.data_log('Message recived my event: {0}'.format(json))
+    utils.data_log('Message recived: {0}'.format(json))
     utils.data_log(divider=True)
 
     if json['token'] == '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed':
