@@ -31,7 +31,7 @@ def message(json):
         response = {'top_id': "Bot", 'message': "Message received: " + str(json['message'])}
         emit('my response', json, room=clients[0])
         emit('my response', response, room=clients[0])
-        emit('chats', json, room=clients[0])
+        emit('chats', json, broadcast=True)
 
     else:
 
