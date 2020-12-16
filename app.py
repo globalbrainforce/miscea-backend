@@ -28,5 +28,10 @@ def home():
     """ HTML """
     return render_template('chat_ui.html')
 
+@APP.route('/all-chat')
+def home():
+    """ HTML """
+    return render_template('all_chat.html')
+
 if __name__ == '__main__':
     SOCKETIO.run(APP, host='0.0.0.0', port=5000)
