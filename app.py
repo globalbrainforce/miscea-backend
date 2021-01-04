@@ -43,21 +43,18 @@ async def unregister(websocket):
     USERS.remove(websocket)
     await notify_users()
 
-
 async def counter(websocket, path):
+    print("path: ", path)
     # register(websocket) sends user_event() to websocket
     await register(websocket)
     try:
         await websocket.send(state_event())
-        print("websocket:", websocket)
         async for message in websocket:
             data = json.loads(message)
             if data["action"] == "minus":
-                print("minus number")
                 STATE["value"] -= 1
                 await notify_state()
             elif data["action"] == "plus":
-                print("add number")
                 STATE["value"] += 1
                 await notify_state()
             else:
@@ -66,8 +63,7 @@ async def counter(websocket, path):
         await unregister(websocket)
 
 
-#start_server = websockets.serve(counter, "localhost", 6789)
-start_server = websockets.serve(counter, "0.0.0.0", 6789)
+MAIN = websockets.serve(counter, "0.0.0.0", 6789)
 
-asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_until_complete(MAIN)
 asyncio.get_event_loop().run_forever()
