@@ -1,37 +1,73 @@
-# pylint: disable=wrong-import-position, import-error, unused-import
 """ APP """
-from flask import request
-from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
-from flask_cors import CORS
-
-# https://flask-socketio.readthedocs.io/en/latest/
-# https://github.com/socketio/socket.io-client
-
-APP = Flask(__name__, template_folder='ui')
-CORS(APP)
-
-SOCKETIO = SocketIO(APP, cors_allowed_origins="*")
-
-# CONNECTION EVENTS
-from events.connection import connection
-
-# AUTH EVENTS
-from events.auth import auth
-
-# MESSAGE EVENTS
-from events.message import message
+import asyncio
+import json
+import logging
+import websockets
 
 
-@APP.route('/')
-def home():
-    """ HTML """
-    return render_template('chat_ui.html')
+logging.basicConfig()
 
-@APP.route('/all-chat')
-def chats():
-    """ HTML """
-    return render_template('all_chat.html')
+STATE = {"value": 0}
 
-if __name__ == '__main__':
-    SOCKETIO.run(APP, host='0.0.0.0', port=5000)
+USERS = set()
+
+
+def state_event():
+    return json.dumps({"type": "state", **STATE})
+
+
+def users_event():
+    print("users: ", len(USERS))
+    return json.dumps({"type": "users", "count": len(USERS)})
+
+
+async def notify_state():
+    if USERS:  # asyncio.wait doesn't accept an empty list
+        message = state_event()
+        await asyncio.wait([user.send(message) for user in USERS])
+
+
+async def notify_users():
+    if USERS:  # asyncio.wait doesn't accept an empty list
+        message = users_event()
+        await asyncio.wait([user.send(message) for user in USERS])
+
+
+async def register(websocket):
+    print("User: {0}".format(websocket))
+    USERS.add(websocket)
+    await notify_users()
+
+
+async def unregister(websocket):
+    USERS.remove(websocket)
+    await notify_users()
+
+
+async def counter(websocket, path):
+    # register(websocket) sends user_event() to websocket
+    await register(websocket)
+    try:
+        await websocket.send(state_event())
+        print("websocket:", websocket)
+        async for message in websocket:
+            data = json.loads(message)
+            if data["action"] == "minus":
+                print("minus number")
+                STATE["value"] -= 1
+                await notify_state()
+            elif data["action"] == "plus":
+                print("add number")
+                STATE["value"] += 1
+                await notify_state()
+            else:
+                logging.error("unsupported event: {}", data)
+    finally:
+        await unregister(websocket)
+
+
+#start_server = websockets.serve(counter, "localhost", 6789)
+start_server = websockets.serve(counter, "0.0.0.0", 6789)
+
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()
