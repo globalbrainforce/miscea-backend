@@ -52,7 +52,7 @@ async def app(websocket, path):
         async for message in websocket:
             print("message here!")
             data = json.loads(message)
-            if path == 'auth':
+            if path == '/auth':
                 print("AUTH Called!")
                 await auth.auth(USERS, data)
             # if data["action"] == "minus":
