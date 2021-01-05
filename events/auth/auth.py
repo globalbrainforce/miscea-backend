@@ -10,7 +10,7 @@ async def auth(websocket, data):
 
         message = {}
         message['type'] = 'state'
-        message['value'] = 0
+        message['value'] = 1
         message['status'] = 'Failed'
         message['alert'] = 'Invalid data!'
         message = json.dumps(message)
