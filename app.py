@@ -4,8 +4,8 @@ import json
 import logging
 import websockets
 
-# from events.auth import auth
 from events.auth import auth
+from events.message import message
 
 logging.basicConfig()
 
@@ -18,13 +18,19 @@ async def app(websocket, path):
 
     try:
 
-        async for message in websocket:
+        async for webs in websocket:
 
-            data = json.loads(message)
+            data = json.loads(webs)
 
             if path == '/auth':
 
                 if await auth.auth(websocket, data):
+
+                    USERS.add(websocket)
+
+            if path == '/message':
+
+                if await message.message(websocket, data):
 
                     USERS.add(websocket)
 
