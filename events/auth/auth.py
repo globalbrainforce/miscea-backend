@@ -4,7 +4,7 @@ import asyncio
 
 async def auth(USERS, data):
 
-    message = json.dumps({"type": "state", "value": 1})
+    message = json.dumps({"type": "state", "value": 10})
     await asyncio.wait([user.send(message) for user in USERS])
 
 
