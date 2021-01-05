@@ -50,6 +50,7 @@ async def app(websocket, path):
     try:
         # await websocket.send(state_event())
         async for message in websocket:
+            print("message here!")
             data = json.loads(message)
             if path == 'auth':
                 print("AUTH Called!")
