@@ -4,13 +4,10 @@ import asyncio
 
 async def auth(websocket, data):
 
-    message = json.dumps({"type": "state", "value": 10})
-
     if not 'token' in data.keys():
 
         message = {}
-        message['type'] = 'state'
-        message['value'] = 1
+        message['type'] = 'auth'
         message['status'] = 'Failed'
         message['alert'] = 'Invalid data!'
         message = json.dumps(message)
@@ -21,8 +18,7 @@ async def auth(websocket, data):
     if data['token'] == '269c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ec':
 
         message = {}
-        message['type'] = 'state'
-        message['value'] = 100
+        message['type'] = 'auth'
         message['status'] = 'ok'
         message['new_token'] = '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed'
         message = json.dumps(message)
@@ -33,8 +29,7 @@ async def auth(websocket, data):
     else:
 
         message = {}
-        message['type'] = 'state'
-        message['value'] = 1
+        message['type'] = 'auth'
         message['status'] = 'Failed'
         message['alert'] = 'Invalid data!'
         message = json.dumps(message)
