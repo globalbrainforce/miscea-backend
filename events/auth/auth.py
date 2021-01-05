@@ -30,6 +30,17 @@ async def auth(websocket, data):
 
         return 1
 
+    else:
+
+        message = {}
+        message['type'] = 'state'
+        message['value'] = 1
+        message['status'] = 'Failed'
+        message['alert'] = 'Invalid data!'
+        message = json.dumps(message)
+        await asyncio.wait([websocket.send(message)])
+
+        return 0
 
 
 
