@@ -1,42 +1,57 @@
-# pylint: disable=no-name-in-module
 """ AUTH """
+import json
+import asyncio
 
-from flask import request
-from library.common import Common
-from flask_socketio import SocketIO, emit
-from library.utils import Utils
+async def auth(USERS, data):
 
-try:
+    message = json.dumps({"type": "state", "value": 1})
+    await asyncio.wait([user.send(message) for user in USERS])
 
-    from __main__ import SOCKETIO
 
-except ImportError:
 
-    from app import SOCKETIO
 
-utils = Utils()
 
-@SOCKETIO.on('auth')
-def auth(json):
-    """ authentication """
 
-    clients = []
-    clients.append(request.sid)
 
-    utils.data_log(divider=True)
-    utils.data_log('Auth recived: {0}'.format(json))
-    utils.data_log(divider=True)
 
-    if not 'token' in json.keys():
 
-        response = {}
-        response['status'] = 'Failed'
-        response['alert'] = 'Invalid data!'
-        emit('my response', response, room=clients[0])
 
-    if json['token'] == '269c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ec':
+# from flask import request
+# from library.common import Common
+# from flask_socketio import SocketIO, emit
+# from library.utils import Utils
 
-        response = {}
-        response['status'] = 'ok'
-        response['new_token'] = '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed'
-        emit('my response', response, room=clients[0])
+# try:
+
+#     from __main__ import SOCKETIO
+
+# except ImportError:
+
+#     from app import SOCKETIO
+
+# utils = Utils()
+
+# @SOCKETIO.on('auth')
+# def auth(json):
+#     """ authentication """
+
+#     clients = []
+#     clients.append(request.sid)
+
+#     utils.data_log(divider=True)
+#     utils.data_log('Auth recived: {0}'.format(json))
+#     utils.data_log(divider=True)
+
+#     if not 'token' in json.keys():
+
+#         response = {}
+#         response['status'] = 'Failed'
+#         response['alert'] = 'Invalid data!'
+#         emit('my response', response, room=clients[0])
+
+#     if json['token'] == '269c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ec':
+
+#         response = {}
+#         response['status'] = 'ok'
+#         response['new_token'] = '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed'
+#         emit('my response', response, room=clients[0])
