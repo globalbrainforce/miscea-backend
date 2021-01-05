@@ -5,7 +5,7 @@ import asyncio
 async def auth(websocket, data):
 
     message = json.dumps({"type": "state", "value": 10})
-    await asyncio.wait([websocket.send(message))
+    await asyncio.wait([websocket.send(message)])
 
 
 
