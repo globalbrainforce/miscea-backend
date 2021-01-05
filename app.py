@@ -9,12 +9,12 @@ from events.auth import auth
 
 logging.basicConfig()
 
-USERS = set()
+AUTH_USERS = set()
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
 
-    USERS.add(websocket)
+    # AUTH_USERS.add(websocket)
 
     try:
 
@@ -24,11 +24,12 @@ async def app(websocket, path):
 
             if path == '/auth':
 
-                await auth.auth(USERS, data)
+                await auth.auth(websocket, data)
 
     finally:
 
-        USERS.remove(websocket)
+        pass
+        # USERS.remove(websocket)
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
