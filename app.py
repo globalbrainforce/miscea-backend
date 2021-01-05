@@ -45,7 +45,8 @@ async def unregister(websocket):
 
 async def app(websocket, path):
 
-    register(websocket)
+    # register(websocket)
+    USERS.add(websocket)
     try:
         # await websocket.send(state_event())
         async for message in websocket:
@@ -61,7 +62,8 @@ async def app(websocket, path):
             # else:
             #     logging.error("unsupported event: {}", data)
     finally:
-        unregister(websocket)
+        USERS.remove(websocket)
+        # unregister(websocket)
 
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
