@@ -30,9 +30,7 @@ async def app(websocket, path):
 
             if path == '/message':
 
-                if await message.message(websocket, data):
-
-                    USERS.add(websocket)
+                await message.message(websocket, data)
 
     finally:
 
