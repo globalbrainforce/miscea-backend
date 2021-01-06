@@ -23,12 +23,14 @@ async def message(websocket, data):
         return 0
 
     if data['token'] == '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed':
-        if data['type'] == 'settings':
+        mtype = 'message'
 
+        if data['type'] == 'settings':
+            mtype = 'settings'
             check_settings(data)
 
         message = {}
-        message['type'] = 'message'
+        message['type'] = mtype
         message['status'] = 'ok'
         message = json.dumps(message)
         await asyncio.wait([websocket.send(message)])
