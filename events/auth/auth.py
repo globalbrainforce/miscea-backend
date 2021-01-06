@@ -69,6 +69,7 @@ async def auth(websocket, data):
         message = {}
         message['type'] = 'auth'
         message['time'] = time.time()
+        message['doc'] = doc
         message['status'] = 'ok'
         message['new_token'] = '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed'
         message = json.dumps(message)
