@@ -64,3 +64,11 @@ class Common():
             return False
         else:
             return tmp_data1 == tmp_data2
+
+    def limits(self, rows, limit, page):
+        """Limits"""
+        skip = int((page - 1) * limit)
+
+        limit = skip + limit
+
+        return rows[skip:limit]
