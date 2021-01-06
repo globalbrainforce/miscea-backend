@@ -7,6 +7,7 @@ async def auth(websocket, data):
 
     if not 'token' in data.keys():
 
+        print("NO TOKEN!")
         message = {}
         message['type'] = 'auth'
         message['status'] = 'Failed'
@@ -18,6 +19,7 @@ async def auth(websocket, data):
 
     if data['token'] == '269c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ec':
 
+        print("VALID TOKEN!")
         message = {}
         message['type'] = 'auth'
         message['time'] = time.time()
@@ -30,6 +32,7 @@ async def auth(websocket, data):
 
     else:
 
+        print("INVALID TOKEN!")
         message = {}
         message['type'] = 'auth'
         message['status'] = 'Failed'
