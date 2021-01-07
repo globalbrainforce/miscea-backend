@@ -7,9 +7,9 @@ from library.common import Common
 from library.sha_security import ShaSecurity
 from library.postgresql_queries import PostgreSQL
 
-common = Common()
-sha_security = ShaSecurity()
-postgres = PostgreSQL()
+COMMON = Common()
+SHASECURITY = ShaSecurity()
+POSTGRES = PostgreSQL()
 
 async def auth(websocket, data):
 
@@ -25,11 +25,11 @@ async def auth(websocket, data):
 
         return 0
 
-    if common.validate_default_token(data['token']):
+    if COMMON.validate_default_token(data['token']):
 
         default = data['system_data']
         system_id = default['system_id']
-        new_token = sha_security.generate_token(False)
+        new_token = SHASECURITY.generate_token(False)
 
         tap_account = {}
         tap_account['system_id'] = system_id
@@ -38,7 +38,7 @@ async def auth(websocket, data):
 
         sql_str = "SELECT tap_account_id FROM tap_accounts WHERE"
         sql_str += " system_id='{0}'".format(system_id)
-        response = postgres.query_fetch_one(sql_str)
+        response = POSTGRES.query_fetch_one(sql_str)
 
         if response:
 
@@ -55,15 +55,15 @@ async def auth(websocket, data):
             # UPDATE TAP ACCOUNT TOKEN
             tap_account['update_on'] = time.time()
 
-            postgres.update('tap_accounts', tap_account, conditions)
+            POSTGRES.update('tap_accounts', tap_account, conditions)
 
         else:
 
             # INSERT TAP ACCOUNT TOKEN
-            tap_account['tap_account_id'] = sha_security.generate_token(False)
+            tap_account['tap_account_id'] = SHASECURITY.generate_token(False)
             tap_account['created_on'] = time.time()
 
-            postgres.insert('tap_accounts', tap_account)
+            POSTGRES.insert('tap_accounts', tap_account)
 
         syslog.syslog("VALID TOKEN!")
         message = {}

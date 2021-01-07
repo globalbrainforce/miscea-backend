@@ -4,18 +4,42 @@ import time
 import asyncio
 import requests
 
+from library.couch_queries import Queries
 from library.sha_security import ShaSecurity
 from library.couch_database import CouchDatabase
-from library.couch_queries import Queries
+from library.postgresql_queries import PostgreSQL
 
-SHA_SECURITY = ShaSecurity()
-COUCHDB = CouchDatabase()
 COUCH_QUERY = Queries()
+COUCHDB = CouchDatabase()
+POSTGRES = PostgreSQL()
+SHA_SECURITY = ShaSecurity()
 ESTABLISHMENT = 'establishment:381741ac4b5f4a4785ffdf2e025975fc'
+
+SYSTEM_KEYS = [
+    'article_number',
+    'soap_dose',
+    'disinfect_dose',
+    'init_wtr_temp',
+    'wtr_shut_off_dly',
+    'wtr_temp_mem_tm',
+    'bucket_mode_d',
+    'tm_b4_stagn_flsh',
+    'stagn_flsh_d',
+    'stagn_flsh_u_dep',
+    'thrm_flshng_tm',
+    'thrm_flshng_day',
+    'thrm_flsh_temp',
+    'thrm_flsh_d',
+    'light_effect',
+    'beep_tone',
+    'clean_mode',
+    'flow_heater_mode',
+    'ir_range',
+]
 
 async def message(websocket, data):
 
-    if not 'token' in data.keys():
+    if not 'token' in data.keys() or not 'system_data' in data.keys():
 
         message = {}
         message['type'] = 'message'
@@ -26,7 +50,11 @@ async def message(websocket, data):
 
         return 0
 
-    if data['token'] == '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed':
+    default = data['system_data']
+    system_id = default['system_id']
+
+    if COMMON.validate_tap_token(data['token'], system_id):
+
         mtype = 'message'
 
         if data['type'] == 'settings':
@@ -120,7 +148,7 @@ def check_settings(data):
     system_id = default['system_id']
 
     doc = COUCH_QUERY.get_by_id(system_id)
-
+    print(doc)
     # CHECK IF SYSTEM ID EXIST
     # IF NOT
     if 'error' in doc.keys():
@@ -156,8 +184,16 @@ def check_settings(data):
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
 
+        couch_url = COUCHDB.couch_db_link()
+        headers = {"Content-Type" : "application/json"}
+        response = requests.post(couch_url, data=json.dumps(system), headers=headers)
+
     # ELSE
     else:
+
+        # CHECK UPDATE
+        for system_key in SYSTEM_KEYS:
+            pass
 
         pass
         # RETURN SYSTEM ID
