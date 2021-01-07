@@ -5,14 +5,16 @@ import asyncio
 import requests
 import syslog
 
+from library.common import Common
 from library.couch_queries import Queries
 from library.sha_security import ShaSecurity
 from library.couch_database import CouchDatabase
 from library.postgresql_queries import PostgreSQL
 
+COMMON = Common()
 COUCH_QUERY = Queries()
-COUCHDB = CouchDatabase()
 POSTGRES = PostgreSQL()
+COUCHDB = CouchDatabase()
 SHA_SECURITY = ShaSecurity()
 ESTABLISHMENT = 'establishment:381741ac4b5f4a4785ffdf2e025975fc'
 
