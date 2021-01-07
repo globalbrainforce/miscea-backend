@@ -3,6 +3,13 @@ import json
 import time
 import asyncio
 import syslog
+from library.common import Common
+from library.sha_security import ShaSecurity
+from library.postgresql_queries import PostgreSQL
+
+common = Common()
+sha_security = ShaSecurity()
+postgres = PostgreSQL()
 
 async def auth(websocket, data):
 
@@ -18,14 +25,52 @@ async def auth(websocket, data):
 
         return 0
 
-    if data['token'] == '269c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ec':
+    if common.validate_default_token(data['token']):
+
+        default = data['system_data']
+        system_id = default['system_id']
+        new_token = sha_security.generate_token(False)
+
+        tap_account = {}
+        tap_account['system_id'] = system_id
+        tap_account['token'] = new_token
+        tap_account['last_login'] = time.time()
+
+        sql_str = "SELECT tap_account_id FROM tap_accounts WHERE"
+        sql_str += " system_id='{0}'".format(system_id)
+        response = postgres.query_fetch_one(sql_str)
+
+        if response:
+
+            # INIT CONDITION
+            conditions = []
+
+            # CONDITION FOR QUERY
+            conditions.append({
+                "col": "tap_account_id",
+                "con": "=",
+                "val": response['tap_account_id']
+                })
+
+            # UPDATE TAP ACCOUNT TOKEN
+            tap_account['update_on'] = time.time()
+
+            postgres.update('tap_accounts', tap_account, conditions)
+
+        else:
+
+            # INSERT TAP ACCOUNT TOKEN
+            tap_account['tap_account_id'] = sha_security.generate_token(False)
+            tap_account['created_on'] = time.time()
+
+            postgres.update('tap_accounts', tap_account, conditions)
 
         syslog.syslog("VALID TOKEN!")
         message = {}
         message['type'] = 'auth'
         message['time'] = time.time()
         message['status'] = 'ok'
-        message['new_token'] = '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed'
+        message['new_token'] = new_token
         message = json.dumps(message)
         await asyncio.wait([websocket.send(message)])
 
@@ -42,50 +87,3 @@ async def auth(websocket, data):
         await asyncio.wait([websocket.send(message)])
 
         return 0
-
-
-
-
-
-
-
-
-# from flask import request
-# from library.common import Common
-# from flask_socketio import SocketIO, emit
-# from library.utils import Utils
-
-# try:
-
-#     from __main__ import SOCKETIO
-
-# except ImportError:
-
-#     from app import SOCKETIO
-
-# utils = Utils()
-
-# @SOCKETIO.on('auth')
-# def auth(json):
-#     """ authentication """
-
-#     clients = []
-#     clients.append(request.sid)
-
-#     utils.data_log(divider=True)
-#     utils.data_log('Auth recived: {0}'.format(json))
-#     utils.data_log(divider=True)
-
-#     if not 'token' in json.keys():
-
-#         response = {}
-#         response['status'] = 'Failed'
-#         response['alert'] = 'Invalid data!'
-#         emit('my response', response, room=clients[0])
-
-#     if json['token'] == '269c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ec':
-
-#         response = {}
-#         response['status'] = 'ok'
-#         response['new_token'] = '300c2c3706886d94aeefd6e7f7130ab08346590533d4c5b24ccaea9baa5211ed'
-#         emit('my response', response, room=clients[0])
