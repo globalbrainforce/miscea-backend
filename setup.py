@@ -48,6 +48,10 @@ class Setup():
         query_str += " created_on BIGINT NOT NULL,"
         query_str += " update_on BIGINT)"
 
+        print("Create table: default_tokens")
+        if self.postgres.exec_query(query_str):
+            self.log.info("Default tokens table successfully created!")
+
         # TAP ACCOUNTS TABLE
         query_str = "CREATE TABLE tap_accounts (tap_account_id VARCHAR (1000) PRIMARY KEY,"
         query_str += " token VARCHAR (1000),"
