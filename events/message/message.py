@@ -3,6 +3,7 @@ import json
 import time
 import asyncio
 import requests
+import syslog
 
 from library.couch_queries import Queries
 from library.sha_security import ShaSecurity
@@ -148,7 +149,9 @@ def check_settings(data):
     system_id = default['system_id']
 
     doc = COUCH_QUERY.get_by_id(system_id)
-    print(doc)
+
+    syslog.syslog(doc)
+
     # CHECK IF SYSTEM ID EXIST
     # IF NOT
     if 'error' in doc.keys():
