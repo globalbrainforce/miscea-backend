@@ -53,8 +53,8 @@ async def message(websocket, data):
 
             json_data = response.json()
 
-        elif data['type'] == 'disinfectant':
-            # DISINFE
+        elif data['type'] == 'disinfectant-activity':
+            # DISINFECTANT
             
             sda = {}
             sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
