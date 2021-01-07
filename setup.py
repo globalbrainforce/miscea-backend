@@ -71,3 +71,8 @@ class Setup():
 
             print("Create default token {0}".format(dta))
             self.postgres.insert('default_tokens', data1)
+
+if __name__ == '__main__':
+
+    SETUP = Setup()
+    SETUP.main()
