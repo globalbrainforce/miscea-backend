@@ -55,7 +55,9 @@ async def message(websocket, data):
 
         elif data['type'] == 'disinfectant-activity':
             # DISINFECTANT
-            
+
+            mtype = 'disinfectant-activity'
+
             sda = {}
             sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
             sda['timestamp'] = data['timestamp']
@@ -73,6 +75,8 @@ async def message(websocket, data):
 
         elif data['type'] =='water-activity':
             # WATER ACTIVITY
+
+            mtype = 'water-activity'
 
             wactvt = {}
             wactvt['_id'] = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
