@@ -63,7 +63,7 @@ async def auth(websocket, data):
             tap_account['tap_account_id'] = sha_security.generate_token(False)
             tap_account['created_on'] = time.time()
 
-            postgres.update('tap_accounts', tap_account, conditions)
+            postgres.insert('tap_accounts', tap_account)
 
         syslog.syslog("VALID TOKEN!")
         message = {}
