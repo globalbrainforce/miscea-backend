@@ -8,6 +8,7 @@ import dateutil.relativedelta
 
 from flask import jsonify
 from library.log import Log
+from library.postgresql_queries import PostgreSQL
 
 class Common():
     """Class for Common"""
@@ -17,6 +18,7 @@ class Common():
         """The Constructor for Common class"""
         self.log = Log()
         self.epoch_default = 26763
+        self.postgres = PostgreSQL()
 
     # RETURN DATA
     def return_data(self, data):
@@ -72,3 +74,15 @@ class Common():
         limit = skip + limit
 
         return rows[skip:limit]
+
+    def validate_default_token(self, token):
+        """ VALIDATE DEFAULT TOKEN """
+
+        sql_str = "SELECT token_id FROM default_tokens WHERE"
+        sql_str += " token='{0}'".format(token)
+
+        if self.postgres.query_fetch_one(sql_str):
+
+            return 1
+
+        return 0

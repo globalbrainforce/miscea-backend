@@ -54,6 +54,7 @@ class Setup():
 
         # TAP ACCOUNTS TABLE
         query_str = "CREATE TABLE tap_accounts (tap_account_id VARCHAR (1000) PRIMARY KEY,"
+        query_str += " system_id VARCHAR (1000),"
         query_str += " token VARCHAR (1000),"
         query_str += " created_on BIGINT NOT NULL,"
         query_str += " update_on BIGINT, last_login BIGINT)"
