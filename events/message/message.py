@@ -42,7 +42,7 @@ SYSTEM_KEYS = [
 
 async def message(websocket, data):
 
-    if not 'token' in data.keys() or not 'system_data' in data.keys():
+    if not 'token' in data.keys():
 
         message = {}
         message['type'] = 'message'
