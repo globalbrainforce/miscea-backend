@@ -152,7 +152,7 @@ def check_settings(data):
 
     doc = COUCH_QUERY.get_by_id(system_id)
 
-    syslog.syslog(doc)
+    syslog.syslog(json.dumps(doc))
 
     # CHECK IF SYSTEM ID EXIST
     # IF NOT
