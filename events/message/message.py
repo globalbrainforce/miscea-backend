@@ -82,7 +82,11 @@ async def message(websocket, data):
             headers = {"Content-Type" : "application/json"}
             response = requests.post(couch_url, data=json.dumps(sda), headers=headers)
 
-            json_data = response.json()
+            syslog.syslog("++++++++ SOAP ++++++++")
+            syslog.syslog(json.dumps(sda))
+            syslog.syslog("======== SOAP ========")
+
+            response.json()
 
         elif data['type'] == 'disinfectant-activity':
             # DISINFECTANT
@@ -98,11 +102,15 @@ async def message(websocket, data):
             sda['system_id'] = data['system_id']
             sda['establishment_id'] = ESTABLISHMENT
 
+            syslog.syslog("++++++++ DISINFECTANT ++++++++")
+            syslog.syslog(json.dumps(sda))
+            syslog.syslog("======== DISINFECTANT ========")
+
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
             response = requests.post(couch_url, data=json.dumps(sda), headers=headers)
 
-            json_data = response.json()
+            response.json()
 
         elif data['type'] =='water-activity':
             # WATER ACTIVITY
@@ -120,11 +128,15 @@ async def message(websocket, data):
             wactvt['system_id'] = data['system_id']
             wactvt['establishment_id'] = ESTABLISHMENT
 
+            syslog.syslog("++++++++ WATER ++++++++")
+            syslog.syslog(json.dumps(wactvt))
+            syslog.syslog("======== WATER ========")
+
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
             response = requests.post(couch_url, data=json.dumps(sda), headers=headers)
 
-            json_data = response.json()
+            response.json()
 
         message = {}
         message['type'] = mtype
@@ -150,13 +162,15 @@ def check_settings(data):
     default = data['system_data']
     system_id = default['system_id']
 
-    doc = COUCH_QUERY.get_by_id(system_id)
+    syslog.syslog("++++++++ SETTINGS ++++++++")
+    system_info = COUCH_QUERY.get_by_id(system_id)
+    syslog.syslog("======== SETTINGS ========")
 
-    syslog.syslog(json.dumps(doc))
+    # syslog.syslog(json.dumps(system_info))
 
     # CHECK IF SYSTEM ID EXIST
     # IF NOT
-    if 'error' in doc.keys():
+    if 'error' in system_info.keys():
 
         # ADD AS NEW TOP
         current = time.time()
@@ -191,14 +205,20 @@ def check_settings(data):
 
         couch_url = COUCHDB.couch_db_link()
         headers = {"Content-Type" : "application/json"}
-        response = requests.post(couch_url, data=json.dumps(system), headers=headers)
+        requests.post(couch_url, data=json.dumps(system), headers=headers)
 
     # ELSE
     else:
 
+        is_update = False
         # CHECK UPDATE
         for system_key in SYSTEM_KEYS:
-            pass
 
-        pass
-        # RETURN SYSTEM ID
+            if not default[system_key] == system_info[system_key]:
+
+                is_update = True
+
+        if is_update:
+
+            # SERVER NEED TO UPDATE TOP CODE HERE
+            pass
