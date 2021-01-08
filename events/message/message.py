@@ -162,11 +162,11 @@ def check_settings(data):
     default = data['system_data']
     system_id = default['system_id']
 
-    syslog.syslog("++++++++ SETTINGS ++++++++")
     system_info = COUCH_QUERY.get_by_id(system_id)
-    syslog.syslog("======== SETTINGS ========")
 
-    # syslog.syslog(json.dumps(system_info))
+    syslog.syslog("++++++++ SETTINGS ++++++++")
+    syslog.syslog(json.dumps(system_info))
+    syslog.syslog("======== SETTINGS ========")
 
     # CHECK IF SYSTEM ID EXIST
     # IF NOT
@@ -202,6 +202,10 @@ def check_settings(data):
         system['ir_range'] = default['ir_range']
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
+
+        syslog.syslog("++++++++ CREATE SETTINGS ++++++++")
+        syslog.syslog(json.dumps(system))
+        syslog.syslog("======== CREATE SETTINGS ========")
 
         couch_url = COUCHDB.couch_db_link()
         headers = {"Content-Type" : "application/json"}
