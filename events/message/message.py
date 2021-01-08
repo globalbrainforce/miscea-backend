@@ -62,7 +62,8 @@ async def message(websocket, data):
 
     else:
 
-        system_id = data['system_id']
+        default = data['activity']
+        system_id = default['system_id']
 
     if COMMON.validate_tap_token(data['token'], system_id):
 
