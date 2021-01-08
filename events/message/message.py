@@ -77,14 +77,15 @@ async def message(websocket, data):
             # SOAP ACTIVITY
 
             mtype = 'soap-activity'
+            activity = data['activity']
 
             sda = {}
             sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
-            sda['timestamp'] = data['timestamp']
-            sda['liquid_1_level'] = data['liquid_1_level']
-            sda['liquid_1_dose'] = data['liquid_1_dose']
+            sda['timestamp'] = activity['timestamp']
+            sda['liquid_1_level'] = activity['liquid_1_level']
+            sda['liquid_1_dose'] = activity['liquid_1_dose']
             sda['type'] = 'data'
-            sda['system_id'] = data['system_id']
+            sda['system_id'] = activity['system_id']
             sda['establishment_id'] = ESTABLISHMENT
 
             couch_url = COUCHDB.couch_db_link()
@@ -101,14 +102,15 @@ async def message(websocket, data):
             # DISINFECTANT
 
             mtype = 'disinfectant-activity'
+            activity = data['activity']
 
             sda = {}
             sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
-            sda['timestamp'] = data['timestamp']
-            sda['liquid_2_level'] = data['liquid_2_level']
-            sda['liquid_2_dose'] = data['liquid_2_dose']
+            sda['timestamp'] = activity['timestamp']
+            sda['liquid_2_level'] = activity['liquid_2_level']
+            sda['liquid_2_dose'] = activity['liquid_2_dose']
             sda['type'] = 'data'
-            sda['system_id'] = data['system_id']
+            sda['system_id'] = activity['system_id']
             sda['establishment_id'] = ESTABLISHMENT
 
             syslog.syslog("++++++++ DISINFECTANT ++++++++")
@@ -125,16 +127,17 @@ async def message(websocket, data):
             # WATER ACTIVITY
 
             mtype = 'water-activity'
+            activity = data['activity']
 
             wactvt = {}
             wactvt['_id'] = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
-            wactvt['timestamp'] = data['timestamp']
-            wactvt['reason'] = data['reason']
-            wactvt['duration'] = data['duration']
-            wactvt['temperature'] = data['temperature']
-            wactvt['flow_output'] = data['flow_output']
+            wactvt['timestamp'] = activity['timestamp']
+            wactvt['reason'] = activity['reason']
+            wactvt['duration'] = activity['duration']
+            wactvt['temperature'] = activity['temperature']
+            wactvt['flow_output'] = activity['flow_output']
             wactvt['type'] = 'data'
-            wactvt['system_id'] = data['system_id']
+            wactvt['system_id'] = activity['system_id']
             wactvt['establishment_id'] = ESTABLISHMENT
 
             syslog.syslog("++++++++ WATER ++++++++")
@@ -143,7 +146,7 @@ async def message(websocket, data):
 
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
-            response = requests.post(couch_url, data=json.dumps(sda), headers=headers)
+            response = requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
 
             response.json()
 
