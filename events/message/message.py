@@ -53,8 +53,16 @@ async def message(websocket, data):
 
         return 0
 
-    default = data['system_data']
-    system_id = default['system_id']
+    system_id = ""
+
+    if data['type'] == 'settings':
+
+        default = data['system_data']
+        system_id = default['system_id']
+
+    else:
+
+        system_id = data['system_id']
 
     if COMMON.validate_tap_token(data['token'], system_id):
 
