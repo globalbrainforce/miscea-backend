@@ -42,17 +42,6 @@ SYSTEM_KEYS = [
 
 async def message(websocket, data):
 
-    if not 'token' in data.keys():
-
-        message = {}
-        message['type'] = 'message'
-        message['status'] = 'Failed'
-        message['alert'] = 'Invalid data!'
-        message = json.dumps(message)
-        await asyncio.wait([websocket.send(message)])
-
-        return 0
-
     system_id = ""
 
     if data['type'] == 'settings':
@@ -64,6 +53,19 @@ async def message(websocket, data):
 
         default = data['activity']
         system_id = default['system_id']
+
+
+    if not 'token' in data.keys():
+
+        message = {}
+        message['type'] = 'message'
+        message['status'] = 'Failed'
+        message['system_id'] = system_id
+        message['alert'] = 'Invalid data!'
+        message = json.dumps(message)
+        await asyncio.wait([websocket.send(message)])
+
+        return 0
 
     if COMMON.validate_tap_token(data['token'], system_id):
 
@@ -165,6 +167,7 @@ async def message(websocket, data):
 
         message = {}
         message['type'] = mtype
+        message['system_id'] = system_id
         message['status'] = 'ok'
         message = json.dumps(message)
         await asyncio.wait([websocket.send(message)])
@@ -175,6 +178,7 @@ async def message(websocket, data):
 
         message = {}
         message['type'] = 'message'
+        message['system_id'] = system_id
         message['status'] = 'Failed'
         message['alert'] = 'Invalid data!'
         message = json.dumps(message)
