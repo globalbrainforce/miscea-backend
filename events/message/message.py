@@ -98,6 +98,9 @@ async def message(websocket, data):
 
             response.json()
 
+            # RUN REPORTS FOR SOAP ACTIVITIES
+            reports(ESTABLISHMENT, system_id, 'data%23sa')
+
         elif data['type'] == 'disinfectant-activity':
             # DISINFECTANT
 
@@ -123,11 +126,15 @@ async def message(websocket, data):
 
             response.json()
 
+            # RUN REPORTS FOR DISINFECTANT ACTIVITIES
+            reports(ESTABLISHMENT, system_id, 'data%23da')
+
         elif data['type'] =='water-activity':
             # WATER ACTIVITY
 
             mtype = 'water-activity'
             activity = data['activity']
+            system_id = activity['system_id']
 
             wactvt = {}
             wactvt['_id'] = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
@@ -137,7 +144,7 @@ async def message(websocket, data):
             wactvt['temperature'] = activity['temperature']
             wactvt['flow_output'] = activity['flow_output']
             wactvt['type'] = 'data'
-            wactvt['system_id'] = activity['system_id']
+            wactvt['system_id'] = system_id
             wactvt['establishment_id'] = ESTABLISHMENT
 
             syslog.syslog("++++++++ WATER ++++++++")
@@ -149,6 +156,12 @@ async def message(websocket, data):
             response = requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
 
             response.json()
+
+            # RUN REPORTS FOR WATER ACTIVITIES
+            reports(ESTABLISHMENT, system_id, 'data%23wa')
+
+            # SAVE LATEST ACTIVITIES
+            latest_activities(ESTABLISHMENT, system_id, 'data%23wa')
 
         message = {}
         message['type'] = mtype
@@ -238,3 +251,399 @@ def check_settings(data):
 
             # SERVER NEED TO UPDATE TOP CODE HERE
             pass
+
+
+def reports(estab_id, system_id, partition):
+    """ Reports """
+
+    current_date = epoch_day(time.time())
+
+    epoch_time = days_update(current_date)
+    epoch_time -= 1
+
+    # GET LAST DAY UPDATE
+    timestamp = get_next_timestamp(estab_id, system_id, partition)
+
+    if not timestamp:
+
+        return 0
+
+    late_et = days_update(timestamp, 1, True)
+    late_st = days_update(late_et, 1)
+
+    new_et = late_et
+
+    # EACH DAYS
+    while int(new_et) <= int(epoch_time):
+
+        late_et = days_update(late_et, 1, True)
+        late_st = days_update(late_et, 1)
+
+        if late_st > epoch_time:
+
+            break
+
+        new_et = late_et - 1
+
+        # GET DATAS
+        values = get_all_data(estab_id, system_id, partition, late_st, new_et)
+
+        if values:
+
+            # CALCULATE
+            results = calculate_values(values, partition)
+
+            # SAVE RESULTS
+            if not save_results(estab_id, system_id, partition, late_st, results):
+                return 0
+
+def latest_activities(estab_id, system_id, partition):
+    """ SAVE LATEST ACTIVITIES """
+
+    values = COUCH_QUERY.latest_datas(
+        estab_id,
+        system_id,
+        partition,
+        limit=20,
+        descending=False
+    )
+
+    if not values:
+
+        return 1
+
+    values = sorted(values, key=lambda i: i["timestamp"], reverse=True)
+
+    val1 = values[0]
+
+    sql_str = "SELECT date_of_data FROM latest_activities WHERE"
+    sql_str += " syst_id='{0}'".format(system_id)
+    sql_str += " ORDER BY date_of_data DESC LIMIT 1"
+
+    epoch_date = POSTGRES.query_fetch_one(sql_str)
+
+    if epoch_date:
+
+        if epoch_date['date_of_data'] == int(val1['timestamp']):
+
+            return 1
+
+        else:
+
+            conditions = []
+
+            conditions.append({
+                "col": "syst_id",
+                "con": "=",
+                "val": system_id
+                })
+
+            POSTGRES.delete('latest_activities', conditions)
+
+    for value in values:
+
+        timestamp = time.time()
+        wdata = {}
+        wdata['latest_activity_id'] = value['_id']
+        wdata['establ_id'] = value['establishment_id']
+        wdata['syst_id'] = value['system_id']
+        wdata['duration'] = value['duration']
+        wdata['temperature'] = value['temperature']
+        wdata['type'] = value['type']
+        wdata['reason'] = value['reason']
+        wdata['flow_output'] = value['flow_output']
+        wdata['date_of_data'] = int(value['timestamp'])
+        wdata['update_on'] = timestamp
+        wdata['created_on'] = timestamp
+
+        # SAVE
+        POSTGRES.insert('latest_activities', wdata, 'latest_activity_id')
+
+    return 1
+
+def get_next_timestamp(estab_id, system_id, partition):
+    """ GET FIRST TIMESTAMP """
+
+    sql_str = ""
+    if partition == 'data%23sa':
+
+        sql_str = "SELECT date_of_data FROM liquid_1_activities WHERE"
+
+    elif partition == 'data%23da':
+
+        sql_str = "SELECT date_of_data FROM liquid_2_activities WHERE"
+
+    else:
+
+        sql_str = "SELECT date_of_data FROM w_activities WHERE"
+
+    sql_str += " establ_id='{0}'".format(estab_id)
+    sql_str += " AND syst_id='{0}'".format(system_id)
+    sql_str += " ORDER BY date_of_data DESC LIMIT 1"
+
+    epoch_date = POSTGRES.query_fetch_one(sql_str)
+
+    timestamp = 0
+    if epoch_date:
+
+        timestamp = epoch_date['date_of_data']
+
+    else:
+
+        values = COUCH_QUERY.get_complete_values(
+            estab_id,
+            system_id,
+            partition,
+            start=str(9999999999),
+            end=str(26763),
+            flag='one_doc',
+            descending=False
+        )
+
+        if not values:
+
+            return 0
+
+        timestamp = values['timestamp']
+        timestamp = days_update(timestamp, 1, False)
+
+    return timestamp
+
+def epoch_day(timestamp):
+    """ Epoch Day """
+    try:
+
+        named_tuple = time.localtime(int(timestamp))
+
+        # GET YEAR MONTH DAY
+        year = int(time.strftime("%Y", named_tuple))
+        month = int(time.strftime("%m", named_tuple))
+        day = int(time.strftime("%d", named_tuple))
+
+        # Date in tuple
+        date_tuple = (year, month, day, 0, 0, 0, 0, 0, 0)
+
+        return time.mktime(date_tuple)
+
+    except:
+
+        return 0
+
+def get_all_data(estab_id, system_id, partition, start_time, end_time):
+    """ Return all data """
+
+    values = COUCH_QUERY.get_complete_values(
+        estab_id,
+        system_id,
+        partition,
+        start=start_time,
+        end=end_time,
+        flag='all'
+    )
+
+    return values
+
+def calculate_values(values, partition):
+    """ Calculate Values """
+
+    results = {}
+
+    if partition == 'data%23wa':
+
+        flow_output = 0
+        # EACH VALUES
+        for value in values:
+
+            flow_output += float_data(value['flow_output'].split("L")[0])
+
+            if value['reason'].upper() == 'FLUSH':
+
+                timestamp = time.time()
+                wdata = {}
+                wdata['wf_activity_id'] = value['_id']
+                wdata['establ_id'] = value['establishment_id']
+                wdata['syst_id'] = value['system_id']
+                wdata['duration'] = value['duration']
+                wdata['temperature'] = value['temperature']
+                wdata['type'] = value['type']
+                wdata['reason'] = value['reason']
+                wdata['flow_output'] = value['flow_output']
+                wdata['date_of_data'] = int(value['timestamp'])
+                wdata['update_on'] = timestamp
+                wdata['created_on'] = timestamp
+
+                # SAVE
+                POSTGRES.insert('wf_activities', wdata, 'wf_activity_id')
+
+            elif value['reason'].upper() == 'THERMAL DISINFECTION':
+
+                timestamp = time.time()
+                wdata = {}
+                wdata['wt_activity_id'] = value['_id']
+                wdata['establ_id'] = value['establishment_id']
+                wdata['syst_id'] = value['system_id']
+                wdata['duration'] = value['duration']
+                wdata['temperature'] = value['temperature']
+                wdata['type'] = value['type']
+                wdata['reason'] = value['reason']
+                wdata['flow_output'] = value['flow_output']
+                wdata['date_of_data'] = int(value['timestamp'])
+                wdata['update_on'] = timestamp
+                wdata['created_on'] = timestamp
+
+                # SAVE
+                POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
+
+
+
+        results['flow_output'] = flow_output
+
+    elif partition == 'data%23sa':
+
+        liquid1 = 0
+        # EACH VALUES
+        for value in values:
+
+            if value:
+
+                try:
+
+                    liquid1 += float_data(value['liquid_1_dose'].split(" milliliters")[0])
+
+                except:
+
+                    pass
+
+                try:
+
+                    liquid1 += float_data(value['liquid_1_dose'].split(" milliliter")[0])
+
+                except:
+
+                    pass
+
+        results['liquid1'] = liquid1
+
+    elif partition == 'data%23da':
+
+        liquid2 = 0
+        # EACH VALUES
+        for value in values:
+
+            if value:
+
+                try:
+
+                    liquid2 += float_data(value['liquid_2_dose'].split(" milliliters")[0])
+
+                except:
+
+                    pass
+
+                try:
+
+                    liquid2 += float_data(value['liquid_2_dose'].split(" milliliter")[0])
+
+                except:
+
+                    pass
+
+        results['liquid2'] = liquid2
+
+    else:
+
+        print("Invalid partition: ", partition)
+
+    return results
+
+def float_data(data):
+    """ Return Float Data """
+
+    try:
+
+        return float(data)
+
+    except:
+
+        return 0
+
+def save_results(estab_id, system_id, partition, timestamp, results):
+    """ SAVE RESULTS """
+
+    data = {}
+    current_time = time.time()
+
+    if partition == 'data%23wa':
+
+        data['w_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+        if POSTGRES.insert('w_activities', data, 'w_activity_id'):
+
+            return 1
+
+    elif partition == 'data%23sa':
+
+        data['liquid_1_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+
+        if POSTGRES.insert('liquid_1_activities', data, 'liquid_1_activity_id'):
+
+            return 1
+
+    elif partition == 'data%23da':
+
+        data['liquid_2_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+
+        if POSTGRES.insert('liquid_2_activities', data, 'liquid_2_activity_id'):
+
+            return 1
+
+    return 0
+
+
+def days_update(timestamp, count=0, add=False):
+    """Days Update"""
+    try:
+
+        named_tuple = time.localtime(int(timestamp))
+
+        # GET YEAR MONTH DAY
+        year = int(time.strftime("%Y", named_tuple))
+        month = int(time.strftime("%m", named_tuple))
+        day = int(time.strftime("%d", named_tuple))
+
+        # Date in tuple
+        date_tuple = (year, month, day, 0, 0, 0, 0, 0, 0)
+
+        local_time = time.mktime(date_tuple)
+        orig = datetime.fromtimestamp(local_time)
+
+        if add:
+
+            new = orig + timedelta(days=count)
+
+        else:
+
+            new = orig - timedelta(days=count)
+
+        return new.timestamp()
+
+    except:
+
+        return 0
