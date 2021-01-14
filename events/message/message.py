@@ -244,7 +244,12 @@ def check_settings(data):
 
         couch_url = COUCHDB.couch_db_link()
         headers = {"Content-Type" : "application/json"}
-        requests.post(couch_url, data=json.dumps(system), headers=headers)
+        res = requests.post(couch_url, data=json.dumps(system), headers=headers)
+
+        syslog.syslog("++++++++ CREATE SETTINGS ++++++++")
+        syslog.syslog(json.dumps(res))
+        syslog.syslog("======== CREATE SETTINGS ========")
+
 
     # ELSE
     else:
