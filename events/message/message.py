@@ -286,6 +286,8 @@ def reports(estab_id, system_id, partition):
     new_et = late_et
 
     syslog.syslog("3")
+    syslog.syslog(int(new_et) )
+    syslog.syslog(int(epoch_time) )
     # EACH DAYS
     while int(new_et) <= int(epoch_time):
 
