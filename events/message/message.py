@@ -164,6 +164,10 @@ async def message(websocket, data):
 
             response.json()
 
+            syslog.syslog("++++++++ response ++++++++")
+            syslog.syslog(json.dumps(response))
+            syslog.syslog("======== response ========")
+
             # RUN REPORTS FOR WATER ACTIVITIES
             reports(ESTABLISHMENT, system_id, 'data%23wa')
 
