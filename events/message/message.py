@@ -165,7 +165,7 @@ async def message(websocket, data):
             response.json()
 
             syslog.syslog("++++++++ response ++++++++")
-            syslog.syslog(json.dumps(response))
+            syslog.syslog(str(json.dumps(response)))
             syslog.syslog("======== response ========")
 
             # RUN REPORTS FOR WATER ACTIVITIES
@@ -248,12 +248,7 @@ def check_settings(data):
 
         couch_url = COUCHDB.couch_db_link()
         headers = {"Content-Type" : "application/json"}
-        res = requests.post(couch_url, data=json.dumps(system), headers=headers)
-
-        syslog.syslog("++++++++ CREATE SETTINGS ++++++++")
-        syslog.syslog(json.dumps(res))
-        syslog.syslog("======== CREATE SETTINGS ========")
-
+        requests.post(couch_url, data=json.dumps(system), headers=headers)
 
     # ELSE
     else:
