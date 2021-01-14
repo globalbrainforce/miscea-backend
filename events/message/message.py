@@ -297,9 +297,9 @@ def reports(estab_id, system_id, partition):
 
         # GET DATAS
         values = get_all_data(estab_id, system_id, partition, late_st, new_et)
-        print("values ---->")
-        print("values ---->")
-        print("values ---->")
+        syslog.syslog("values ---->")
+        syslog.syslog("values ---->")
+        syslog.syslog("values ---->")
 
         if values:
 
