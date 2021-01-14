@@ -46,12 +46,14 @@ async def message(websocket, data):
 
     if data['type'] == 'settings':
 
-        default = data['system_data']
+        # default = data['system_data']
+        default = data
         system_id = default['system_id']
 
     else:
 
-        default = data['activity']
+        # default = data['activity']
+        default = data
         system_id = default['system_id']
 
 
@@ -79,7 +81,8 @@ async def message(websocket, data):
             # SOAP ACTIVITY
 
             mtype = 'soap-activity'
-            activity = data['activity']
+            # activity = data['activity']
+            activity = data
 
             sda = {}
             sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
@@ -107,7 +110,8 @@ async def message(websocket, data):
             # DISINFECTANT
 
             mtype = 'disinfectant-activity'
-            activity = data['activity']
+            # activity = data['activity']
+            activity = data
 
             sda = {}
             sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
@@ -135,7 +139,8 @@ async def message(websocket, data):
             # WATER ACTIVITY
 
             mtype = 'water-activity'
-            activity = data['activity']
+            # activity = data['activity']
+            activity = data
             system_id = activity['system_id']
 
             wactvt = {}
@@ -188,7 +193,8 @@ async def message(websocket, data):
 
 def check_settings(data):
 
-    default = data['system_data']
+    # default = data['system_data']
+    default = data
     system_id = default['system_id']
 
     system_info = COUCH_QUERY.get_by_id(system_id)

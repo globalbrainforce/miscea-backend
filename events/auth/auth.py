@@ -27,7 +27,8 @@ async def auth(websocket, data):
 
     if COMMON.validate_default_token(data['token']):
 
-        default = data['system_data']
+        # default = data['system_data']
+        default = data
         system_id = default['system_id']
         new_token = SHASECURITY.generate_token(False)
 
