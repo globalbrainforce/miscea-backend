@@ -162,10 +162,10 @@ async def message(websocket, data):
             headers = {"Content-Type" : "application/json"}
             response = requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
 
-            response.json()
+            res = response.json()
 
             syslog.syslog("++++++++ response ++++++++")
-            syslog.syslog(str(json.dumps(response)))
+            syslog.syslog(json.dumps(res))
             syslog.syslog("======== response ========")
 
             # RUN REPORTS FOR WATER ACTIVITIES
