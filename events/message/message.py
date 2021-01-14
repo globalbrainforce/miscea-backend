@@ -266,11 +266,13 @@ def check_settings(data):
 def reports(estab_id, system_id, partition):
     """ Reports """
 
+    syslog.syslog("1")
     current_date = epoch_day(time.time())
 
     epoch_time = days_update(current_date)
     epoch_time -= 1
 
+    syslog.syslog("2")
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
@@ -283,6 +285,7 @@ def reports(estab_id, system_id, partition):
 
     new_et = late_et
 
+    syslog.syslog("3")
     # EACH DAYS
     while int(new_et) <= int(epoch_time):
 
