@@ -165,6 +165,10 @@ async def message(websocket, data):
 
             water_data = COUCH_QUERY.get_by_id(water_data_id)
 
+            test1 = "DATA: {0}".format(json.dumps(water_data))
+
+            syslog.syslog(test1)
+
             # RUN REPORTS FOR WATER ACTIVITIES
             reports(ESTABLISHMENT, system_id, 'data%23wa', water_data)
 
