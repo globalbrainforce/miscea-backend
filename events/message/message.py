@@ -521,7 +521,7 @@ def calculate_values(values, partition):
 
                 try:
 
-                    liquid1 += float_data(value['liquid_1_dose'].split(" milliliters")[0])
+                    liquid1 += float_data(value['liquid_1_dose'])
 
                 except:
 
@@ -547,7 +547,7 @@ def calculate_values(values, partition):
 
                 try:
 
-                    liquid2 += float_data(value['liquid_2_dose'].split(" milliliters")[0])
+                    liquid2 += float_data(value['liquid_2_dose'])
 
                 except:
 
@@ -734,7 +734,7 @@ def get_calculation(partition, value, estab_id, system_id):
 
             try:
 
-                liquid1 += float_data(value['liquid_1_dose'].split(" milliliters")[0])
+                liquid1 += float_data(value['liquid_1_dose'])
 
             except:
 
@@ -759,7 +759,7 @@ def get_calculation(partition, value, estab_id, system_id):
 
             try:
 
-                liquid2 += float_data(value['liquid_2_dose'].split(" milliliters")[0])
+                liquid2 += float_data(value['liquid_2_dose'])
 
             except:
 
