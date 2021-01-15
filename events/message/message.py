@@ -327,6 +327,7 @@ def reports(estab_id, system_id, partition, activity_data=None):
 def latest_activities(estab_id, system_id, partition):
     """ SAVE LATEST ACTIVITIES """
 
+    syslog.syslog("1")
     values = COUCH_QUERY.latest_datas(
         estab_id,
         system_id,
@@ -343,12 +344,14 @@ def latest_activities(estab_id, system_id, partition):
 
     val1 = values[0]
 
+    syslog.syslog("2")
     sql_str = "SELECT date_of_data FROM latest_activities WHERE"
     sql_str += " syst_id='{0}'".format(system_id)
     sql_str += " ORDER BY date_of_data DESC LIMIT 1"
 
     epoch_date = POSTGRES.query_fetch_one(sql_str)
 
+    syslog.syslog("3")
     if epoch_date:
 
         if epoch_date['date_of_data'] == int(val1['timestamp']):
@@ -367,6 +370,7 @@ def latest_activities(estab_id, system_id, partition):
 
             POSTGRES.delete('latest_activities', conditions)
 
+    syslog.syslog("4")
     for value in values:
 
         timestamp = time.time()
@@ -386,6 +390,7 @@ def latest_activities(estab_id, system_id, partition):
         # SAVE
         POSTGRES.insert('latest_activities', wdata, 'latest_activity_id')
 
+    syslog.syslog("5")
     return 1
 
 def get_next_timestamp(estab_id, system_id, partition):
