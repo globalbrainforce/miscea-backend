@@ -264,7 +264,7 @@ def check_settings(data):
             pass
 
 
-def reports(estab_id, system_id, partition, activity_data):
+def reports(estab_id, system_id, partition, activity_data=None):
     """ Reports """
 
     syslog.syslog("1")
@@ -292,14 +292,16 @@ def reports(estab_id, system_id, partition, activity_data):
 
     if int(new_et) == 0 and int(epoch_time) -1 and activity_data:
 
-        cur = "current_date: {0}".format(current_date)
-        next_date = int(current_date) + 86399
-        new_cur = "next_date: {0}".format(next_date)
-        syslog.syslog(cur)
-        syslog.syslog(new_cur)
-        # results = calculate_values(values, partition)
-        # values = get_all_data(estab_id, system_id, partition, late_st, new_et)
+        end_date = int(current_date) + 86399
 
+        # cur = "current_date: {0}".format(current_date)
+        # new_cur = "next_date: {0}".format(end_date)
+        # syslog.syslog(cur)
+        # syslog.syslog(new_cur)
+        # results = calculate_values(values, partition)
+        values = get_all_data(estab_id, system_id, partition, current_date, end_date)
+
+        get_calculation(partition, activity_data, estab_id, system_id)
 
 
     # EACH DAYS
@@ -523,8 +525,6 @@ def calculate_values(values, partition):
                 # SAVE
                 POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
 
-
-
         results['flow_output'] = flow_output
 
     elif partition == 'data%23sa':
@@ -676,3 +676,126 @@ def days_update(timestamp, count=0, add=False):
     except:
 
         return 0
+
+def get_calculation(partition, value, estab_id, system_id):
+
+
+    results = {}
+
+    if partition == 'data%23wa':
+
+        sql_str = "SELECT * FROM w_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        w_activities = POSTGRES.query_fetch_one(sql_str)
+
+        flow_output = 0
+
+        if w_activities:
+
+            flow_output = w_activities['results']
+            print_dta = "flow_output: {0}".format(flow_output)
+            syslog.syslog(print_dta)
+
+        # EACH VALUES
+
+
+        flow_output += float_data(value['flow_output'].split("L")[0])
+
+        if value['reason'].upper() == 'FLUSH':
+
+            timestamp = time.time()
+            wdata = {}
+            wdata['wf_activity_id'] = value['_id']
+            wdata['establ_id'] = value['establishment_id']
+            wdata['syst_id'] = value['system_id']
+            wdata['duration'] = value['duration']
+            wdata['temperature'] = value['temperature']
+            wdata['type'] = value['type']
+            wdata['reason'] = value['reason']
+            wdata['flow_output'] = value['flow_output']
+            wdata['date_of_data'] = int(value['timestamp'])
+            wdata['update_on'] = timestamp
+            wdata['created_on'] = timestamp
+
+            # SAVE
+            POSTGRES.insert('wf_activities', wdata, 'wf_activity_id')
+
+        elif value['reason'].upper() == 'THERMAL DISINFECTION':
+
+            timestamp = time.time()
+            wdata = {}
+            wdata['wt_activity_id'] = value['_id']
+            wdata['establ_id'] = value['establishment_id']
+            wdata['syst_id'] = value['system_id']
+            wdata['duration'] = value['duration']
+            wdata['temperature'] = value['temperature']
+            wdata['type'] = value['type']
+            wdata['reason'] = value['reason']
+            wdata['flow_output'] = value['flow_output']
+            wdata['date_of_data'] = int(value['timestamp'])
+            wdata['update_on'] = timestamp
+            wdata['created_on'] = timestamp
+
+            # SAVE
+            POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
+
+        results['flow_output'] = flow_output
+
+    elif partition == 'data%23sa':
+
+        liquid1 = 0
+        # EACH VALUES
+
+        if value:
+
+            try:
+
+                liquid1 += float_data(value['liquid_1_dose'].split(" milliliters")[0])
+
+            except:
+
+                pass
+
+            try:
+
+                liquid1 += float_data(value['liquid_1_dose'].split(" milliliter")[0])
+
+            except:
+
+                pass
+
+        results['liquid1'] = liquid1
+
+    elif partition == 'data%23da':
+
+        liquid2 = 0
+        # EACH VALUES
+
+        if value:
+
+            try:
+
+                liquid2 += float_data(value['liquid_2_dose'].split(" milliliters")[0])
+
+            except:
+
+                pass
+
+            try:
+
+                liquid2 += float_data(value['liquid_2_dose'].split(" milliliter")[0])
+
+            except:
+
+                pass
+
+        results['liquid2'] = liquid2
+
+    else:
+
+        print("Invalid partition: ", partition)
+
+    return results
+
