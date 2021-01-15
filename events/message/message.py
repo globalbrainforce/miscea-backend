@@ -737,6 +737,7 @@ def get_calculation(partition, value, estab_id, system_id):
             # SAVE
             POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
 
+        syslog.syslog("flow_output: {0}".format(flow_output))
         results['flow_output'] = flow_output
 
     elif partition == 'data%23sa':
@@ -819,7 +820,7 @@ def update_results(estab_id, system_id, partition, timestamp, results):
             "con": "=",
             "val": w_activities['w_activity_id']})  
 
-        if POSTGRES.update('w_activities', data, conditions):
+        if POSTGRES.update('w_activities', data, conditions, log=True):
 
             return 1
 

@@ -1,5 +1,6 @@
 # pylint: disable=no-self-use, too-many-instance-attributes
 """Log"""
+import syslog
 from __future__ import print_function
 
 class Log():
@@ -21,28 +22,28 @@ class Log():
 
     def info(self, message):
         """Information log"""
-        print("{0} {1} {2}".format(self.green, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.green, message, self.end_color))
 
     def debug(self, message):
         """Debug log"""
-        print("{0} {1} {2}".format(self.normal, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.normal, message, self.end_color))
 
     def warning(self, message):
         """Warning log"""
-        print("{0} {1} {2}".format(self.yellow, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.yellow, message, self.end_color))
 
     def error(self, message):
         """Error log"""
-        print("{0} {1} {2}".format(self.red, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.red, message, self.end_color))
 
     def critical(self, message):
         """Critical log"""
-        print("{0} {1} {2}".format(self.superred, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.superred, message, self.end_color))
 
     def low(self, message):
         """Low log"""
-        print("{0} {1} {2}".format(self.blue, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.blue, message, self.end_color))
 
     def medium(self, message):
         """Medium log"""
-        print("{0} {1} {2}".format(self.pink, message, self.end_color))
+        syslog.syslog("{0} {1} {2}".format(self.pink, message, self.end_color))
