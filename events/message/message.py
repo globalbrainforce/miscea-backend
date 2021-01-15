@@ -529,7 +529,7 @@ def calculate_values(values, partition):
 
                 try:
 
-                    liquid1 += float_data(value['liquid_1_dose'].split(" milliliter")[0])
+                    liquid1 += float_data(value['liquid_1_dose'])
 
                 except:
 
@@ -555,7 +555,7 @@ def calculate_values(values, partition):
 
                 try:
 
-                    liquid2 += float_data(value['liquid_2_dose'].split(" milliliter")[0])
+                    liquid2 += float_data(value['liquid_2_dose'])
 
                 except:
 
@@ -727,8 +727,17 @@ def get_calculation(partition, value, estab_id, system_id):
 
     elif partition == 'data%23sa':
 
+        sql_str = "SELECT * FROM liquid_1_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        liquid_1_activities = POSTGRES.query_fetch_one(sql_str)
+
         liquid1 = 0
-        # EACH VALUES
+
+        if liquid_1_activities:
+
+            liquid1 = float_data(liquid_1_activities['results']['liquid1'])
 
         if value:
 
@@ -742,7 +751,7 @@ def get_calculation(partition, value, estab_id, system_id):
 
             try:
 
-                liquid1 += float_data(value['liquid_1_dose'].split(" milliliter")[0])
+                liquid1 += float_data(value['liquid_1_dose'])
 
             except:
 
@@ -752,8 +761,18 @@ def get_calculation(partition, value, estab_id, system_id):
 
     elif partition == 'data%23da':
 
+        sql_str = "SELECT * FROM liquid_2_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        liquid_2_activities = POSTGRES.query_fetch_one(sql_str)
+
         liquid2 = 0
-        # EACH VALUES
+
+        if liquid_2_activities:
+
+            liquid2 = float_data(liquid_2_activities['results']['liquid2'])
+
 
         if value:
 
@@ -767,7 +786,7 @@ def get_calculation(partition, value, estab_id, system_id):
 
             try:
 
-                liquid2 += float_data(value['liquid_2_dose'].split(" milliliter")[0])
+                liquid2 += float_data(value['liquid_2_dose'])
 
             except:
 
