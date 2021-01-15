@@ -296,17 +296,9 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
     if int(new_et) == 0 and int(epoch_time) -1 and activity_data:
 
-        end_date = int(current_date) + 86399
+        results = get_calculation(partition, activity_data, estab_id, system_id)
 
-        # cur = "current_date: {0}".format(current_date)
-        # new_cur = "next_date: {0}".format(end_date)
-        # syslog.syslog(cur)
-        # syslog.syslog(new_cur)
-        # results = calculate_values(values, partition)
-        # values = get_all_data(estab_id, system_id, partition, current_date, end_date)
-
-        get_calculation(partition, activity_data, estab_id, system_id)
-
+        update_results(estab_id, system_id, partition, current_date, results)
 
     # EACH DAYS
     while int(new_et) <= int(epoch_time):
@@ -803,3 +795,60 @@ def get_calculation(partition, value, estab_id, system_id):
 
     return results
 
+def update_results(estab_id, system_id, partition, timestamp, results):
+    """ SAVE RESULTS """
+
+    data = {}
+    current_time = time.time()
+
+    if partition == 'data%23wa':
+
+        sql_str = "SELECT * FROM w_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        w_activities = POSTGRES.query_fetch_one(sql_str)
+
+        data['results'] = json.dumps(results)
+
+        # CONDITIONS
+        conditions = []
+
+        conditions.append({
+            "col": "w_activity_id",
+            "con": "=",
+            "val": w_activities['w_activity_id']})  
+
+        if POSTGRES.update('w_activities', data, conditions):
+
+            return 1
+
+    elif partition == 'data%23sa':
+
+        data['liquid_1_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+
+        if POSTGRES.insert('liquid_1_activities', data, 'liquid_1_activity_id'):
+
+            return 1
+
+    elif partition == 'data%23da':
+
+        data['liquid_2_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+
+        if POSTGRES.insert('liquid_2_activities', data, 'liquid_2_activity_id'):
+
+            return 1
+
+    return 0
