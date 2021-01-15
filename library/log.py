@@ -1,7 +1,7 @@
 # pylint: disable=no-self-use, too-many-instance-attributes
 """Log"""
 import syslog
-from __future__ import print_function
+# from __future__ import print_function
 
 class Log():
     """Class for Log"""
