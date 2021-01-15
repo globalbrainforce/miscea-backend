@@ -104,7 +104,7 @@ async def message(websocket, data):
             response.json()
 
             # RUN REPORTS FOR SOAP ACTIVITIES
-            reports(ESTABLISHMENT, system_id, 'data%23sa')
+            reports(ESTABLISHMENT, system_id, 'data%23sa', sda)
 
         elif data['type'] == 'disinfectant-activity':
             # DISINFECTANT
@@ -133,7 +133,7 @@ async def message(websocket, data):
             response.json()
 
             # RUN REPORTS FOR DISINFECTANT ACTIVITIES
-            reports(ESTABLISHMENT, system_id, 'data%23da')
+            reports(ESTABLISHMENT, system_id, 'data%23da', sda)
 
         elif data['type'] =='water-activity':
             # WATER ACTIVITY
@@ -161,13 +161,7 @@ async def message(websocket, data):
 
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
-            response = requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
-
-            # water_data = COUCH_QUERY.get_by_id(water_data_id)
-
-            # test1 = "DATA: {0}".format(json.dumps(water_data))
-
-            # syslog.syslog(test1)
+            requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
 
             # RUN REPORTS FOR WATER ACTIVITIES
             reports(ESTABLISHMENT, system_id, 'data%23wa', wactvt)
@@ -271,13 +265,11 @@ def check_settings(data):
 def reports(estab_id, system_id, partition, activity_data=None):
     """ Reports """
 
-    syslog.syslog("1")
     current_date = epoch_day(time.time())
 
     epoch_time = days_update(current_date)
     epoch_time -= 1
 
-    syslog.syslog("2")
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
@@ -289,10 +281,6 @@ def reports(estab_id, system_id, partition, activity_data=None):
     late_st = days_update(late_et, 1)
 
     new_et = late_et
-
-    syslog.syslog("3")
-    syslog.syslog(str(int(new_et)))
-    syslog.syslog(str(int(epoch_time)))
 
     if int(new_et) == 0 and int(epoch_time) -1 and activity_data:
 
@@ -327,7 +315,6 @@ def reports(estab_id, system_id, partition, activity_data=None):
 def latest_activities(estab_id, system_id, partition):
     """ SAVE LATEST ACTIVITIES """
 
-    syslog.syslog("1")
     values = COUCH_QUERY.latest_datas(
         estab_id,
         system_id,
@@ -344,14 +331,12 @@ def latest_activities(estab_id, system_id, partition):
 
     val1 = values[0]
 
-    syslog.syslog("2")
     sql_str = "SELECT date_of_data FROM latest_activities WHERE"
     sql_str += " syst_id='{0}'".format(system_id)
     sql_str += " ORDER BY date_of_data DESC LIMIT 1"
 
     epoch_date = POSTGRES.query_fetch_one(sql_str)
 
-    syslog.syslog("3")
     if epoch_date:
 
         if epoch_date['date_of_data'] == int(val1['timestamp']):
@@ -370,7 +355,6 @@ def latest_activities(estab_id, system_id, partition):
 
             POSTGRES.delete('latest_activities', conditions)
 
-    syslog.syslog("4")
     for value in values:
 
         timestamp = time.time()
@@ -390,7 +374,6 @@ def latest_activities(estab_id, system_id, partition):
         # SAVE
         POSTGRES.insert('latest_activities', wdata, 'latest_activity_id')
 
-    syslog.syslog("5")
     return 1
 
 def get_next_timestamp(estab_id, system_id, partition):
@@ -696,8 +679,6 @@ def get_calculation(partition, value, estab_id, system_id):
         if w_activities:
 
             flow_output = float_data(w_activities['results']['flow_output'])
-            print_dta = "flow_output: {0}".format(flow_output)
-            syslog.syslog(print_dta)
 
         # EACH VALUES
 
@@ -742,7 +723,6 @@ def get_calculation(partition, value, estab_id, system_id):
             # SAVE
             POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
 
-        syslog.syslog("flow_output: {0}".format(flow_output))
         results['flow_output'] = flow_output
 
     elif partition == 'data%23sa':
@@ -816,6 +796,7 @@ def update_results(estab_id, system_id, partition, timestamp, results):
         w_activities = POSTGRES.query_fetch_one(sql_str)
 
         data['results'] = json.dumps(results)
+        data['update_on'] = current_time
 
         # CONDITIONS
         conditions = []
@@ -823,37 +804,55 @@ def update_results(estab_id, system_id, partition, timestamp, results):
         conditions.append({
             "col": "w_activity_id",
             "con": "=",
-            "val": w_activities['w_activity_id']})  
+            "val": w_activities['w_activity_id']})
 
-        if POSTGRES.update('w_activities', data, conditions, log=True):
+        if POSTGRES.update('w_activities', data, conditions):
 
             return 1
 
     elif partition == 'data%23sa':
 
-        data['liquid_1_activity_id'] = SHA_SECURITY.generate_token(False)
-        data['establ_id'] = estab_id
-        data['syst_id'] = system_id
-        data['results'] = json.dumps(results)
-        data['date_of_data'] = timestamp
-        data['update_on'] = current_time
-        data['created_on'] = current_time
+        sql_str = "SELECT * FROM liquid_1_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        liquid_1_activities = POSTGRES.query_fetch_one(sql_str)
 
-        if POSTGRES.insert('liquid_1_activities', data, 'liquid_1_activity_id'):
+        data['results'] = json.dumps(results)
+        data['update_on'] = current_time
+
+        # CONDITIONS
+        conditions = []
+
+        conditions.append({
+            "col": "liquid_1_activity_id",
+            "con": "=",
+            "val": liquid_1_activities['liquid_1_activity_id']})
+
+        if POSTGRES.update('liquid_1_activities', data, conditions, log=True):
 
             return 1
 
     elif partition == 'data%23da':
 
-        data['liquid_2_activity_id'] = SHA_SECURITY.generate_token(False)
-        data['establ_id'] = estab_id
-        data['syst_id'] = system_id
-        data['results'] = json.dumps(results)
-        data['date_of_data'] = timestamp
-        data['update_on'] = current_time
-        data['created_on'] = current_time
+        sql_str = "SELECT * FROM liquid_2_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        liquid_2_activities = POSTGRES.query_fetch_one(sql_str)
 
-        if POSTGRES.insert('liquid_2_activities', data, 'liquid_2_activity_id'):
+        data['results'] = json.dumps(results)
+        data['update_on'] = current_time
+
+        # CONDITIONS
+        conditions = []
+
+        conditions.append({
+            "col": "liquid_2_activity_id",
+            "con": "=",
+            "val": liquid_2_activities['liquid_2_activity_id']})
+
+        if POSTGRES.update('liquid_2_activities', data, conditions, log=True):
 
             return 1
 
