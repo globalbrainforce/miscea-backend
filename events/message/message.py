@@ -142,9 +142,10 @@ async def message(websocket, data):
             # activity = data['activity']
             activity = data
             system_id = activity['system_id']
+            water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
 
             wactvt = {}
-            wactvt['_id'] = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
+            wactvt['_id'] = water_data_id
             wactvt['timestamp'] = activity['timestamp']
             wactvt['reason'] = activity['reason']
             wactvt['duration'] = activity['duration']
@@ -162,14 +163,10 @@ async def message(websocket, data):
             headers = {"Content-Type" : "application/json"}
             response = requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
 
-            res = response.json()
-
-            syslog.syslog("++++++++ response ++++++++")
-            syslog.syslog(json.dumps(res))
-            syslog.syslog("======== response ========")
+            water_data = COUCH_QUERY.get_by_id(water_data_id)
 
             # RUN REPORTS FOR WATER ACTIVITIES
-            reports(ESTABLISHMENT, system_id, 'data%23wa')
+            reports(ESTABLISHMENT, system_id, 'data%23wa', water_data)
 
             # SAVE LATEST ACTIVITIES
             latest_activities(ESTABLISHMENT, system_id, 'data%23wa')
@@ -267,7 +264,7 @@ def check_settings(data):
             pass
 
 
-def reports(estab_id, system_id, partition):
+def reports(estab_id, system_id, partition, activity_data):
     """ Reports """
 
     syslog.syslog("1")
@@ -292,6 +289,19 @@ def reports(estab_id, system_id, partition):
     syslog.syslog("3")
     syslog.syslog(str(int(new_et)))
     syslog.syslog(str(int(epoch_time)))
+
+    if int(new_et) == 0 and int(epoch_time) -1 and activity_data:
+
+        cur = "current_date: {0}".format(current_date)
+        next_date = int(current_date) + 86399
+        new_cur = "next_date: {0}".format(next_date)
+        syslog.syslog(cur)
+        syslog.syslog(new_cur)
+        # results = calculate_values(values, partition)
+        # values = get_all_data(estab_id, system_id, partition, late_st, new_et)
+
+
+
     # EACH DAYS
     while int(new_et) <= int(epoch_time):
 
@@ -306,9 +316,6 @@ def reports(estab_id, system_id, partition):
 
         # GET DATAS
         values = get_all_data(estab_id, system_id, partition, late_st, new_et)
-        syslog.syslog("values ---->")
-        syslog.syslog("values ---->")
-        syslog.syslog("values ---->")
 
         if values:
 
