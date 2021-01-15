@@ -694,7 +694,7 @@ def get_calculation(partition, value, estab_id, system_id):
 
         if w_activities:
 
-            flow_output = w_activities['results']
+            flow_output = w_activities['results']['flow_output']
             print_dta = "flow_output: {0}".format(flow_output)
             syslog.syslog(print_dta)
 
