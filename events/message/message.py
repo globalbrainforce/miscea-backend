@@ -163,14 +163,14 @@ async def message(websocket, data):
             headers = {"Content-Type" : "application/json"}
             response = requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
 
-            water_data = COUCH_QUERY.get_by_id(water_data_id)
+            # water_data = COUCH_QUERY.get_by_id(water_data_id)
 
-            test1 = "DATA: {0}".format(json.dumps(water_data))
+            # test1 = "DATA: {0}".format(json.dumps(water_data))
 
-            syslog.syslog(test1)
+            # syslog.syslog(test1)
 
             # RUN REPORTS FOR WATER ACTIVITIES
-            reports(ESTABLISHMENT, system_id, 'data%23wa', water_data)
+            reports(ESTABLISHMENT, system_id, 'data%23wa', wactvt)
 
             # SAVE LATEST ACTIVITIES
             latest_activities(ESTABLISHMENT, system_id, 'data%23wa')
@@ -303,7 +303,7 @@ def reports(estab_id, system_id, partition, activity_data=None):
         # syslog.syslog(cur)
         # syslog.syslog(new_cur)
         # results = calculate_values(values, partition)
-        values = get_all_data(estab_id, system_id, partition, current_date, end_date)
+        # values = get_all_data(estab_id, system_id, partition, current_date, end_date)
 
         get_calculation(partition, activity_data, estab_id, system_id)
 
