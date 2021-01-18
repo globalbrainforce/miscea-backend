@@ -84,7 +84,7 @@ async def message(websocket, data):
                 system_info['type'] = mtype
                 system_info['system_id'] = system_id
                 system_info['status'] = 'update'
-                system_info = json.dumps(message)
+                system_info = json.dumps(system_info)
                 await asyncio.wait([websocket.send(system_info)])
 
                 return 1
