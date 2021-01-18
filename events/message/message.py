@@ -42,20 +42,22 @@ SYSTEM_KEYS = [
 
 async def message(websocket, data):
 
-    system_id = ""
+    # system_id = ""
 
-    if data['type'] == 'settings':
+    # if data['type'] == 'settings':
 
-        # default = data['system_data']
-        default = data
-        system_id = default['system_id']
+    #     # default = data['system_data']
+    #     default = data
+    #     system_id = default['system_id']
 
-    else:
+    # else:
 
-        # default = data['activity']
-        default = data
-        system_id = default['system_id']
+    #     # default = data['activity']
+    #     default = data
+    #     system_id = default['system_id']
 
+    default = data
+    system_id = default['system_id']
 
     if not 'token' in data.keys():
 
@@ -75,7 +77,17 @@ async def message(websocket, data):
 
         if data['type'] == 'settings':
             mtype = 'settings'
-            check_settings(data)
+            system_info = check_settings(data)
+
+            if system_info:
+
+                system_info['type'] = mtype
+                system_info['system_id'] = system_id
+                system_info['status'] = 'update'
+                system_info = json.dumps(message)
+                await asyncio.wait([websocket.send(system_info)])
+
+                return 1
 
         elif data['type'] =='soap-activity':
             # SOAP ACTIVITY
@@ -245,7 +257,8 @@ def check_settings(data):
         headers = {"Content-Type" : "application/json"}
         requests.post(couch_url, data=json.dumps(system), headers=headers)
 
-    # ELSE
+        return 0
+
     else:
 
         is_update = False
@@ -259,7 +272,9 @@ def check_settings(data):
         if is_update:
 
             # SERVER NEED TO UPDATE TOP CODE HERE
-            pass
+            return system_info
+
+        return 0
 
 
 def reports(estab_id, system_id, partition, activity_data=None):
