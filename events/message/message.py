@@ -58,6 +58,7 @@ async def message(websocket, data):
 
     default = data
     system_id = default['system_id']
+    msg_id = default['msg_id']
 
     if not 'token' in data.keys():
 
@@ -83,6 +84,7 @@ async def message(websocket, data):
 
                 system_info['type'] = mtype
                 system_info['system_id'] = system_id
+                system_info['msg_id'] = msg_id
                 system_info['status'] = 'update'
                 system_info = json.dumps(system_info)
                 await asyncio.wait([websocket.send(system_info)])
@@ -184,6 +186,7 @@ async def message(websocket, data):
         message = {}
         message['type'] = mtype
         message['system_id'] = system_id
+        message['msg_id'] = msg_id
         message['status'] = 'ok'
         message = json.dumps(message)
         await asyncio.wait([websocket.send(message)])
@@ -195,6 +198,7 @@ async def message(websocket, data):
         message = {}
         message['type'] = 'message'
         message['system_id'] = system_id
+        message['msg_id'] = msg_id
         message['status'] = 'Failed'
         message['alert'] = 'Invalid data!'
         message = json.dumps(message)
