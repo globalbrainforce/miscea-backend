@@ -10,7 +10,7 @@ from events.message import message
 
 logging.basicConfig()
 
-USERS = []
+USERS = {}
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
@@ -25,27 +25,33 @@ async def app(websocket, path):
 
             if path == '/auth':
 
-                if await auth.auth(websocket, data):
-
-                    new_user = {}
-                    new_user['system_id'] = data['system_id']
-                    new_user['websocket'] = websocket
-
-                    USERS.append(new_user)
-                    # USERS.add(websocket)
-                    log_sys = "USERS: {0}".format(USERS)
-                    syslog.syslog(log_sys)
+                await auth.auth(websocket, data)
 
             if path == '/message':
 
-                await message.message(websocket, data)
+                if await message.message(websocket, data):
 
+                    websocket_id = data['system_id']
+
+                    if not websocket_id in USERS.keys():
+
+                        USERS[websocket_id] = websocket
+
+                    log_sys = "USERS: {0}".format(USERS)
+                    syslog.syslog(log_sys)
     finally:
 
-        log_sys = "WEBSOCKET: {0}".format(websocket)
+        new_users = {}
+
+        for key in USERS.keys():
+
+            if not USERS[key] == websocket:
+
+                new_users[key] = USERS[key]
+
+        USERS = new_users
+        log_sys = "New USERS: {0}".format(USERS)
         syslog.syslog(log_sys)
-        pass
-        # USERS.remove(websocket)
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
