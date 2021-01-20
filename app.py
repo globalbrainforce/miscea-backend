@@ -42,6 +42,8 @@ async def app(websocket, path):
 
     finally:
 
+        log_sys = "WEBSOCKET: {0}".format(websocket)
+        syslog.syslog(log_sys)
         pass
         # USERS.remove(websocket)
 
