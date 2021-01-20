@@ -1,4 +1,5 @@
 """ APP """
+import syslog
 import asyncio
 import json
 import logging
@@ -9,7 +10,7 @@ from events.message import message
 
 logging.basicConfig()
 
-USERS = set()
+USERS = []
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
@@ -26,7 +27,14 @@ async def app(websocket, path):
 
                 if await auth.auth(websocket, data):
 
-                    USERS.add(websocket)
+                    new_user = {}
+                    new_user['system_id'] = data['system_id']
+                    new_user['websocket'] = websocket
+
+                    USERS.append(new_user)
+                    # USERS.add(websocket)
+                    log_sys = "USERS: {0}".format(USERS)
+                    syslog.syslog(log_sys)
 
             if path == '/message':
 
@@ -34,7 +42,8 @@ async def app(websocket, path):
 
     finally:
 
-        USERS.remove(websocket)
+        pass
+        # USERS.remove(websocket)
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
