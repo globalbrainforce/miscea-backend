@@ -42,6 +42,7 @@ async def app(websocket, path):
 
             if path == '/update-settings':
 
+                log_sys = "BEFORE users: {0}".format(users)
                 await update_settings.update_settings(websocket, data, users)
 
     finally:
