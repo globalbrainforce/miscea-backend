@@ -10,12 +10,11 @@ from events.message import message
 
 logging.basicConfig()
 
-USERS = {}
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
 
-    # USERS.add(websocket)
+    users = {}
 
     try:
 
@@ -33,24 +32,24 @@ async def app(websocket, path):
 
                     websocket_id = data['system_id']
 
-                    if not websocket_id in USERS.keys():
+                    if not websocket_id in users.keys():
 
-                        USERS[websocket_id] = websocket
+                        users[websocket_id] = websocket
 
-                    log_sys = "USERS: {0}".format(USERS)
+                    log_sys = "users: {0}".format(users)
                     syslog.syslog(log_sys)
     finally:
 
         new_users = {}
 
-        for key in USERS.keys():
+        for item in users.items():
 
-            if not USERS[key] == websocket:
+            if not item[1] == websocket:
 
-                new_users[key] = USERS[key]
+                new_users[item[0]] = item[1]
 
-        USERS = new_users
-        log_sys = "New USERS: {0}".format(USERS)
+        users = new_users
+        log_sys = "New users: {0}".format(users)
         syslog.syslog(log_sys)
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
