@@ -49,6 +49,9 @@ async def update_settings(websocket, data, users):
 
     for item in users.items():
 
+        log_sys = "{0} == {1}".format(item[0], system_id)
+        syslog.syslog(log_sys)
+
         if not item[0] == system_id:
 
             # SEND UPDATE TO THE TAP
