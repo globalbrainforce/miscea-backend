@@ -7,6 +7,7 @@ import websockets
 
 from events.auth import auth
 from events.message import message
+from events.update_settings import update_settings
 
 logging.basicConfig()
 
@@ -38,6 +39,11 @@ async def app(websocket, path):
 
                     log_sys = "users: {0}".format(users)
                     syslog.syslog(log_sys)
+
+            if path == '/update-settings':
+
+                await update_settings.update_settings(websocket, data)
+
     finally:
 
         new_users = {}
