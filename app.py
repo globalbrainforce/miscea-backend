@@ -10,12 +10,12 @@ from events.message import message
 from events.update_settings import update_settings
 
 logging.basicConfig()
-
+CLIENTS = {}
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
 
-    users = {}
+    global CLIENTS
 
     try:
 
@@ -33,31 +33,31 @@ async def app(websocket, path):
 
                     websocket_id = data['system_id']
 
-                    if not websocket_id in users.keys():
+                    if not websocket_id in CLIENTS.keys():
 
-                        users[websocket_id] = websocket
+                        CLIENTS[websocket_id] = websocket
 
-                    log_sys = "users: {0}".format(users)
+                    log_sys = "CLIENTS: {0}".format(CLIENTS)
                     syslog.syslog(log_sys)
 
             if path == '/update-settings':
 
-                log_sys = "BEFORE users: {0}".format(users)
+                log_sys = "BEFORE CLIENTS: {0}".format(CLIENTS)
                 syslog.syslog(log_sys)
-                await update_settings.update_settings(websocket, data, users)
+                await update_settings.update_settings(websocket, data, CLIENTS)
 
     finally:
 
         new_users = {}
 
-        for item in users.items():
+        for item in CLIENTS.items():
 
             if not item[1] == websocket:
 
                 new_users[item[0]] = item[1]
 
-        users = new_users
-        log_sys = "New users: {0}".format(users)
+        CLIENTS = new_users
+        log_sys = "New CLIENTS: {0}".format(CLIENTS)
         syslog.syslog(log_sys)
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
