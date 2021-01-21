@@ -42,7 +42,7 @@ async def app(websocket, path):
 
             if path == '/update-settings':
 
-                await update_settings.update_settings(websocket, data)
+                await update_settings.update_settings(websocket, data, users)
 
     finally:
 
