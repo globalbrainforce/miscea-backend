@@ -91,8 +91,9 @@ class Common():
         """ VALIDATE DEFAULT TOKEN """
 
         sql_str = "SELECT tap_account_id FROM tap_accounts WHERE"
-        sql_str += " system_id='{0}'".format(system_id)
-        sql_str += " AND token='{0}'".format(token)
+        # sql_str += " system_id='{0}'".format(system_id)
+        # sql_str += " AND token='{0}'".format(token)
+        sql_str += " token='{0}'".format(token)
 
         if self.postgres.query_fetch_one(sql_str):
 
