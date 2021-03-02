@@ -1,6 +1,8 @@
 # pylint: disable=no-self-use, too-many-arguments, too-many-branches, too-many-public-methods, bare-except, unidiomatic-typecheck, no-member, anomalous-backslash-in-string
 """Common"""
 import time
+import pytz
+
 from datetime import datetime, timedelta
 import re
 import simplejson
@@ -100,3 +102,17 @@ class Common():
             return 1
 
         return 0
+
+    def get_epoch_date_hour(self, epoch_date, tz='Europe/Amsterdam'):
+        """ Return Formatted Date and Hours"""
+
+        tztimestamp = pytz.timezone(tz)
+
+        formatted = {}
+
+        # formatted['date'] = datetime.fromtimestamp(int(epoch_date)).strftime('%Y/%m/%d')
+        formatted['date'] = datetime.fromtimestamp(int(epoch_date), tztimestamp).strftime('%d.%m.%Y')
+        formatted['time'] = datetime.fromtimestamp(int(epoch_date), tztimestamp).strftime('%I:%M')
+        formatted['meridian'] = datetime.fromtimestamp(int(epoch_date), tztimestamp).strftime('%p')
+
+        return formatted

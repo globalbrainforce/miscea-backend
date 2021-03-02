@@ -173,6 +173,52 @@ async def message(websocket, data):
             syslog.syslog(json.dumps(wactvt))
             syslog.syslog("======== WATER ========")
 
+            # SAVE WATER ACTIVITY
+            data_wact = {}
+            data_wact['water_activity_id'] = wactvt['_id']
+            data_wact['establ_id'] = ESTABLISHMENT
+            data_wact['syst_id'] = system_id
+            data_wact['timestamp'] = wactvt['timestamp']
+            data_wact['reason'] = wactvt['reason']
+            data_wact['duration'] = wactvt['duration']
+            data_wact['temperature'] = wactvt['temperature']
+
+            epoch = COMMON.get_epoch_date_hour(data_wact['timestamp'])
+            data_wact['time'] = epoch['time']
+            data_wact['date'] = epoch['date'].replace('/', '.')
+
+            degree_sign = u"\N{DEGREE SIGN}"
+            degree = "{0}C".format(degree_sign)
+            data_wact['temperature'] = data_wact['temperature'].replace(" Degrees Celsius", degree)
+
+            # FORMAT DURATION OF THERMAL DISINFECTION
+            if data_wact['reason'] == "Thermal disinfection":
+
+                duration = data_wact['duration'].split(" ")
+                period = duration[-1]
+                interval = duration[0].split(".")
+
+                minutes = interval[0]
+                if len(interval[0]) == 1:
+                    minutes = "0{0}".format(interval[0])
+
+                seconds = ""
+                if int(interval[-1]) > 0:
+
+                    seconds = ":{0}".format(interval[-1])
+                    if len(interval[-1]) == 1:
+                        seconds = ":0{0}".format(interval[-1])
+
+                data_wact['duration'] = "00:{0}{1} {2}".format(minutes, seconds, period)
+
+            if data_wact['reason'] == "Flush":
+
+                data_wact['reason'] = "Stagnation Flush"
+
+            data_wact['flow_output'] = wactvt['flow_output']
+            data_wact['created_on'] = wactvt['timestamp']
+            POSTGRES.insert('water_activities', data_wact)
+
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
             requests.post(couch_url, data=json.dumps(wactvt), headers=headers)
