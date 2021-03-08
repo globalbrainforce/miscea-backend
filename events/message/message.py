@@ -38,6 +38,7 @@ SYSTEM_KEYS = [
     'clean_mode',
     'flow_heater_mode',
     'ir_range',
+    'description'
 ]
 
 async def message(websocket, data):
@@ -278,6 +279,11 @@ def check_settings(data):
         system['serial'] = str(SHA_SECURITY.generate_token(False))[:10]
         system['model'] = ""
         system['description'] = ""
+
+        if 'description' in default.keys():
+
+            system['description'] = default['description']
+
         system['soap_dose'] = default['soap_dose']
         system['disinfect_dose'] = default['disinfect_dose']
         system['init_wtr_temp'] = default['init_wtr_temp']
@@ -322,7 +328,13 @@ def check_settings(data):
         if is_update:
 
             # SERVER NEED TO UPDATE TOP CODE HERE
-            return system_info
+            if not default['description'] == system_info['description']:
+
+                system_info['description'] = default['description']
+                del system_info['_rev']
+                COUCH_QUERY.update(system_info, system_info['_id'])
+
+            return 0
 
         return 0
 
