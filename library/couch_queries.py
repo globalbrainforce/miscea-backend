@@ -273,5 +273,5 @@ class Queries(Common):
         headers = {"Content-Type" : "application/json"}
         r = requests.put(couch_query, data=json.dumps(data),headers=headers)
         json_data =   r.json()
-
+        print("json_data: {0}".format(json_data))
         return json_data
