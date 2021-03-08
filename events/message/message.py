@@ -331,7 +331,6 @@ def check_settings(data):
             if not default['description'] == system_info['description']:
 
                 system_info['description'] = default['description']
-                del system_info['_rev']
                 COUCH_QUERY.update(system_info, system_id)
 
                 data = {}
