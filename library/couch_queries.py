@@ -273,5 +273,8 @@ class Queries(Common):
         headers = {"Content-Type" : "application/json"}
         r = requests.put(couch_query, data=json.dumps(data),headers=headers)
         json_data =   r.json()
-        print("json_data: {0}".format(json_data))
+
+        for_print = "json_data: {0}".format(json_data)
+        syslog.syslog(for_print)
+
         return json_data
