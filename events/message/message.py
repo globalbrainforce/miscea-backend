@@ -333,7 +333,7 @@ def check_settings(data):
                 system_info['description'] = default['description']
                 del system_info['_rev']
                 del system_info['_id']
-                COUCH_QUERY.update(system_info, system_info['_id'])
+                COUCH_QUERY.update(system_info, system_id)
 
                 data = {}
                 data['description'] = default['description']
@@ -341,7 +341,7 @@ def check_settings(data):
                 conditions.append({
                     "col": "syst_id",
                     "con": "=",
-                    "val": system_info['_id']})  
+                    "val": system_id})  
 
                 POSTGRES.update('syst', data, conditions)
 
