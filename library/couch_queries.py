@@ -4,6 +4,7 @@
 # pylint: disable=too-many-arguments, too-many-branches, invalid-name
 """Couch Queries"""
 import json
+import syslog
 import requests
 from library.couch_database import CouchDatabase
 from library.common import Common
