@@ -962,3 +962,306 @@ def update_results(estab_id, system_id, partition, timestamp, results):
             return 1
 
     return 0
+
+def format_units(self, value, unit):
+    """ Return value with unit """
+
+    data = "{0} {1}".format(value, unit)
+    if float(value) > 1:
+        data = "{0} {1}s".format(value, unit)
+
+    return data
+
+def validate_data(self, data):
+    """ Validate Data"""
+
+    tmp = {}
+    if "soap_dose" in data:
+
+        tmp['soap_dose'] = data['soap_dose']
+        if "milliliter" not in data['soap_dose']:
+            tmp['soap_dose'] = self.format_units(data['soap_dose'], "milliliter")
+
+    if "disinfect_dose" in data:
+        tmp['disinfect_dose'] = data['disinfect_dose']
+        if "milliliter" not in data['disinfect_dose']:
+            tmp['disinfect_dose'] = self.format_units(data['disinfect_dose'], "milliliter")
+
+    if "init_wtr_temp" in data:
+
+        tmp['init_wtr_temp'] = data['init_wtr_temp']
+        if type(data['init_wtr_temp']) == int:
+            if data['init_wtr_temp'] <= 2:
+                tmp['init_wtr_temp'] = "{0} (cold)".format(data['init_wtr_temp'])
+
+            if data['init_wtr_temp'] >=3 and data['init_wtr_temp'] <=7:
+                tmp['init_wtr_temp'] = "{0} (lukewarm)".format(data['init_wtr_temp'])
+
+            if data['init_wtr_temp'] >=8:
+                tmp['init_wtr_temp'] = "{0} (hot)".format(data['init_wtr_temp'])
+
+    if "wtr_shut_off_dly" in data:
+
+        tmp['wtr_shut_off_dly'] = data['wtr_shut_off_dly']
+        if type(data['wtr_shut_off_dly']) == int:
+            tmp['wtr_shut_off_dly'] = self.format_units(data['wtr_shut_off_dly'], "second")
+
+    if "wtr_temp_mem_tm" in data:
+
+        tmp['wtr_temp_mem_tm'] = data['wtr_temp_mem_tm']
+        if type(data['wtr_temp_mem_tm']) == int:
+            tmp['wtr_temp_mem_tm'] = self.format_units(data['wtr_temp_mem_tm'], "second")
+
+    if "wtr_temp_mem_tm" in data:
+
+        tmp['bucket_mode_d'] = data['bucket_mode_d']
+        if type(data['bucket_mode_d']) == int:
+            tmp['bucket_mode_d'] = self.format_units(data['bucket_mode_d'], "minutes")
+
+    if "tm_b4_stagn_flsh" in data:
+
+        tmp['tm_b4_stagn_flsh'] = data['tm_b4_stagn_flsh']
+        if type(data['tm_b4_stagn_flsh']) == int:
+            tmp['tm_b4_stagn_flsh'] =  self.format_units(data['tm_b4_stagn_flsh'], "hour")
+
+    if "stagn_flsh_d" in data:
+
+        tmp['stagn_flsh_d'] = data['stagn_flsh_d']
+
+        if "minute"  not in data['stagn_flsh_d']:
+            tmp['stagn_flsh_d'] =  self.format_units(data['stagn_flsh_d'], "minute")
+
+    if "stagn_flsh_u_dep" in data:
+
+        tmp['stagn_flsh_u_dep'] = data['stagn_flsh_u_dep']
+        if data['stagn_flsh_u_dep'] == 0:
+            tmp['stagn_flsh_u_dep'] = "No"
+
+        if data['stagn_flsh_u_dep'] == 1:
+            tmp['stagn_flsh_u_dep'] = "Yes"
+
+    if "thrm_flshng_tm" in data:
+
+        tmp['thrm_flshng_tm'] = data['thrm_flshng_tm']
+        if "At" not in data['thrm_flshng_tm']:
+            tmp['thrm_flshng_tm'] = "At {0}".format(data['thrm_flshng_tm'])
+
+    if "thrm_flshng_day" in data:
+
+        tmp['thrm_flshng_day'] = data
+
+        if data['thrm_flshng_day'] == 0:
+            tmp['thrm_flshng_day'] = "Off"
+
+        if data['thrm_flshng_day'] == 1:
+            tmp['thrm_flshng_day'] = "Every Monday"
+
+        if data['thrm_flshng_day'] == 2:
+            tmp['thrm_flshng_day'] = "Every Tuesday"
+
+        if data['thrm_flshng_day'] == 3:
+            tmp['thrm_flshng_day'] = "Every Wednesday"
+
+        if data['thrm_flshng_day'] == 4:
+            tmp['thrm_flshng_day'] = "Every Thursday"
+
+        if data['thrm_flshng_day'] == 5:
+            tmp['thrm_flshng_day'] = "Every Friday"
+
+        if data['thrm_flshng_day'] == 6:
+            tmp['thrm_flshng_day'] = "Every Saturday"
+
+        if data['thrm_flshng_day'] == 7:
+            tmp['thrm_flshng_day'] = "Every Sunday"
+
+        if data['thrm_flshng_day'] == 8:
+            tmp['thrm_flshng_day'] = "Every second Monday"
+
+        if data['thrm_flshng_day'] == 9:
+            tmp['thrm_flshng_day'] = "Every second Tuesday"
+
+        if data['thrm_flshng_day'] == 10:
+            tmp['thrm_flshng_day'] = "Every second Wednesday"
+
+        if data['thrm_flshng_day'] == 11:
+            tmp['thrm_flshng_day'] = "Every second Thursday"
+
+        if data['thrm_flshng_day'] == 12:
+            tmp['thrm_flshng_day'] = "Every second Friday"
+
+        if data['thrm_flshng_day'] == 13:
+            tmp['thrm_flshng_day'] = "Every second Saturday"
+
+        if data['thrm_flshng_day'] == 14:
+            tmp['thrm_flshng_day'] = "Every second Sunday"
+
+        if data['thrm_flshng_day'] == 15:
+            tmp['thrm_flshng_day'] = "Every third Monday"
+
+        if data['thrm_flshng_day'] == 16:
+            tmp['thrm_flshng_day'] = "Every third Tuesday"
+
+        if data['thrm_flshng_day'] == 17:
+            tmp['thrm_flshng_day'] = "Every third Wednesday"
+
+        if data['thrm_flshng_day'] == 18:
+            tmp['thrm_flshng_day'] = "Every third Thursday"
+
+        if data['thrm_flshng_day'] == 19:
+            tmp['thrm_flshng_day'] = "Every third Friday"
+
+        if data['thrm_flshng_day'] == 20:
+            tmp['thrm_flshng_day'] = "Every third Saturday"
+
+        if data['thrm_flshng_day'] == 21:
+            tmp['thrm_flshng_day'] = "Every third Sunday"
+
+        if data['thrm_flshng_day'] == 22:
+            tmp['thrm_flshng_day'] = "Coming Monday (single flush)"
+
+        if data['thrm_flshng_day'] == 23:
+            tmp['thrm_flshng_day'] = "Coming Tuesday (single flush)"
+
+        if data['thrm_flshng_day'] == 24:
+            tmp['thrm_flshng_day'] = "Coming Wednesday (single flush)"
+
+        if data['thrm_flshng_day'] == 25:
+            tmp['thrm_flshng_day'] = "Coming Thursday (single flush)"
+
+        if data['thrm_flshng_day'] == 26:
+            tmp['thrm_flshng_day'] = "Coming Friday (single flush)"
+
+        if data['thrm_flshng_day'] == 27:
+            tmp['thrm_flshng_day'] = "Coming Saturday (single flush)"
+
+        if data['thrm_flshng_day'] == 28:
+            tmp['thrm_flshng_day'] = "Coming Sunday (single flush)"
+
+        if data['thrm_flshng_day'] == 29:
+            tmp['thrm_flshng_day'] = "Monthly every Monday"
+
+        if data['thrm_flshng_day'] == 30:
+            tmp['thrm_flshng_day'] = "Monthly every Tuesday"
+
+        if data['thrm_flshng_day'] == 31:
+            tmp['thrm_flshng_day'] = "Monthly every Wednesday"
+
+        if data['thrm_flshng_day'] == 32:
+            tmp['thrm_flshng_day'] = "Monthly every Thursday"
+
+        if data['thrm_flshng_day'] == 33:
+            tmp['thrm_flshng_day'] = "Monthly every Friday"
+
+        if data['thrm_flshng_day'] == 34:
+            tmp['thrm_flshng_day'] = "Monthly every Saturday"
+
+        if data['thrm_flshng_day'] == 35:
+            tmp['thrm_flshng_day'] = "Monthly every Sunday"
+
+        if data['thrm_flshng_day'] == 36:
+            tmp['thrm_flshng_day'] = "Monday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 37:
+            tmp['thrm_flshng_day'] = "Tuesday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 38:
+            tmp['thrm_flshng_day'] = "Wednesday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 39:
+            tmp['thrm_flshng_day'] = "Thursday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 40:
+            tmp['thrm_flshng_day'] = "Friday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 41:
+            tmp['thrm_flshng_day'] = "Saturday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 42:
+            tmp['thrm_flshng_day'] = "Sunday every 6 weeks"
+
+        if data['thrm_flshng_day'] == 43:
+            tmp['thrm_flshng_day'] = "Monday every 2 months"
+
+        if data['thrm_flshng_day'] == 44:
+            tmp['thrm_flshng_day'] = "Tuesday every 2 months"
+
+        if data['thrm_flshng_day'] == 45:
+            tmp['thrm_flshng_day'] = "Wednesday every 2 monthss"
+
+        if data['thrm_flshng_day'] == 46:
+            tmp['thrm_flshng_day'] = "Thursday every 2 months"
+
+        if data['thrm_flshng_day'] == 47:
+            tmp['thrm_flshng_day'] = "Friday every 2 months"
+
+        if data['thrm_flshng_day'] == 48:
+            tmp['thrm_flshng_day'] = "Saturday every 2 months"
+
+        if data['thrm_flshng_day'] == 49:
+            tmp['thrm_flshng_day'] = "Sunday every 2 months"
+
+    if "thrm_flsh_temp" in data:
+
+        tmp['thrm_flsh_temp'] =  data['thrm_flsh_temp']
+        if "Degrees Celsius" not in data['thrm_flsh_temp']:
+            tmp['thrm_flsh_temp'] = "{0} thrm_flsh_temp".format(data['thrm_flsh_temp'])
+
+    if "thrm_flsh_d" in data:
+
+        tmp['thrm_flsh_d'] = data['thrm_flsh_d']
+        if type(data['thrm_flsh_d']) == int:
+
+            temp = round(float(data['thrm_flsh_d'] / 60), 2)
+            tmp['thrm_flsh_d'] = "{0} minutes".format(temp)
+
+            if float(temp) <= 1:
+                tmp['thrm_flsh_d'] = "{0} minute".format(temp)
+
+    if "light_effect" in data:
+
+        tmp['light_effect'] = data['light_effect']
+        if data['light_effect'] == 0:
+            tmp['light_effect'] = "Off"
+
+        if data['light_effect'] == 1:
+            tmp['light_effect'] = "On"
+
+        if data['light_effect'] == 2:
+            tmp['light_effect'] = "Pulse"
+
+    if "beep_tone" in data:
+
+        tmp['beep_tone'] = data['beep_tone']
+        if data['beep_tone'] == 0:
+            tmp['beep_tone'] = "Off"
+
+        if type(data['beep_tone']) == int:
+            tmp['beep_tone'] = "Level {0}".format(data['beep_tone'])
+
+
+    if "clean_mode" in data:
+
+        tmp['clean_mode'] = data['clean_mode']
+        if data['clean_mode'] == 0:
+            tmp['clean_mode'] = "Off"
+
+        if data['clean_mode'] == 1:
+            tmp['clean_mode'] = "ON"
+
+
+    if "flow_heater_mode" in data:
+
+        tmp['flow_heater_mode'] = data['flow_heater_mode']
+        if data['flow_heater_mode'] == 0:
+            tmp['flow_heater_mode'] = "Off"
+
+        if data['flow_heater_mode'] == 1:
+            tmp['flow_heater_mode'] = "ON"
+
+    if "ir_range" in data:
+
+        tmp['ir_range'] = data['ir_range']
+        if type(data['ir_range']) == int:
+            tmp['ir_range'] = self.format_units(data['ir_range'], "centimeter")
+
+    return tmp
