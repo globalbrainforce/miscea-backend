@@ -1034,7 +1034,7 @@ def get_default_network():
     return network['network_id']
 
 
-def format_units(self, value, unit):
+def format_units(value, unit):
     """ Return value with unit """
 
     data = "{0} {1}".format(value, unit)
@@ -1043,7 +1043,7 @@ def format_units(self, value, unit):
 
     return data
 
-def validate_data(self, data):
+def validate_data(data):
     """ Validate Data"""
 
     tmp = {}
@@ -1051,12 +1051,12 @@ def validate_data(self, data):
 
         tmp['soap_dose'] = data['soap_dose']
         if "milliliter" not in data['soap_dose']:
-            tmp['soap_dose'] = self.format_units(data['soap_dose'], "milliliter")
+            tmp['soap_dose'] = format_units(data['soap_dose'], "milliliter")
 
     if "disinfect_dose" in data:
         tmp['disinfect_dose'] = data['disinfect_dose']
         if "milliliter" not in data['disinfect_dose']:
-            tmp['disinfect_dose'] = self.format_units(data['disinfect_dose'], "milliliter")
+            tmp['disinfect_dose'] = format_units(data['disinfect_dose'], "milliliter")
 
     if "init_wtr_temp" in data:
 
@@ -1075,32 +1075,32 @@ def validate_data(self, data):
 
         tmp['wtr_shut_off_dly'] = data['wtr_shut_off_dly']
         if type(data['wtr_shut_off_dly']) == int:
-            tmp['wtr_shut_off_dly'] = self.format_units(data['wtr_shut_off_dly'], "second")
+            tmp['wtr_shut_off_dly'] = format_units(data['wtr_shut_off_dly'], "second")
 
     if "wtr_temp_mem_tm" in data:
 
         tmp['wtr_temp_mem_tm'] = data['wtr_temp_mem_tm']
         if type(data['wtr_temp_mem_tm']) == int:
-            tmp['wtr_temp_mem_tm'] = self.format_units(data['wtr_temp_mem_tm'], "second")
+            tmp['wtr_temp_mem_tm'] = format_units(data['wtr_temp_mem_tm'], "second")
 
     if "bucket_mode_d" in data:
 
         tmp['bucket_mode_d'] = data['bucket_mode_d']
         if type(data['bucket_mode_d']) == int:
-            tmp['bucket_mode_d'] = self.format_units(data['bucket_mode_d'], "minutes")
+            tmp['bucket_mode_d'] = format_units(data['bucket_mode_d'], "minutes")
 
     if "tm_b4_stagn_flsh" in data:
 
         tmp['tm_b4_stagn_flsh'] = data['tm_b4_stagn_flsh']
         if type(data['tm_b4_stagn_flsh']) == int:
-            tmp['tm_b4_stagn_flsh'] =  self.format_units(data['tm_b4_stagn_flsh'], "hour")
+            tmp['tm_b4_stagn_flsh'] =  format_units(data['tm_b4_stagn_flsh'], "hour")
 
     if "stagn_flsh_d" in data:
 
         tmp['stagn_flsh_d'] = data['stagn_flsh_d']
 
         if "minute"  not in data['stagn_flsh_d']:
-            tmp['stagn_flsh_d'] =  self.format_units(data['stagn_flsh_d'], "minute")
+            tmp['stagn_flsh_d'] =  format_units(data['stagn_flsh_d'], "minute")
 
     if "stagn_flsh_u_dep" in data:
 
@@ -1333,6 +1333,6 @@ def validate_data(self, data):
 
         tmp['ir_range'] = data['ir_range']
         if type(data['ir_range']) == int:
-            tmp['ir_range'] = self.format_units(data['ir_range'], "centimeter")
+            tmp['ir_range'] = format_units(data['ir_range'], "centimeter")
 
     return tmp
