@@ -269,6 +269,33 @@ def check_settings(data):
     # IF NOT
     if 'error' in system_info.keys():
 
+        # GET DEFAULT NETWORK ID
+        network_id = ""
+
+        if 'network_id' in default.keys():
+
+            if not default['network_id']:
+
+                network_id = get_default_network()
+
+            else:
+
+                # VALIDATE NETWORK ID
+                sql_str = "SELECT * FROM network WHERE"
+                sql_str += " network_id='{0}'".format(default['network_id'])
+
+                if POSTGRES.query_fetch_one(sql_str):
+
+                    network_id = default['network_id']
+
+                else:
+
+                    network_id = get_default_network()
+
+        else:
+
+            network_id = get_default_network()
+
         # ADD AS NEW TOP
         current = time.time()
         system = {}
@@ -309,9 +336,42 @@ def check_settings(data):
         syslog.syslog(json.dumps(system))
         syslog.syslog("======== CREATE SETTINGS ========")
 
+        # INSERT TAP DATA ON COUCHDB
         couch_url = COUCHDB.couch_db_link()
         headers = {"Content-Type" : "application/json"}
         requests.post(couch_url, data=json.dumps(system), headers=headers)
+
+        # INSERT TAP DATA ON POSTGRESQL
+        syst_data = {}
+        syst_data['syst_id'] = system_id
+        syst_data['establ_id'] = ESTABLISHMENT
+        syst_data['network_id'] = network_id
+        syst_data['article_number'] = system['article_number']
+        syst_data['description'] = system['description']
+        syst_data['update_on'] = time.time()
+        syst_data['created_on'] = time.time()
+
+        POSTGRES.insert('syst', data)
+        
+        # ADD TAP ON ACCOUNTS
+        sql_str = "SELECT account_id FROM account_network WHERE"
+        sql_str += " network_id='{0}'".format(network_id)
+        account_ids = POSTGRES.query_fetch_all(sql_str)
+        
+        for account_id in account_ids or []:
+
+            # GET ACCOUNT DEFAULT GROUP
+            # BIND TAP TO ACCOUNT DEFAULT GROUP
+            # new_syst = {}
+            # new_syst['syst_id'] = system_id
+            # new_syst['group_id'] = "411a6b596cdd485e85fdb825ebf0167a"
+
+            # self.postgres.insert('grp_syst', new_syst)
+
+            pass
+
+            # BIND TAP TO ACCOUNT
+            # account_syst
 
         return 0
 
@@ -963,6 +1023,17 @@ def update_results(estab_id, system_id, partition, timestamp, results):
 
     return 0
 
+def get_default_network():
+    """ RETURN DEFAULT NETWORK """
+
+    # GET DEFAULT NETWORK ID
+    sql_str = "SELECT network_id FROM network WHERE"
+    sql_str += " network_name='DEFAULT' AND default_value=True"
+    network = POSTGRES.query_fetch_one(sql_str)
+
+    return network['network_id']
+
+
 def format_units(self, value, unit):
     """ Return value with unit """
 
@@ -1012,7 +1083,7 @@ def validate_data(self, data):
         if type(data['wtr_temp_mem_tm']) == int:
             tmp['wtr_temp_mem_tm'] = self.format_units(data['wtr_temp_mem_tm'], "second")
 
-    if "wtr_temp_mem_tm" in data:
+    if "bucket_mode_d" in data:
 
         tmp['bucket_mode_d'] = data['bucket_mode_d']
         if type(data['bucket_mode_d']) == int:
