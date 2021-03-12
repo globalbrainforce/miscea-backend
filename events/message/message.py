@@ -216,7 +216,7 @@ async def message(websocket, data):
 
                 duration = data_wact['duration'].split(" ")
                 period = duration[-1]
-                interval = duration[0].split(".")
+                interval = duration[0].split(":")
 
                 minutes = interval[0]
                 if len(interval[0]) == 1:
