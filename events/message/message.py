@@ -353,26 +353,51 @@ def check_settings(data):
         syst_data['created_on'] = time.time()
 
         POSTGRES.insert('syst', syst_data)
-        
+
         # ADD TAP ON ACCOUNTS
         sql_str = "SELECT account_id FROM account_network WHERE"
         sql_str += " network_id='{0}'".format(network_id)
-        account_ids = POSTGRES.query_fetch_all(sql_str)
-        
+        accounts = POSTGRES.query_fetch_all(sql_str)
+
+        account_ids = [accs['account_id'] for accs in accounts or []]
+
         for account_id in account_ids or []:
 
             # GET ACCOUNT DEFAULT GROUP
-            # BIND TAP TO ACCOUNT DEFAULT GROUP
-            # new_syst = {}
-            # new_syst['syst_id'] = system_id
-            # new_syst['group_id'] = "411a6b596cdd485e85fdb825ebf0167a"
+            sql_str = "SELECT group_id FROM account_grp WHERE"
+            sql_str += " account_id='{0}'".format(account_id)
+            sql_str += " AND group_id IN (SELECT group_id FROM grps"
+            sql_str += " WHERE group_name='Default Group')"
+            group = POSTGRES.query_fetch_one(sql_str)
+            group_id = group['group_id']
 
-            # self.postgres.insert('grp_syst', new_syst)
+            temp = {}
+            temp['group_id'] = group_id
+            temp['syst_id'] = system_id
+            POSTGRES.insert('grp_syst', temp)
 
-            pass
+            # GET PRODUCT TYPE NAME
+            sql_str = "SELECT product_type_name FROM syst INNER JOIN product ON"
+            sql_str += " syst.article_number=product.article_number"
+            sql_str += " INNER JOIN product_type ON"
+            sql_str += " product.product_type_id=product_type.product_type_id"
+            sql_str += " WHERE syst_id='{0}'".format(system_id)
+            pname = POSTGRES.query_fetch_one(sql_str)
 
-            # BIND TAP TO ACCOUNT
-            # account_syst
+            # SET SYSTEM NAME FOR USER
+            product_type_name = pname['product_type_name']
+
+            # GET NEXT PRODUCT TYPE NAME
+            system_details = get_system_details(account_id, system_id, product_type_name)
+            system_name = system_details['system_name']
+
+            # BIND TAP TO USER
+            temp = {}
+            temp['account_id'] = account_id
+            temp['group_id'] = group_id
+            temp['syst_id'] = system_id
+            temp['system_name'] = system_name
+            POSTGRES.insert('account_syst', temp)
 
         return 0
 
@@ -1341,5 +1366,61 @@ def validate_data(data):
     for key in tmp.keys():
 
         data[key] = tmp[key]
+
+    return data
+
+def get_system_details(account_id, syst_id, product_type_name):
+    """ RETURN SYSTEM DETAILS """
+
+    data = {}
+    data["system_name"] = ""
+    data["description"] = ""
+
+    sql_str = "SELECT asyst.system_name, syst.description"
+    sql_str += " FROM account_syst asyst INNER JOIN syst ON"
+    sql_str += " asyst.syst_id=syst.syst_id WHERE"
+    sql_str += " asyst.account_id='{0}'".format(account_id)
+    sql_str += " AND asyst.syst_id='{0}'".format(syst_id)
+    details = POSTGRES.query_fetch_one(sql_str)
+
+    if details:
+
+        data["system_name"] = details['system_name']
+        data["description"] = details['description']
+    
+    else:
+
+        system_name = "{0} 1".format(product_type_name)
+
+        # INSERT SYSTEM NAME
+        sql_str = "SELECT system_name FROM account_syst WHERE"
+        sql_str += " account_id='{0}'".format(account_id)
+        sql_str += " AND system_name LIKE '{0}%'".format(product_type_name)
+        sql_str += " ORDER BY SUBSTRING(system_name"
+        sql_str += " FROM '([0-9]+)')::BIGINT DESC, system_name"
+        account_syst = POSTGRES.query_fetch_one(sql_str)
+
+        if account_syst:
+
+            # CREATE NEW SYSTEM NAME
+            system_number = int(account_syst['system_name'].split(' ')[1]) + 1
+            system_name = "{0} {1}".format(product_type_name, system_number)
+
+            # GET DEFAULT GROUP
+            sql_str = "SELECT ag.group_id FROM account_grp ag"
+            sql_str += " INNER JOIN grps g ON ag.group_id=g.group_id"
+            sql_str += " WHERE g.group_name='Default Group' AND"
+            sql_str += " ag.account_id='{0}'".format(account_id)
+            account_grp = POSTGRES.query_fetch_one(sql_str)
+
+            # INSERT NEW SYSTEM NUMBER
+            to_insert = {}
+            to_insert['account_id'] = account_id
+            to_insert['group_id'] = account_grp['group_id']
+            to_insert['syst_id'] = syst_id
+            to_insert['system_name'] = system_name
+            POSTGRES.insert('account_syst', to_insert)
+
+        data["system_name"] = system_name
 
     return data
