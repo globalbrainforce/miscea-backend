@@ -170,7 +170,8 @@ async def message(websocket, data):
                     activity['reason'] = "Thermal disinfection"
 
             if type(activity['duration']) == int:
-                activity['duration'] = format_units(data['duration'], "minute")
+                # activity['duration'] = format_units(data['duration'], "minute")
+                activity['duration'] = convert_duration(activity['duration'])
 
             if type(activity['temperature']) == int:
                 activity['temperature'] = "{0} Degrees Celsius".format(activity['temperature'])
@@ -231,7 +232,7 @@ async def message(websocket, data):
 
                 data_wact['duration'] = "00:{0}{1} {2}".format(minutes, seconds, period)
 
-            if data_wact['reason'] == "Flush":
+            if data_wact['reason'] in ["Flush", "Stagnation Flush"]:
 
                 data_wact['reason'] = "Stagnation Flush"
 
@@ -1443,3 +1444,20 @@ def get_system_details(account_id, syst_id, product_type_name):
         data["system_name"] = system_name
 
     return data
+
+def convert_duration(duration):
+    """ CONVERT DURATION """
+    new_duration = ""
+    seconds = '00'
+    minute = str(int(duration/60))
+    if len(minute) == 1:
+        minute = '0'+minute
+    sec = duration % 60
+    if sec == 0:
+        seconds = '00'
+    else:
+        seconds = str(int(sec))
+        if len(seconds) == 1:
+            seconds = '0'+seconds
+    new_duration += minute + ':' + seconds + ' minutes'
+    return new_duration
