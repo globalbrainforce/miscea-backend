@@ -1406,20 +1406,20 @@ def get_system_details(account_id, syst_id, product_type_name):
             system_number = int(account_syst['system_name'].split(' ')[1]) + 1
             system_name = "{0} {1}".format(product_type_name, system_number)
 
-            # GET DEFAULT GROUP
-            sql_str = "SELECT ag.group_id FROM account_grp ag"
-            sql_str += " INNER JOIN grps g ON ag.group_id=g.group_id"
-            sql_str += " WHERE g.group_name='Default Group' AND"
-            sql_str += " ag.account_id='{0}'".format(account_id)
-            account_grp = POSTGRES.query_fetch_one(sql_str)
+            # # GET DEFAULT GROUP
+            # sql_str = "SELECT ag.group_id FROM account_grp ag"
+            # sql_str += " INNER JOIN grps g ON ag.group_id=g.group_id"
+            # sql_str += " WHERE g.group_name='Default Group' AND"
+            # sql_str += " ag.account_id='{0}'".format(account_id)
+            # account_grp = POSTGRES.query_fetch_one(sql_str)
 
-            # INSERT NEW SYSTEM NUMBER
-            to_insert = {}
-            to_insert['account_id'] = account_id
-            to_insert['group_id'] = account_grp['group_id']
-            to_insert['syst_id'] = syst_id
-            to_insert['system_name'] = system_name
-            POSTGRES.insert('account_syst', to_insert)
+            # # INSERT NEW SYSTEM NUMBER
+            # to_insert = {}
+            # to_insert['account_id'] = account_id
+            # to_insert['group_id'] = account_grp['group_id']
+            # to_insert['syst_id'] = syst_id
+            # to_insert['system_name'] = system_name
+            # POSTGRES.insert('account_syst', to_insert)
 
         data["system_name"] = system_name
 
