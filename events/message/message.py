@@ -92,7 +92,7 @@ async def message(websocket, data):
 
                 return 1
 
-        elif data['type'] =='soap-activity':
+        elif data['type'] in ['soap-activity', 'soap']:
             # SOAP ACTIVITY
 
             mtype = 'soap-activity'
@@ -121,7 +121,7 @@ async def message(websocket, data):
             # RUN REPORTS FOR SOAP ACTIVITIES
             reports(ESTABLISHMENT, system_id, 'data%23sa', sda)
 
-        elif data['type'] == 'disinfectant-activity':
+        elif data['type'] in ['disinfectant-activity', 'disi']:
             # DISINFECTANT
 
             mtype = 'disinfectant-activity'
@@ -150,7 +150,7 @@ async def message(websocket, data):
             # RUN REPORTS FOR DISINFECTANT ACTIVITIES
             reports(ESTABLISHMENT, system_id, 'data%23da', sda)
 
-        elif data['type'] =='water-activity':
+        elif data['type'] == ['water-activity', 'h2o']:
             # WATER ACTIVITY
 
             mtype = 'water-activity'
@@ -158,6 +158,25 @@ async def message(websocket, data):
             activity = data
             system_id = activity['system_id']
             water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
+
+
+            if type(activity['reason']) == int:
+
+                if activity['reason'] in [0, 1]:
+                    activity['reason'] = "Usage"
+                elif activity['reason'] == 2:
+                    activity['reason'] = "Stagnation Flush"
+                elif activity['reason'] == 3:
+                    activity['reason'] = "Thermal disinfection"
+
+            if type(activity['duration']) == int:
+                activity['duration'] = format_units(data['duration'], "minute")
+
+            if type(activity['temperature']) == int:
+                activity['temperature'] = "{0} Degrees Celsius".format(activity['temperature'])
+
+            if type(activity['flow_output']) == int:
+                activity['flow_output'] = "{0}L".format(activity['flow_output'])
 
             wactvt = {}
             wactvt['_id'] = water_data_id
