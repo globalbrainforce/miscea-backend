@@ -256,6 +256,7 @@ async def message(websocket, data):
 def check_settings(data):
 
     # default = data['system_data']
+    data = validate_data(data)
     default = data
     system_id = default['system_id']
 
@@ -351,7 +352,7 @@ def check_settings(data):
         syst_data['update_on'] = time.time()
         syst_data['created_on'] = time.time()
 
-        POSTGRES.insert('syst', data)
+        POSTGRES.insert('syst', data, log=True)
         
         # ADD TAP ON ACCOUNTS
         sql_str = "SELECT account_id FROM account_network WHERE"
@@ -1033,7 +1034,6 @@ def get_default_network():
 
     return network['network_id']
 
-
 def format_units(value, unit):
     """ Return value with unit """
 
@@ -1048,14 +1048,15 @@ def validate_data(data):
 
     tmp = {}
     if "soap_dose" in data:
-
         tmp['soap_dose'] = data['soap_dose']
-        if "milliliter" not in data['soap_dose']:
+        if type(data['soap_dose']) == int:
+            # if "milliliter" not in data['soap_dose']:
             tmp['soap_dose'] = format_units(data['soap_dose'], "milliliter")
 
     if "disinfect_dose" in data:
         tmp['disinfect_dose'] = data['disinfect_dose']
-        if "milliliter" not in data['disinfect_dose']:
+        if type(data['disinfect_dose']) == int:
+            # if "milliliter" not in data['disinfect_dose']:
             tmp['disinfect_dose'] = format_units(data['disinfect_dose'], "milliliter")
 
     if "init_wtr_temp" in data:
@@ -1087,7 +1088,7 @@ def validate_data(data):
 
         tmp['bucket_mode_d'] = data['bucket_mode_d']
         if type(data['bucket_mode_d']) == int:
-            tmp['bucket_mode_d'] = format_units(data['bucket_mode_d'], "minutes")
+            tmp['bucket_mode_d'] = format_units(data['bucket_mode_d'], "minute")
 
     if "tm_b4_stagn_flsh" in data:
 
@@ -1099,7 +1100,8 @@ def validate_data(data):
 
         tmp['stagn_flsh_d'] = data['stagn_flsh_d']
 
-        if "minute"  not in data['stagn_flsh_d']:
+        # if "minute"  not in data['stagn_flsh_d']:
+        if type(data['stagn_flsh_d']) == int:
             tmp['stagn_flsh_d'] =  format_units(data['stagn_flsh_d'], "minute")
 
     if "stagn_flsh_u_dep" in data:
@@ -1119,7 +1121,7 @@ def validate_data(data):
 
     if "thrm_flshng_day" in data:
 
-        tmp['thrm_flshng_day'] = data
+        tmp['thrm_flshng_day'] = data['thrm_flshng_day']
 
         if data['thrm_flshng_day'] == 0:
             tmp['thrm_flshng_day'] = "Off"
@@ -1274,8 +1276,9 @@ def validate_data(data):
     if "thrm_flsh_temp" in data:
 
         tmp['thrm_flsh_temp'] =  data['thrm_flsh_temp']
-        if "Degrees Celsius" not in data['thrm_flsh_temp']:
-            tmp['thrm_flsh_temp'] = "{0} thrm_flsh_temp".format(data['thrm_flsh_temp'])
+        if type(data['thrm_flsh_temp']) == int:
+        # if "Degrees Celsius" not in data['thrm_flsh_temp']:
+            tmp['thrm_flsh_temp'] = "{0} Degrees Celsius".format(data['thrm_flsh_temp'])
 
     if "thrm_flsh_d" in data:
 
@@ -1335,4 +1338,8 @@ def validate_data(data):
         if type(data['ir_range']) == int:
             tmp['ir_range'] = format_units(data['ir_range'], "centimeter")
 
-    return tmp
+    for key in tmp.keys():
+
+        data[key] = tmp[key]
+
+    return data
