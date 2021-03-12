@@ -150,7 +150,7 @@ async def message(websocket, data):
             # RUN REPORTS FOR DISINFECTANT ACTIVITIES
             reports(ESTABLISHMENT, system_id, 'data%23da', sda)
 
-        elif data['type'] == ['water-activity', 'h2o']:
+        elif data['type'] in ['water-activity', 'h2o']:
             # WATER ACTIVITY
 
             mtype = 'water-activity'
