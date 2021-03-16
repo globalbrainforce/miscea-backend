@@ -1,4 +1,5 @@
 """ UPDATE SETTINGS """
+import syslog
 import json
 import time
 import asyncio
@@ -60,6 +61,9 @@ async def update_settings(websocket, data, users):
             # SEND UPDATE TO THE TAP
             system_info = COUCH_QUERY.get_by_id(system_id)
             system_info = revalidate_data(system_info)
+            syslog.syslog("++++++++ UPDATE TAP SETTINGS ++++++++")
+            syslog.syslog(json.dumps(system_info))
+            syslog.syslog("======== UPDATE TAP SETTINGS ========")
             system_info['type'] = 'message'
             system_info['system_id'] = system_id
             system_info['msg_id'] = time.time()
