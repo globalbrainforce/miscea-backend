@@ -370,10 +370,9 @@ def check_settings(data):
         syst_data['network_id'] = network_id
         syst_data['article_number'] = system['article_number']
         syst_data['description'] = system['description']
-        syst_data['update_on'] = time.time()
         syst_data['created_on'] = time.time()
 
-        POSTGRES.insert('syst', syst_data)
+        POSTGRES.insert('syst', syst_data, log=True)
 
         # ADD TAP ON ACCOUNTS
         sql_str = "SELECT account_id FROM account_network WHERE"
