@@ -346,7 +346,7 @@ def revalidate_data(data):
             tmp['beep_tone'] = 0
 
         if not type(tmp['beep_tone']) == int:
-            tmp['beep_tone'] = int(data['beep_tone'].split(" ")[0])
+            tmp['beep_tone'] = int(data['beep_tone'].split(" ")[1])
 
     if "clean_mode" in data:
 
