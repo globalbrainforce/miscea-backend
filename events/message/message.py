@@ -169,14 +169,14 @@ async def message(websocket, data):
                 elif activity['reason'] == 3:
                     activity['reason'] = "Thermal disinfection"
 
-            if type(activity['duration']) == int:
+            if type(activity['duration']) in [int, float]:
                 # activity['duration'] = format_units(data['duration'], "minute")
                 activity['duration'] = convert_duration(activity['duration'])
 
-            if type(activity['temperature']) == int:
+            if type(activity['temperature']) in [int, float]:
                 activity['temperature'] = "{0} Degrees Celsius".format(activity['temperature'])
 
-            if type(activity['flow_output']) == int:
+            if type(activity['flow_output']) in [int, float]:
                 activity['flow_output'] = "{0}L".format(activity['flow_output'])
 
             wactvt = {}
