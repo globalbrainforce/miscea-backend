@@ -369,7 +369,7 @@ def check_settings(data):
         syst_data['establ_id'] = ESTABLISHMENT
         syst_data['network_id'] = network_id
         syst_data['article_number'] = system['article_number']
-        syst_data['description'] = system['description']
+        syst_data['description'] = system['description'].replace("'", "`")
         syst_data['created_on'] = time.time()
 
         POSTGRES.insert('syst', syst_data, log=True)
