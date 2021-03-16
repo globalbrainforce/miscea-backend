@@ -352,6 +352,7 @@ def check_settings(data):
         system['ir_range'] = default['ir_range']
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
+        system['network_id'] = network_id
 
         syslog.syslog("++++++++ CREATE SETTINGS ++++++++")
         syslog.syslog(json.dumps(system))
