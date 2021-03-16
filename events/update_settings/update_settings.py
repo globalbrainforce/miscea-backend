@@ -59,6 +59,8 @@ async def update_settings(websocket, data, users):
         if item[0] == system_id:
 
             # SEND UPDATE TO THE TAP
+            syslog.syslog("++++++++ UPDATE TAP SETTINGS ++++++++")
+            syslog.syslog("++++++++ UPDATE TAP SETTINGS ++++++++")
             system_info = COUCH_QUERY.get_by_id(system_id)
             system_info = revalidate_data(system_info)
             syslog.syslog("++++++++ UPDATE TAP SETTINGS ++++++++")
