@@ -1094,13 +1094,13 @@ def validate_data(data):
     tmp = {}
     if "soap_dose" in data:
         tmp['soap_dose'] = data['soap_dose']
-        if type(data['soap_dose']) == int:
+        if type(data['soap_dose']) in [int, float]:
             # if "milliliter" not in data['soap_dose']:
             tmp['soap_dose'] = format_units(data['soap_dose'], "milliliter")
 
     if "disinfect_dose" in data:
         tmp['disinfect_dose'] = data['disinfect_dose']
-        if type(data['disinfect_dose']) == int:
+        if type(data['disinfect_dose']) in [int, float]:
             # if "milliliter" not in data['disinfect_dose']:
             tmp['disinfect_dose'] = format_units(data['disinfect_dose'], "milliliter")
 
