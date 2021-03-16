@@ -372,7 +372,7 @@ def check_settings(data):
         syst_data['description'] = system['description'].replace("'", "`")
         syst_data['created_on'] = time.time()
 
-        POSTGRES.insert('syst', syst_data, log=True)
+        POSTGRES.insert('syst', syst_data)
 
         # ADD TAP ON ACCOUNTS
         sql_str = "SELECT account_id FROM account_network WHERE"
