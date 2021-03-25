@@ -477,7 +477,7 @@ def check_settings(data):
 
                     tap_names = {}
                     for ptype in product_types:
-                        tap_names['product_type_name'] = 1
+                        tap_names[ptype['product_type_name']] = 1
 
                     syslog.syslog(json.dumps(tap_names))
                     for tap in taps or []:
