@@ -482,6 +482,10 @@ def check_settings(data):
                     syslog.syslog(json.dumps(tap_names))
                     for tap in taps or []:
 
+                        tap_product_type_name = tap['system_name'].split(" ")[0]
+                        tap['system_name1'] = tap_product_type_name + " " + str(tap_names[tap_product_type_name])
+                        tap_names[tap_product_type_name] = tap_names[tap_product_type_name] + 1
+
                         syslog.syslog(json.dumps(tap))
 
 
