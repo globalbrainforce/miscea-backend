@@ -473,7 +473,7 @@ def check_settings(data):
                     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
                     for tap in taps or []:
 
-                    syslog.syslog(json.dumps(tap))
+                        syslog.syslog(json.dumps(tap))
 
 
 
