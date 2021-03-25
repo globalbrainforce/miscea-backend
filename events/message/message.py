@@ -448,6 +448,7 @@ def check_settings(data):
                 #     })
 
                 # POSTGRES.delete('grp_syst', conditions)
+                # POSTGRES.delete('account_syst', conditions)
                 # --------------- FOR TESTING ------------- #
 
                 # UPDATE ALL ACCOUNTS system_name
