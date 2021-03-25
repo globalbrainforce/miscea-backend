@@ -449,6 +449,13 @@ def check_settings(data):
 
                 POSTGRES.update('syst', data, conditions)
 
+            elif not default['network_id'] == system_info['network_id']:
+
+                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+
+                pass
+
             return 0
 
         return 0
