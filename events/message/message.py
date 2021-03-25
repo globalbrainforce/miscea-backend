@@ -423,6 +423,19 @@ def check_settings(data):
 
     else:
 
+        if 'network_id' in default.keys():
+
+            network_id = default['network_id']
+            sql_str = "SELECT network_id FROM syst WHERE"
+            sql_str += " syst_id='{0}'".format(system_id)
+            network = POSTGRES.query_fetch_one(sql_str)
+            db_network_id = network['network_id']
+
+            if not network_id == db_network_id:
+
+                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+
         is_update = False
         # CHECK UPDATE
         for system_key in SYSTEM_KEYS:
@@ -449,12 +462,12 @@ def check_settings(data):
 
                 POSTGRES.update('syst', data, conditions)
 
-            elif not default['network_id'] == system_info['network_id']:
+            # elif not default['network_id'] == system_info['network_id']:
 
-                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
-                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+            #     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+            #     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
 
-                pass
+            #     pass
 
             return 0
 
