@@ -456,6 +456,9 @@ def check_settings(data):
                 sql_str += " network_id='{0}'".format(db_network_id)
                 accounts = POSTGRES.query_fetch_all(sql_str)
 
+                sql_str = "SELECT product_type_name FROM product_type"
+                product_types = POSTGRES.query_fetch_all(sql_str)
+
                 for account in accounts or []:
 
                     account_id = account['account_id']
@@ -471,6 +474,12 @@ def check_settings(data):
                     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
                     syslog.syslog(json.dumps(taps))
                     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+
+                    tap_names = {}
+                    for ptype in product_types:
+                        tap_names['product_type_name'] = 1
+
+                    syslog.syslog(json.dumps(tap_names))
                     for tap in taps or []:
 
                         syslog.syslog(json.dumps(tap))
