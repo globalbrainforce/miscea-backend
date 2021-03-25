@@ -436,6 +436,91 @@ def check_settings(data):
                 syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
                 syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
 
+                # REMOVE TAP FROM OLD NETWORK ACCOUNTS
+                # REMOVE TAPS FROM ACCOUNTS GROUP (grp_syst)
+                # --------------- FOR TESTING ------------- #
+                # conditions = []
+
+                # conditions.append({
+                #     "col": "syst_id",
+                #     "con": "=",
+                #     "val": system_id
+                #     })
+
+                # POSTGRES.delete('grp_syst', conditions)
+                # --------------- FOR TESTING ------------- #
+
+                # UPDATE ALL ACCOUNTS system_name
+                sql_str = "SELECT account_id FROM account_network WHERE"
+                sql_str += " network_id='{0}'".format(db_network_id)
+                accounts = POSTGRES.query_fetch_all(sql_str)
+
+                for account in accounts or []:
+
+                    account_id = account['account_id']
+                    sql_str = "SELECT syst_id, system_name FROM account_syst WHERE"
+                    sql_str += " account_id='{0}'".format(account_id)
+                    taps = POSTGRES.query_fetch_all(sql_str)
+   
+                    if taps:
+
+                        taps.sort(key=lambda k: (' '.join(k['system_name'].split(' ')[0:-1]),
+                                                 int(k['system_name'].split(' ')[-1])))
+
+                    syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+                    syslog.syslog(json.dumps(taps))
+                    syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+
+                # UPDATE TAP NETWORK
+
+
+
+
+                # # ADD TAP ON ACCOUNTS
+                # sql_str = "SELECT account_id FROM account_network WHERE"
+                # sql_str += " network_id='{0}'".format(network_id)
+                # accounts = POSTGRES.query_fetch_all(sql_str)
+
+                # account_ids = [accs['account_id'] for accs in accounts or []]
+
+                # for account_id in account_ids or []:
+
+                #     # GET ACCOUNT DEFAULT GROUP
+                #     sql_str = "SELECT group_id FROM account_grp WHERE"
+                #     sql_str += " account_id='{0}'".format(account_id)
+                #     sql_str += " AND group_id IN (SELECT group_id FROM grps"
+                #     sql_str += " WHERE group_name='Default Group')"
+                #     group = POSTGRES.query_fetch_one(sql_str)
+                #     group_id = group['group_id']
+
+                #     temp = {}
+                #     temp['group_id'] = group_id
+                #     temp['syst_id'] = system_id
+                #     POSTGRES.insert('grp_syst', temp)
+
+                #     # GET PRODUCT TYPE NAME
+                #     sql_str = "SELECT product_type_name FROM syst INNER JOIN product ON"
+                #     sql_str += " syst.article_number=product.article_number"
+                #     sql_str += " INNER JOIN product_type ON"
+                #     sql_str += " product.product_type_id=product_type.product_type_id"
+                #     sql_str += " WHERE syst_id='{0}'".format(system_id)
+                #     pname = POSTGRES.query_fetch_one(sql_str)
+
+                #     # SET SYSTEM NAME FOR USER
+                #     product_type_name = pname['product_type_name']
+
+                #     # GET NEXT PRODUCT TYPE NAME
+                #     system_details = get_system_details(account_id, system_id, product_type_name)
+                #     system_name = system_details['system_name']
+
+                #     # BIND TAP TO USER
+                #     temp = {}
+                #     temp['account_id'] = account_id
+                #     temp['group_id'] = group_id
+                #     temp['syst_id'] = system_id
+                #     temp['system_name'] = system_name
+                #     POSTGRES.insert('account_syst', temp)
+
         is_update = False
         # CHECK UPDATE
         for system_key in SYSTEM_KEYS:
