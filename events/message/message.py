@@ -434,22 +434,19 @@ def check_settings(data):
             if not network_id == db_network_id:
 
                 syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
-                syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
 
                 # REMOVE TAP FROM OLD NETWORK ACCOUNTS
                 # REMOVE TAPS FROM ACCOUNTS GROUP (grp_syst)
-                # --------------- FOR TESTING ------------- #
-                # conditions = []
+                conditions = []
 
-                # conditions.append({
-                #     "col": "syst_id",
-                #     "con": "=",
-                #     "val": system_id
-                #     })
+                conditions.append({
+                    "col": "syst_id",
+                    "con": "=",
+                    "val": system_id
+                    })
 
-                # POSTGRES.delete('grp_syst', conditions)
-                # POSTGRES.delete('account_syst', conditions)
-                # --------------- FOR TESTING ------------- #
+                POSTGRES.delete('grp_syst', conditions)
+                POSTGRES.delete('account_syst', conditions)
 
                 # UPDATE ALL ACCOUNTS system_name
                 sql_str = "SELECT account_id FROM account_network WHERE"
@@ -471,74 +468,86 @@ def check_settings(data):
                         taps.sort(key=lambda k: (' '.join(k['system_name'].split(' ')[0:-1]),
                                                  int(k['system_name'].split(' ')[-1])))
 
-                    syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
-                    syslog.syslog(json.dumps(taps))
-                    syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
-
                     tap_names = {}
                     for ptype in product_types:
                         tap_names[ptype['product_type_name']] = 1
 
-                    syslog.syslog(json.dumps(tap_names))
                     for tap in taps or []:
 
                         tap_product_type_name = tap['system_name'].split(" ")[0]
-                        tap['system_name1'] = tap_product_type_name + " " + str(tap_names[tap_product_type_name])
+                        tap['new_system_name'] = tap_product_type_name + " " + str(tap_names[tap_product_type_name])
                         tap_names[tap_product_type_name] = tap_names[tap_product_type_name] + 1
 
-                        syslog.syslog(json.dumps(tap))
+                        data = {}
+                        data['system_name'] = tap['new_system_name']
 
+                        conditions = []
+                        conditions.append({
+                            "col": "syst_id",
+                            "con": "=",
+                            "val": system_id}) 
+                        conditions.append({
+                            "col": "account_id",
+                            "con": "=",
+                            "val": account_id})  
 
+                        POSTGRES.update('account_syst', data, conditions)
 
                 # UPDATE TAP NETWORK
+                data = {}
+                data['network_id'] = network_id
+                conditions = []
+                conditions.append({
+                    "col": "syst_id",
+                    "con": "=",
+                    "val": system_id})  
 
+                POSTGRES.update('syst', data, conditions)
 
+                # ADD TAP ON ACCOUNTS
+                sql_str = "SELECT account_id FROM account_network WHERE"
+                sql_str += " network_id='{0}'".format(network_id)
+                accounts = POSTGRES.query_fetch_all(sql_str)
 
+                account_ids = [accs['account_id'] for accs in accounts or []]
 
-                # # ADD TAP ON ACCOUNTS
-                # sql_str = "SELECT account_id FROM account_network WHERE"
-                # sql_str += " network_id='{0}'".format(network_id)
-                # accounts = POSTGRES.query_fetch_all(sql_str)
+                for account_id in account_ids or []:
 
-                # account_ids = [accs['account_id'] for accs in accounts or []]
+                    # GET ACCOUNT DEFAULT GROUP
+                    sql_str = "SELECT group_id FROM account_grp WHERE"
+                    sql_str += " account_id='{0}'".format(account_id)
+                    sql_str += " AND group_id IN (SELECT group_id FROM grps"
+                    sql_str += " WHERE group_name='Default Group')"
+                    group = POSTGRES.query_fetch_one(sql_str)
+                    group_id = group['group_id']
 
-                # for account_id in account_ids or []:
+                    temp = {}
+                    temp['group_id'] = group_id
+                    temp['syst_id'] = system_id
+                    POSTGRES.insert('grp_syst', temp)
 
-                #     # GET ACCOUNT DEFAULT GROUP
-                #     sql_str = "SELECT group_id FROM account_grp WHERE"
-                #     sql_str += " account_id='{0}'".format(account_id)
-                #     sql_str += " AND group_id IN (SELECT group_id FROM grps"
-                #     sql_str += " WHERE group_name='Default Group')"
-                #     group = POSTGRES.query_fetch_one(sql_str)
-                #     group_id = group['group_id']
+                    # GET PRODUCT TYPE NAME
+                    sql_str = "SELECT product_type_name FROM syst INNER JOIN product ON"
+                    sql_str += " syst.article_number=product.article_number"
+                    sql_str += " INNER JOIN product_type ON"
+                    sql_str += " product.product_type_id=product_type.product_type_id"
+                    sql_str += " WHERE syst_id='{0}'".format(system_id)
+                    pname = POSTGRES.query_fetch_one(sql_str)
 
-                #     temp = {}
-                #     temp['group_id'] = group_id
-                #     temp['syst_id'] = system_id
-                #     POSTGRES.insert('grp_syst', temp)
+                    # SET SYSTEM NAME FOR USER
+                    product_type_name = pname['product_type_name']
 
-                #     # GET PRODUCT TYPE NAME
-                #     sql_str = "SELECT product_type_name FROM syst INNER JOIN product ON"
-                #     sql_str += " syst.article_number=product.article_number"
-                #     sql_str += " INNER JOIN product_type ON"
-                #     sql_str += " product.product_type_id=product_type.product_type_id"
-                #     sql_str += " WHERE syst_id='{0}'".format(system_id)
-                #     pname = POSTGRES.query_fetch_one(sql_str)
+                    # GET NEXT PRODUCT TYPE NAME
+                    system_details = get_system_details(account_id, system_id, product_type_name)
+                    system_name = system_details['system_name']
 
-                #     # SET SYSTEM NAME FOR USER
-                #     product_type_name = pname['product_type_name']
-
-                #     # GET NEXT PRODUCT TYPE NAME
-                #     system_details = get_system_details(account_id, system_id, product_type_name)
-                #     system_name = system_details['system_name']
-
-                #     # BIND TAP TO USER
-                #     temp = {}
-                #     temp['account_id'] = account_id
-                #     temp['group_id'] = group_id
-                #     temp['syst_id'] = system_id
-                #     temp['system_name'] = system_name
-                #     POSTGRES.insert('account_syst', temp)
+                    # BIND TAP TO USER
+                    temp = {}
+                    temp['account_id'] = account_id
+                    temp['group_id'] = group_id
+                    temp['syst_id'] = system_id
+                    temp['system_name'] = system_name
+                    POSTGRES.insert('account_syst', temp)
 
         is_update = False
         # CHECK UPDATE
