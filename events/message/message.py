@@ -697,7 +697,7 @@ def latest_activities(estab_id, system_id, partition):
         wdata['created_on'] = timestamp
 
         # SAVE
-        POSTGRES.insert('latest_activities', wdata, 'latest_activity_id')
+        POSTGRES.insert('latest_activities', wdata, 'latest_activity_id', log=True)
 
     return 1
 
