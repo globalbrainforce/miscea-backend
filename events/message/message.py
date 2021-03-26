@@ -238,7 +238,7 @@ async def message(websocket, data):
 
             data_wact['flow_output'] = wactvt['flow_output']
             data_wact['created_on'] = wactvt['timestamp']
-            POSTGRES.insert('water_activities', data_wact)
+            POSTGRES.insert('water_activities', data_wact, log=True)
 
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
