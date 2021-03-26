@@ -934,7 +934,7 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['update_on'] = current_time
         data['created_on'] = current_time
 
-        if POSTGRES.insert('liquid_1_activities', data, 'liquid_1_activity_id'):
+        if POSTGRES.insert('liquid_1_activities', data, 'liquid_1_activity_id', log=True):
 
             return 1
 
@@ -948,7 +948,7 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['update_on'] = current_time
         data['created_on'] = current_time
 
-        if POSTGRES.insert('liquid_2_activities', data, 'liquid_2_activity_id'):
+        if POSTGRES.insert('liquid_2_activities', data, 'liquid_2_activity_id', log=True):
 
             return 1
 
