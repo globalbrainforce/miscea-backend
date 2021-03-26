@@ -626,6 +626,7 @@ def reports(estab_id, system_id, partition, activity_data=None):
     syslog.syslog(logs)
     while int(new_et) <= int(epoch_time):
 
+        syslog.syslog("1")
         late_et = days_update(late_et, 1, True)
         late_st = days_update(late_et, 1)
 
@@ -635,9 +636,12 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
         new_et = late_et - 1
 
+        syslog.syslog("2")
         # GET DATAS
         values = get_all_data(estab_id, system_id, partition, late_st, new_et)
 
+        syslog.syslog(json.dumps(values))
+        syslog.syslog("3")
         if values:
 
             # CALCULATE
