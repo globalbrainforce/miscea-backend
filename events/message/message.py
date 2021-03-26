@@ -491,7 +491,7 @@ def check_settings(data):
                             "con": "=",
                             "val": account_id})  
 
-                        POSTGRES.update('account_syst', data, conditions)
+                        POSTGRES.update('account_syst', data, conditions, log=True)
 
                 # UPDATE TAP NETWORK
                 data = {}
