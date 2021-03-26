@@ -485,7 +485,7 @@ def check_settings(data):
                         conditions.append({
                             "col": "syst_id",
                             "con": "=",
-                            "val": system_id}) 
+                            "val": tap['syst_id']}) 
                         conditions.append({
                             "col": "account_id",
                             "con": "=",
