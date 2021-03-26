@@ -621,7 +621,9 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
     # EACH DAYS
     logs = "new_et: {0}".format(new_et)
+    syslog.syslog(logs)
     logs = "epoch_time: {0}".format(epoch_time)
+    syslog.syslog(logs)
     while int(new_et) <= int(epoch_time):
 
         late_et = days_update(late_et, 1, True)
