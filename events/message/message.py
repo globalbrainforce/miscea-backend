@@ -611,9 +611,13 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
     if int(new_et) == 0 and int(epoch_time) -1 and activity_data:
 
+        syslog.syslog("1")
+
         results = get_calculation(partition, activity_data, estab_id, system_id)
 
+        syslog.syslog("2")
         update_results(estab_id, system_id, partition, current_date, results)
+        syslog.syslog("3")
 
     # EACH DAYS
     logs = "new_et: {0}".format(new_et)
