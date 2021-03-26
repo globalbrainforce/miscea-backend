@@ -1165,6 +1165,9 @@ def update_results(estab_id, system_id, partition, timestamp, results):
         sql_str += " ORDER BY date_of_data LIMIT 1"
         liquid_1_activities = POSTGRES.query_fetch_one(sql_str)
 
+        logs="liquid_1_activities: {0}".format(liquid_1_activities)
+        syslog.syslog(logs)
+
         data['results'] = json.dumps(results)
         data['update_on'] = current_time
 
