@@ -647,7 +647,7 @@ def latest_activities(estab_id, system_id, partition):
         limit=20,
         descending=False
     )
-
+    syslog.syslog(json.dumps(values))
     if not values:
 
         return 1
