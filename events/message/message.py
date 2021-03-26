@@ -598,6 +598,8 @@ def reports(estab_id, system_id, partition, activity_data=None):
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
+    logs = "timestamp: {0}".format(timestamp)
+    syslog.syslog(logs)
     if not timestamp:
 
         return 0
