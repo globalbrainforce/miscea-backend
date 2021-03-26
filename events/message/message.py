@@ -238,7 +238,7 @@ async def message(websocket, data):
 
             data_wact['flow_output'] = wactvt['flow_output']
             data_wact['created_on'] = wactvt['timestamp']
-            POSTGRES.insert('water_activities', data_wact, log=True)
+            POSTGRES.insert('water_activities', data_wact)
 
             couch_url = COUCHDB.couch_db_link()
             headers = {"Content-Type" : "application/json"}
@@ -491,7 +491,7 @@ def check_settings(data):
                             "con": "=",
                             "val": account_id})  
 
-                        POSTGRES.update('account_syst', data, conditions, log=True)
+                        POSTGRES.update('account_syst', data, conditions)
 
                 # UPDATE TAP NETWORK
                 data = {}
@@ -697,7 +697,7 @@ def latest_activities(estab_id, system_id, partition):
         wdata['created_on'] = timestamp
 
         # SAVE
-        POSTGRES.insert('latest_activities', wdata, 'latest_activity_id', log=True)
+        POSTGRES.insert('latest_activities', wdata, 'latest_activity_id')
 
     return 1
 
@@ -1173,7 +1173,7 @@ def update_results(estab_id, system_id, partition, timestamp, results):
             "con": "=",
             "val": liquid_1_activities['liquid_1_activity_id']})
 
-        if POSTGRES.update('liquid_1_activities', data, conditions, log=True):
+        if POSTGRES.update('liquid_1_activities', data, conditions):
 
             return 1
 
@@ -1196,7 +1196,7 @@ def update_results(estab_id, system_id, partition, timestamp, results):
             "con": "=",
             "val": liquid_2_activities['liquid_2_activity_id']})
 
-        if POSTGRES.update('liquid_2_activities', data, conditions, log=True):
+        if POSTGRES.update('liquid_2_activities', data, conditions):
 
             return 1
 
