@@ -1510,7 +1510,7 @@ def validate_data(data):
             minutes = temp.split(".")[0]
             seconds = temp.split(".")[1]
             period = 'minute'
-            if minutes < 2:
+            if int(minutes) < 2:
                 minutes = '0' + str(minutes)
             else:
                 minutes = str(minutes)
