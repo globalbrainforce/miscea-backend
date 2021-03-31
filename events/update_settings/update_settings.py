@@ -328,7 +328,7 @@ def revalidate_data(data):
             duration = data['thrm_flsh_d'].split(" ")[0]
             mduration = duration.split(":")[0]
             sduration = duration.split(":")[1]
-            total_duration int(mduration) * 60
+            total_duration = int(mduration) * 60
             if int(sduration) > 0:
                 total_duration += 30
 
