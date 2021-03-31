@@ -575,12 +575,39 @@ def check_settings(data):
 
                 POSTGRES.update('syst', data, conditions)
 
-            # elif not default['network_id'] == system_info['network_id']:
+            current = time.time()
+            # system_info['article_number'] = default['article_number']
+            system_info['update_on'] = current
+            # system_info['created_on'] = current
+            # system_info['serial'] = str(SHA_SECURITY.generate_token(False))[:10]
+            # system_info['model'] = ""
+            # system_info['description'] = ""
 
-            #     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
-            #     syslog.syslog("++++++++ CHANGE NETWORK ID ++++++++")
+            system_info['soap_dose'] = default['soap_dose']
+            system_info['disinfect_dose'] = default['disinfect_dose']
+            system_info['init_wtr_temp'] = default['init_wtr_temp']
+            system_info['wtr_shut_off_dly'] = default['wtr_shut_off_dly']
+            system_info['wtr_temp_mem_tm'] = default['wtr_temp_mem_tm']
+            system_info['bucket_mode_d'] = default['bucket_mode_d']
+            system_info['tm_b4_stagn_flsh'] = default['tm_b4_stagn_flsh']
+            system_info['stagn_flsh_d'] = default['stagn_flsh_d']
+            system_info['stagn_flsh_u_dep'] = default['stagn_flsh_u_dep']
+            system_info['thrm_flshng_tm'] = default['thrm_flshng_tm']
+            system_info['thrm_flshng_day'] = default['thrm_flshng_day']
+            system_info['thrm_flsh_temp'] = default['thrm_flsh_temp']
+            system_info['thrm_flsh_d'] = default['thrm_flsh_d']
+            system_info['light_effect'] = default['light_effect']
+            system_info['beep_tone'] = default['beep_tone']
+            system_info['clean_mode'] = default['clean_mode']
+            system_info['flow_heater_mode'] = default['flow_heater_mode']
+            system_info['ir_range'] = default['ir_range']
 
-            #     pass
+            syslog.syslog("++++++++ UPDATE SETTINGS ++++++++")
+            syslog.syslog(json.dumps(system_info))
+            syslog.syslog("======== UPDATE SETTINGS ========")
+
+            # system_info['description'] = default['description']
+            COUCH_QUERY.update(system_info, system_id)
 
             return 0
 
