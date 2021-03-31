@@ -1310,7 +1310,20 @@ def validate_data(data):
 
         # if "minute"  not in data['stagn_flsh_d']:
         if type(data['stagn_flsh_d']) == int:
-            tmp['stagn_flsh_d'] =  format_units(data['stagn_flsh_d'], "minute")
+
+            if data['stagn_flsh_d'] < 2:
+
+                tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minute")
+
+            elif data['stagn_flsh_d'] > 9:
+
+                tmp['stagn_flsh_d'] = str(data['stagn_flsh_d']) + ":00 minutes")
+
+            else:
+
+                tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minutes")
+
+
 
     if "stagn_flsh_u_dep" in data:
 
@@ -1493,11 +1506,24 @@ def validate_data(data):
         tmp['thrm_flsh_d'] = data['thrm_flsh_d']
         if type(data['thrm_flsh_d']) == int:
 
-            temp = round(float(data['thrm_flsh_d'] / 60), 2)
-            tmp['thrm_flsh_d'] = "{0} minutes".format(temp)
+            temp = str(round(float(data['thrm_flsh_d'] / 60), 2))
+            minutes = temp.split(".")[0]
+            seconds = temp.split(".")[1]
+            period = 'minute'
+            if minutes < 2:
+                minutes = '0' + str(minutes)
+            else:
+                minutes = str(minutes)
+                period = 'minutes'
+            if seconds > 0:
+                seconds = '30'
+            else:
+                seconds = str(seconds)
 
-            if float(temp) <= 1:
-                tmp['thrm_flsh_d'] = "{0} minute".format(temp)
+            tmp['thrm_flsh_d'] = "{0}:{1} {2}".format(minutes, seconds, period)
+
+            # if float(temp) <= 1:
+            #     tmp['thrm_flsh_d'] = "{0} minute".format(temp)
 
     if "light_effect" in data:
 
