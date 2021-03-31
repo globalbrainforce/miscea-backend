@@ -1313,15 +1313,15 @@ def validate_data(data):
 
             if data['stagn_flsh_d'] < 2:
 
-                tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minute")
+                tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minute"
 
             elif data['stagn_flsh_d'] > 9:
 
-                tmp['stagn_flsh_d'] = str(data['stagn_flsh_d']) + ":00 minutes")
+                tmp['stagn_flsh_d'] = str(data['stagn_flsh_d']) + ":00 minutes"
 
             else:
 
-                tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minutes")
+                tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minutes"
 
 
 
