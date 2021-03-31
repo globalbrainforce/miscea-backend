@@ -1295,7 +1295,7 @@ def validate_data(data):
     if "bucket_mode_d" in data:
 
         tmp['bucket_mode_d'] = data['bucket_mode_d']
-        if type(data['bucket_mode_d']) == int:
+        if type(data['bucket_mode_d']) in [int, float]:
             tmp['bucket_mode_d'] = format_units(data['bucket_mode_d'], "minute")
 
     if "tm_b4_stagn_flsh" in data:
