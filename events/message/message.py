@@ -99,6 +99,12 @@ async def message(websocket, data):
             # activity = data['activity']
             activity = data
 
+            # VALIDATE SYSTEM ID
+            sql_str = "SELECT syst_id FROM syst WHERE"
+            sql_str += " syst_id='{0}'".format(activity['system_id'])
+            if not POSTGRES.query_fetch_one(sql_str):
+                return 1
+
             sda = {}
             sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
             sda['timestamp'] = activity['timestamp']
@@ -127,6 +133,12 @@ async def message(websocket, data):
             mtype = 'disinfectant-activity'
             # activity = data['activity']
             activity = data
+
+            # VALIDATE SYSTEM ID
+            sql_str = "SELECT syst_id FROM syst WHERE"
+            sql_str += " syst_id='{0}'".format(activity['system_id'])
+            if not POSTGRES.query_fetch_one(sql_str):
+                return 1
 
             sda = {}
             sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
@@ -159,6 +171,11 @@ async def message(websocket, data):
             system_id = activity['system_id']
             water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
 
+            # VALIDATE SYSTEM ID
+            sql_str = "SELECT syst_id FROM syst WHERE"
+            sql_str += " syst_id='{0}'".format(system_id)
+            if not POSTGRES.query_fetch_one(sql_str):
+                return 1
 
             if type(activity['reason']) == int:
 
