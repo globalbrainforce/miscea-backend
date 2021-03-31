@@ -1510,15 +1510,16 @@ def validate_data(data):
             minutes = temp.split(".")[0]
             seconds = temp.split(".")[1]
             period = 'minute'
-            if int(minutes) < 2:
+            if int(minutes) > 1:
+                period = 'minutes'
+            if int(minutes) < 9:
                 minutes = '0' + str(minutes)
             else:
                 minutes = str(minutes)
-                period = 'minutes'
             if int(seconds) > 0:
                 seconds = '30'
             else:
-                seconds = str(seconds)
+                seconds = '00'
 
             tmp['thrm_flsh_d'] = "{0}:{1} {2}".format(minutes, seconds, period)
 
