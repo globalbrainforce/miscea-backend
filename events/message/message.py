@@ -1515,7 +1515,7 @@ def validate_data(data):
             else:
                 minutes = str(minutes)
                 period = 'minutes'
-            if seconds > 0:
+            if int(seconds) > 0:
                 seconds = '30'
             else:
                 seconds = str(seconds)
