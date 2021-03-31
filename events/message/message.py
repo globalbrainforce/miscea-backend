@@ -317,6 +317,12 @@ def check_settings(data):
 
             network_id = get_default_network()
 
+        # VALIDATE ARTICLE NUMBER
+        sql_str = "SELECT article_number FROM product WHERE"
+        sql_str += " article_number='{0}'".format(default['article_number'])
+        if not POSTGRES.query_fetch_one(sql_str):
+            return 0
+
         # ADD AS NEW TOP
         current = time.time()
         system = {}
