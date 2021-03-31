@@ -1570,7 +1570,7 @@ def validate_data(data):
     if "ir_range" in data:
 
         tmp['ir_range'] = data['ir_range']
-        if type(data['ir_range']) == int:
+        if type(data['ir_range']) in [int, float]:
             tmp['ir_range'] = format_units(data['ir_range'], "centimeter")
 
     for key in tmp.keys():
