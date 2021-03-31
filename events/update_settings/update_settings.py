@@ -324,8 +324,15 @@ def revalidate_data(data):
         tmp['thrm_flsh_d'] = data['thrm_flsh_d']
         if not type(data['thrm_flsh_d']) in [int, float]:
 
-            thrm_flsh_d = float(data['thrm_flsh_d'].split(" ")[0])
-            tmp['thrm_flsh_d'] = round(int(thrm_flsh_d * 60), 2)
+            # thrm_flsh_d = float(data['thrm_flsh_d'].split(" ")[0])
+            duration = data['thrm_flsh_d'].split(" ")[0]
+            mduration = duration.split(":")[0]
+            sduration = duration.split(":")[1]
+            total_duration int(mduration) * 60
+            if int(sduration) > 0:
+                total_duration += 30
+
+            tmp['thrm_flsh_d'] = total_duration
 
     if "light_effect" in data:
 
