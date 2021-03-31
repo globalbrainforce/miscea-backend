@@ -141,7 +141,8 @@ def revalidate_data(data):
         tmp['stagn_flsh_d'] = data['stagn_flsh_d']
         if not type(data['stagn_flsh_d']) == int:
             # tmp['stagn_flsh_d'] =  reformat_units(data['stagn_flsh_d'])
-            tmp['stagn_flsh_d'] =  reformat_units(data['stagn_flsh_d'])
+            duration = data['stagn_flsh_d'].split(' ')[0]
+            tmp['stagn_flsh_d'] =  int(duration.split(':')[0])
 
     if "stagn_flsh_u_dep" in data:
 
