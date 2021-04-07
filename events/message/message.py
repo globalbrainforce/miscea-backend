@@ -106,7 +106,8 @@ async def message(websocket, data):
                 return 1
 
             sda = {}
-            sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
+            # sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
+            sda['_id'] = 'data#sa:' + str(msg_id)
             sda['timestamp'] = activity['timestamp']
             sda['liquid_1_level'] = activity['liquid_1_level']
             sda['liquid_1_dose'] = activity['liquid_1_dose']
@@ -141,7 +142,8 @@ async def message(websocket, data):
                 return 1
 
             sda = {}
-            sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
+            # sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
+            sda['_id'] = 'data#da:' + str(msg_id)
             sda['timestamp'] = activity['timestamp']
             sda['liquid_2_level'] = activity['liquid_2_level']
             sda['liquid_2_dose'] = activity['liquid_2_dose']
@@ -169,7 +171,8 @@ async def message(websocket, data):
             # activity = data['activity']
             activity = data
             system_id = activity['system_id']
-            water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
+            # water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
+            water_data_id = 'data#wa:' + str(msg_id)
 
             # VALIDATE SYSTEM ID
             sql_str = "SELECT syst_id FROM syst WHERE"
