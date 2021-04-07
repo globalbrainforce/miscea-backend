@@ -651,8 +651,8 @@ def reports(estab_id, system_id, partition, activity_data=None):
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
-    logs = "timestamp: {0}".format(timestamp)
-    syslog.syslog(logs)
+    # logs = "timestamp: {0}".format(timestamp)
+    # syslog.syslog(logs)
     if not timestamp:
 
         return 0
@@ -683,7 +683,7 @@ def reports(estab_id, system_id, partition, activity_data=None):
         # GET DATAS
         values = get_all_data(estab_id, system_id, partition, late_st, new_et)
 
-        syslog.syslog(json.dumps(values))
+        # syslog.syslog(json.dumps(values))
         if values:
 
             # CALCULATE
