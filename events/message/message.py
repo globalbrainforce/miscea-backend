@@ -107,12 +107,13 @@ async def message(websocket, data):
 
             sda = {}
             # sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
-            sda['_id'] = 'data#sa:' + str(msg_id)
+            sda['_id'] = 'data#sa:' + str(msg_id) + str(system_id.split(":")[1])
             sda['timestamp'] = activity['timestamp']
             sda['liquid_1_level'] = activity['liquid_1_level']
             sda['liquid_1_dose'] = activity['liquid_1_dose']
             sda['type'] = 'data'
-            sda['system_id'] = activity['system_id']
+            # sda['system_id'] = activity['system_id']
+            sda['system_id'] = system_id
             sda['establishment_id'] = ESTABLISHMENT
 
             couch_url = COUCHDB.couch_db_link()
@@ -143,7 +144,7 @@ async def message(websocket, data):
 
             sda = {}
             # sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
-            sda['_id'] = 'data#da:' + str(msg_id)
+            sda['_id'] = 'data#da:' + str(msg_id) + str(system_id.split(":")[1])
             sda['timestamp'] = activity['timestamp']
             sda['liquid_2_level'] = activity['liquid_2_level']
             sda['liquid_2_dose'] = activity['liquid_2_dose']
@@ -172,7 +173,7 @@ async def message(websocket, data):
             activity = data
             system_id = activity['system_id']
             # water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
-            water_data_id = 'data#wa:' + str(msg_id)
+            water_data_id = 'data#wa:' + str(msg_id) + str(system_id.split(":")[1])
 
             # VALIDATE SYSTEM ID
             sql_str = "SELECT syst_id FROM syst WHERE"
