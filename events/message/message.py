@@ -60,7 +60,6 @@ async def message(websocket, data):
     default = data
     system_id = default['system_id']
     msg_id = default['msg_id']
-    msg_timestamp = default['timestamp']
 
     if not 'token' in data.keys():
 
@@ -95,6 +94,7 @@ async def message(websocket, data):
 
         elif data['type'] in ['soap-activity', 'soap']:
             # SOAP ACTIVITY
+            msg_timestamp = default['timestamp']
 
             mtype = 'soap-activity'
             # activity = data['activity']
@@ -133,6 +133,7 @@ async def message(websocket, data):
         elif data['type'] in ['disinfectant-activity', 'disi']:
             # DISINFECTANT
 
+            msg_timestamp = default['timestamp']
             mtype = 'disinfectant-activity'
             # activity = data['activity']
             activity = data
@@ -169,6 +170,7 @@ async def message(websocket, data):
         elif data['type'] in ['water-activity', 'h2o']:
             # WATER ACTIVITY
 
+            msg_timestamp = default['timestamp']
             mtype = 'water-activity'
             # activity = data['activity']
             activity = data
