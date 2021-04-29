@@ -103,32 +103,66 @@ def revalidate_data(data):
         tmp['disinfect_dose'] = data['disinfect_dose']
         if not type(data['disinfect_dose']) in [int, float]:
             # if "milliliter" not in data['disinfect_dose']:
-            tmp['disinfect_dose'] = reformat_units(data['disinfect_dose'])
+
+            if data['disinfect_dose']:
+
+                tmp['disinfect_dose'] = reformat_units(data['disinfect_dose'])
+
+            else:
+
+                tmp['disinfect_dose'] = data['disinfect_dose']
 
     if "init_wtr_temp" in data:
 
         tmp['init_wtr_temp'] = data['init_wtr_temp']
         if not type(data['init_wtr_temp']) == int:
 
-            tmp['init_wtr_temp'] = reformat_units(data['init_wtr_temp'])
+            if data['init_wtr_temp']:
+
+                tmp['init_wtr_temp'] = reformat_units(data['init_wtr_temp'])
+
+            else:
+
+                tmp['init_wtr_temp'] = data['init_wtr_temp']
 
     if "wtr_shut_off_dly" in data:
 
         tmp['wtr_shut_off_dly'] = data['wtr_shut_off_dly']
         if not type(data['wtr_shut_off_dly']) == int:
-            tmp['wtr_shut_off_dly'] = reformat_units(data['wtr_shut_off_dly'])
+
+            if data['wtr_shut_off_dly']:
+
+                tmp['wtr_shut_off_dly'] = reformat_units(data['wtr_shut_off_dly'])
+
+            else:
+
+                tmp['wtr_shut_off_dly'] = data['wtr_shut_off_dly']
 
     if "wtr_temp_mem_tm" in data:
 
         tmp['wtr_temp_mem_tm'] = data['wtr_temp_mem_tm']
         if not type(data['wtr_temp_mem_tm']) == int:
-            tmp['wtr_temp_mem_tm'] = reformat_units(data['wtr_temp_mem_tm'])
+
+            if data['wtr_temp_mem_tm']:
+
+                tmp['wtr_temp_mem_tm'] = reformat_units(data['wtr_temp_mem_tm'])
+
+            else:
+
+                tmp['wtr_temp_mem_tm'] = data['wtr_temp_mem_tm']
 
     if "bucket_mode_d" in data:
 
         tmp['bucket_mode_d'] = data['bucket_mode_d']
         if not type(data['bucket_mode_d']) in [int, float]:
-            tmp['bucket_mode_d'] = reformat_units(data['bucket_mode_d'])
+
+            if data['bucket_mode_d']:
+
+                tmp['bucket_mode_d'] = reformat_units(data['bucket_mode_d'])
+
+            else:
+
+                tmp['bucket_mode_d'] = data['bucket_mode_d']
 
     if "tm_b4_stagn_flsh" in data:
 
@@ -357,28 +391,45 @@ def revalidate_data(data):
 
     if "clean_mode" in data:
 
-        tmp['clean_mode'] = data['clean_mode']
-        if data['clean_mode'] == "Off":
-            tmp['clean_mode'] = 0
+        if data['clean_mode']:
 
-        if data['clean_mode'] == "ON":
-            tmp['clean_mode'] = 1
+            tmp['clean_mode'] = data['clean_mode']
+            if data['clean_mode'] == "Off":
+                tmp['clean_mode'] = 0
 
+            if data['clean_mode'] == "ON":
+                tmp['clean_mode'] = 1
+
+        else:
+
+            tmp['clean_mode'] = data['clean_mode']
 
     if "flow_heater_mode" in data:
 
-        tmp['flow_heater_mode'] = data['flow_heater_mode']
-        if data['flow_heater_mode'] == "Off":
-            tmp['flow_heater_mode'] = 0
+        if data['flow_heater_mode']:
 
-        if data['flow_heater_mode'] == "ON":
-            tmp['flow_heater_mode'] = 1
+            tmp['flow_heater_mode'] = data['flow_heater_mode']
+            if data['flow_heater_mode'] == "Off":
+                tmp['flow_heater_mode'] = 0
+
+            if data['flow_heater_mode'] == "ON":
+                tmp['flow_heater_mode'] = 1
+
+        else:
+
+            tmp['flow_heater_mode'] = data['flow_heater_mode']
 
     if "ir_range" in data:
 
-        tmp['ir_range'] = data['ir_range']
-        if not type(data['ir_range']) in [int, float]:
-            tmp['ir_range'] = reformat_units(data['ir_range'])
+        if data['ir_range']:
+
+            tmp['ir_range'] = data['ir_range']
+            if not type(data['ir_range']) in [int, float]:
+                tmp['ir_range'] = reformat_units(data['ir_range'])
+
+        else:
+
+            tmp['ir_range'] = data['ir_range']
 
     for key in tmp.keys():
 
