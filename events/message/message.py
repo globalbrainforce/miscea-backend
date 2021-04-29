@@ -633,11 +633,22 @@ def check_settings(data):
             # system_info['description'] = ""
 
             system_info['soap_dose'] = default['soap_dose']
-            system_info['disinfect_dose'] = default['disinfect_dose']
-            system_info['init_wtr_temp'] = default['init_wtr_temp']
-            system_info['wtr_shut_off_dly'] = default['wtr_shut_off_dly']
-            system_info['wtr_temp_mem_tm'] = default['wtr_temp_mem_tm']
-            system_info['bucket_mode_d'] = default['bucket_mode_d']
+
+            if 'disinfect_dose' in default.keys():
+                system_info['disinfect_dose'] = default['disinfect_dose']
+
+            if 'init_wtr_temp' in default.keys():
+                system_info['init_wtr_temp'] = default['init_wtr_temp']
+
+            if 'wtr_shut_off_dly' in default.keys():
+                system_info['wtr_shut_off_dly'] = default['wtr_shut_off_dly']
+
+            if 'wtr_temp_mem_tm' in default.keys():
+                system_info['wtr_temp_mem_tm'] = default['wtr_temp_mem_tm']
+
+            if 'bucket_mode_d' in default.keys():
+                system_info['bucket_mode_d'] = default['bucket_mode_d']
+
             system_info['tm_b4_stagn_flsh'] = default['tm_b4_stagn_flsh']
             system_info['stagn_flsh_d'] = default['stagn_flsh_d']
             system_info['stagn_flsh_u_dep'] = default['stagn_flsh_u_dep']
@@ -647,9 +658,15 @@ def check_settings(data):
             system_info['thrm_flsh_d'] = default['thrm_flsh_d']
             system_info['light_effect'] = default['light_effect']
             system_info['beep_tone'] = default['beep_tone']
-            system_info['clean_mode'] = default['clean_mode']
-            system_info['flow_heater_mode'] = default['flow_heater_mode']
-            system_info['ir_range'] = default['ir_range']
+
+            if 'clean_mode' in default.keys():
+                system_info['clean_mode'] = default['clean_mode']
+
+            if 'flow_heater_mode' in default.keys():
+                system_info['flow_heater_mode'] = default['flow_heater_mode']
+
+            if 'ir_range' in default.keys():
+                system_info['ir_range'] = default['ir_range']
 
             syslog.syslog("++++++++ UPDATE SETTINGS ++++++++")
             syslog.syslog(json.dumps(system_info))
