@@ -600,9 +600,11 @@ def check_settings(data):
         # CHECK UPDATE
         for system_key in SYSTEM_KEYS:
 
-            if not default[system_key] == system_info[system_key]:
+            if system_key in default.keys():
 
-                is_update = True
+                if not default[system_key] == system_info[system_key]:
+
+                    is_update = True
 
         if is_update:
 
