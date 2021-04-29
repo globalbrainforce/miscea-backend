@@ -104,7 +104,7 @@ def revalidate_data(data):
         if not type(data['disinfect_dose']) in [int, float]:
             # if "milliliter" not in data['disinfect_dose']:
 
-            if data['disinfect_dose']:
+            if data['disinfect_dose'] != "":
 
                 tmp['disinfect_dose'] = reformat_units(data['disinfect_dose'])
 
@@ -117,7 +117,7 @@ def revalidate_data(data):
         tmp['init_wtr_temp'] = data['init_wtr_temp']
         if not type(data['init_wtr_temp']) == int:
 
-            if data['init_wtr_temp']:
+            if data['init_wtr_temp'] != "":
 
                 tmp['init_wtr_temp'] = reformat_units(data['init_wtr_temp'])
 
@@ -130,7 +130,7 @@ def revalidate_data(data):
         tmp['wtr_shut_off_dly'] = data['wtr_shut_off_dly']
         if not type(data['wtr_shut_off_dly']) == int:
 
-            if data['wtr_shut_off_dly']:
+            if data['wtr_shut_off_dly'] != "":
 
                 tmp['wtr_shut_off_dly'] = reformat_units(data['wtr_shut_off_dly'])
 
@@ -143,7 +143,7 @@ def revalidate_data(data):
         tmp['wtr_temp_mem_tm'] = data['wtr_temp_mem_tm']
         if not type(data['wtr_temp_mem_tm']) == int:
 
-            if data['wtr_temp_mem_tm']:
+            if data['wtr_temp_mem_tm'] != "":
 
                 tmp['wtr_temp_mem_tm'] = reformat_units(data['wtr_temp_mem_tm'])
 
@@ -156,7 +156,7 @@ def revalidate_data(data):
         tmp['bucket_mode_d'] = data['bucket_mode_d']
         if not type(data['bucket_mode_d']) in [int, float]:
 
-            if data['bucket_mode_d']:
+            if data['bucket_mode_d'] != "":
 
                 tmp['bucket_mode_d'] = reformat_units(data['bucket_mode_d'])
 
@@ -391,7 +391,7 @@ def revalidate_data(data):
 
     if "clean_mode" in data:
 
-        if data['clean_mode']:
+        if data['clean_mode'] != "":
 
             tmp['clean_mode'] = data['clean_mode']
             if data['clean_mode'] == "Off":
@@ -406,7 +406,7 @@ def revalidate_data(data):
 
     if "flow_heater_mode" in data:
 
-        if data['flow_heater_mode']:
+        if data['flow_heater_mode'] != "":
 
             tmp['flow_heater_mode'] = data['flow_heater_mode']
             if data['flow_heater_mode'] == "Off":
@@ -421,7 +421,7 @@ def revalidate_data(data):
 
     if "ir_range" in data:
 
-        if data['ir_range']:
+        if data['ir_range'] != "":
 
             tmp['ir_range'] = data['ir_range']
             if not type(data['ir_range']) in [int, float]:
