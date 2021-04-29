@@ -359,15 +359,25 @@ def check_settings(data):
         system['description'] = ""
 
         if 'description' in default.keys():
-
             system['description'] = default['description']
 
         system['soap_dose'] = default['soap_dose']
-        system['disinfect_dose'] = default['disinfect_dose']
-        system['init_wtr_temp'] = default['init_wtr_temp']
-        system['wtr_shut_off_dly'] = default['wtr_shut_off_dly']
-        system['wtr_temp_mem_tm'] = default['wtr_temp_mem_tm']
-        system['bucket_mode_d'] = default['bucket_mode_d']
+
+        if 'disinfect_dose' in default.keys():
+            system['disinfect_dose'] = default['disinfect_dose']
+
+        if 'init_wtr_temp' in default.keys():
+            system['init_wtr_temp'] = default['init_wtr_temp']
+
+        if 'wtr_shut_off_dly' in default.keys():
+            system['wtr_shut_off_dly'] = default['wtr_shut_off_dly']
+
+        if 'wtr_temp_mem_tm' in default.keys():
+            system['wtr_temp_mem_tm'] = default['wtr_temp_mem_tm']
+
+        if 'bucket_mode_d' in default.keys():
+            system['bucket_mode_d'] = default['bucket_mode_d']
+
         system['tm_b4_stagn_flsh'] = default['tm_b4_stagn_flsh']
         system['stagn_flsh_d'] = default['stagn_flsh_d']
         system['stagn_flsh_u_dep'] = default['stagn_flsh_u_dep']
@@ -377,9 +387,16 @@ def check_settings(data):
         system['thrm_flsh_d'] = default['thrm_flsh_d']
         system['light_effect'] = default['light_effect']
         system['beep_tone'] = default['beep_tone']
-        system['clean_mode'] = default['clean_mode']
-        system['flow_heater_mode'] = default['flow_heater_mode']
-        system['ir_range'] = default['ir_range']
+
+        if 'clean_mode' in default.keys():
+            system['clean_mode'] = default['clean_mode']
+
+        if 'flow_heater_mode' in default.keys():
+            system['flow_heater_mode'] = default['flow_heater_mode']
+
+        if 'ir_range' in default.keys():
+            system['ir_range'] = default['ir_range']
+
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
         system['network_id'] = network_id
