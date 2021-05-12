@@ -253,6 +253,7 @@ class PostgreSQL():
                 data = (dict(zip(row_headers, result)))
 
                 # RETURN
+                self.close_connection()
                 return data
 
             # RETURN
@@ -295,6 +296,7 @@ class PostgreSQL():
                     data.append(dict(zip(row_headers, row)))
 
                 # RETURN
+                self.close_connection()
                 return data
 
             # RETURN
