@@ -23,7 +23,7 @@ async def app(websocket, path):
         state_val['type'] = "state"
         state_val['value'] = 1
 
-        await websocket.send(state_event(state_val))
+        await websocket.send(state_val)
         async for webs in websocket:
 
             data = json.loads(webs)
