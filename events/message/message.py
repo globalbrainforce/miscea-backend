@@ -625,12 +625,27 @@ def check_settings(data):
                 POSTGRES.update('syst', data, conditions)
 
             current = time.time()
-            # system_info['article_number'] = default['article_number']
             system_info['update_on'] = current
             # system_info['created_on'] = current
             # system_info['serial'] = str(SHA_SECURITY.generate_token(False))[:10]
             # system_info['model'] = ""
             # system_info['description'] = ""
+
+            update_article_flag = False
+            if 'article_number' in default.keys():
+
+                if system_info['article_number'] != default['article_number']:
+
+                    # VALIDATE ARTICLE NUMBER
+                    sql_str = "SELECT article_number FROM product WHERE"
+                    sql_str += " article_number='{0}'".format(default['article_number'])
+
+                    if not POSTGRES.query_fetch_one(sql_str):
+
+                        return 0
+
+                    system_info['article_number'] = default['article_number']
+                    update_article_flag = True
 
             system_info['soap_dose'] = default['soap_dose']
 
@@ -674,6 +689,20 @@ def check_settings(data):
 
             # system_info['description'] = default['description']
             COUCH_QUERY.update(system_info, system_id)
+
+            if update_article_flag:
+                
+                # UPDATE ARTICLE NUMBER
+                data = {}
+                data['article_number'] = system_info['article_number']
+
+                conditions = []
+                conditions.append({
+                    "col": "syst_id",
+                    "con": "=",
+                    "val": system_id})  
+
+                POSTGRES.update('syst', data, conditions)
 
             return 0
 
