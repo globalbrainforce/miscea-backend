@@ -62,8 +62,8 @@ async def app(websocket, path):
                 new_users[item[0]] = item[1]
 
         CLIENTS = new_users
-        # log_sys = "New CLIENTS: {0}".format(CLIENTS)
-        # syslog.syslog(log_sys)
+        log_sys = "New CLIENTS: {0}".format(CLIENTS)
+        syslog.syslog(log_sys)
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
