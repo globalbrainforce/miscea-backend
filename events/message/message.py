@@ -75,6 +75,9 @@ async def message(websocket, data):
 
     if COMMON.validate_tap_token(data['token'], system_id):
 
+        # SET ONLINE TAPS
+        set_tap_online(system_id)
+
         mtype = 'message'
 
         if data['type'] == 'settings':
@@ -1746,3 +1749,19 @@ def convert_duration(duration):
             seconds = '0'+seconds
     new_duration += minute + ':' + seconds + ' minutes'
     return new_duration
+
+def set_tap_online(system_id):
+    """ SET TAP ONLINE """
+
+    data = {}
+    data['state'] = True
+
+    conditions = []
+    conditions.append({
+        "col": "syst_id",
+        "con": "=",
+        "val": system_id}) 
+
+    POSTGRES.update('syst', data, conditions)
+
+    return 1
