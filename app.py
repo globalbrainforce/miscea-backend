@@ -51,6 +51,11 @@ async def app(websocket, path):
                 # syslog.syslog(log_sys)
                 await update_settings.update_settings(websocket, data, CLIENTS)
 
+    except:
+
+        print("may error!")
+        raise
+
     finally:
 
         new_users = {}
