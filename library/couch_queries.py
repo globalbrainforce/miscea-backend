@@ -228,6 +228,7 @@ class Queries(Common):
 
             couch_query += '&include_docs=true&limit={0}&descending=true'.format(limit)
 
+        print("couch_query: {0}".format(couch_query))
         res = requests.get(couch_query)
         json_data = res.json()
         data = []
