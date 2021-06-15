@@ -8,9 +8,11 @@ import websockets
 from events.auth import auth
 from events.message import message
 from events.update_settings import update_settings
+from library.postgresql_queries import PostgreSQL
 
 logging.basicConfig()
 CLIENTS = {}
+POSTGRES = PostgreSQL()
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
@@ -65,6 +67,20 @@ async def app(websocket, path):
             if not item[1] == websocket:
 
                 new_users[item[0]] = item[1]
+
+            else:
+
+                system_id = item[0]
+                data = {}
+                data['state'] = False
+
+                conditions = []
+                conditions.append({
+                    "col": "syst_id",
+                    "con": "=",
+                    "val": system_id}) 
+
+                POSTGRES.update('syst', data, conditions, log=True)
 
         CLIENTS = new_users
         log_sys = "New CLIENTS: {0}".format(CLIENTS)
