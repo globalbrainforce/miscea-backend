@@ -99,6 +99,41 @@ class Common():
 
         if self.postgres.query_fetch_one(sql_str):
 
+            tap_account = {}
+            tap_account['system_id'] = system_id
+            tap_account['token'] = token
+            tap_account['last_login'] = time.time()
+
+            sql_str = "SELECT tap_account_id FROM tap_accounts WHERE"
+            sql_str += " system_id='{0}'".format(system_id)
+            response = self.postgres.query_fetch_one(sql_str)
+
+            if response:
+
+                # INIT CONDITION
+                conditions = []
+
+                # CONDITION FOR QUERY
+                conditions.append({
+                    "col": "tap_account_id",
+                    "con": "=",
+                    "val": response['tap_account_id']
+                    })
+
+                # UPDATE TAP ACCOUNT TOKEN
+                tap_account['token'] = token
+                tap_account['update_on'] = time.time()
+
+                self.postgres.update('tap_accounts', tap_account, conditions)
+
+            else:
+
+                # INSERT TAP ACCOUNT TOKEN
+                tap_account['tap_account_id'] = SHASECURITY.generate_token(False)
+                tap_account['created_on'] = time.time()
+
+                self.postgres.insert('tap_accounts', tap_account)
+
             return 1
 
         return 0

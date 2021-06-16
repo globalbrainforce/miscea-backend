@@ -71,14 +71,30 @@ async def app(websocket, path):
             else:
 
                 system_id = item[0]
+
+                # GET SYSTEM TOKEN
+                sql_str = "SELECT token FROM tap_accounts WHERE"
+                sql_str += " system_id='{0}'".format(system_id)
+                response = POSTGRES.query_fetch_one(sql_str)
+
+                token = response['token']
+
+                # GET SYSTEM IDS
+                sql_str = "SELECT system_id FROM tap_accounts WHERE"
+                sql_str += " token='{0}'".format(token)
+                response = POSTGRES.query_fetch_all(sql_str)
+
+                system_ids = [res['system_id'] for res in response or []]
+                system_ids.append(system_id)
+
                 data = {}
                 data['state'] = False
 
                 conditions = []
                 conditions.append({
                     "col": "syst_id",
-                    "con": "=",
-                    "val": system_id}) 
+                    "con": "in",
+                    "val": system_ids}) 
 
                 POSTGRES.update('syst', data, conditions, log=True)
 
