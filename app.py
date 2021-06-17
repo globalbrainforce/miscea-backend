@@ -50,7 +50,9 @@ async def app(websocket, path):
 
                         system_id = data['system_id']
 
-                        CLIENTS[system_id] = websocket
+                        if not websocket_id in CLIENTS.keys():
+
+                            CLIENTS[system_id] = websocket
 
                         data = {}
                         data['state'] = True
@@ -72,7 +74,9 @@ async def app(websocket, path):
                             response = POSTGRES.query_fetch_one(sql_str)
                             if response:
 
-                                CLIENTS[response['syst_id']] = websocket
+                                if not websocket_id in CLIENTS.keys():
+
+                                    CLIENTS[response['syst_id']] = websocket
 
                                 data = {}
                                 data['state'] = True
