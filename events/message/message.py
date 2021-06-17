@@ -93,6 +93,19 @@ async def message(websocket, data):
 
             return 1
 
+        if data['type'] == 'offline':
+            mtype = 'offline'
+
+            message = {}
+            message['type'] = mtype
+            message['system_id'] = system_id
+            message['msg_id'] = msg_id
+            message['status'] = 'ok'
+            message = json.dumps(message)
+            await asyncio.wait([websocket.send(message)])
+
+            return 1
+
         if data['type'] == 'settings':
             mtype = 'settings'
             system_info = check_settings(data)

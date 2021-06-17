@@ -49,7 +49,7 @@ async def app(websocket, path):
 
                     if data['type'] == 'child_taps':
 
-                        for online_tap in data['online_taps']:
+                        for online_tap in data['online_taps'] or []:
 
                             sql_str = " SELECT syst_id FROM syst where"
                             sql_str += " syst_id like 'system:{0}%'".format(online_tap)
@@ -57,6 +57,51 @@ async def app(websocket, path):
                             if response:
 
                                 CLIENTS[response['syst_id']] = websocket
+
+                                data = {}
+                                data['state'] = True
+
+                                conditions = []
+                                conditions.append({
+                                    "col": "syst_id",
+                                    "con": "=",
+                                    "val": response['syst_id']}) 
+
+                                POSTGRES.update('syst', data, conditions)
+
+                    if data['type'] == 'offline':
+
+                        for offtap in data['offline_taps'] or []:
+
+                            sql_str = " SELECT syst_id FROM syst where"
+                            sql_str += " syst_id like 'system:{0}%'".format(offtap)
+                            response = POSTGRES.query_fetch_one(sql_str)
+                            if response:
+
+                                new_users = {}
+
+                                for item in CLIENTS.items():
+
+                                    if not item[1] == websocket:
+
+                                        new_users[item[0]] = item[1]
+
+                                    else:
+
+                                        data = {}
+                                        data['state'] = False
+
+                                        conditions = []
+                                        conditions.append({
+                                            "col": "syst_id",
+                                            "con": "=",
+                                            "val": response['syst_id']}) 
+
+                                        POSTGRES.update('syst', data, conditions)
+
+                                CLIENTS = new_users
+                                log_sys = "New CLIENTS: {0}".format(CLIENTS)
+                                syslog.syslog(log_sys)
 
             if path == '/update-settings':
 
@@ -107,7 +152,7 @@ async def app(websocket, path):
                     "con": "in",
                     "val": system_ids}) 
 
-                POSTGRES.update('syst', data, conditions, log=True)
+                POSTGRES.update('syst', data, conditions)
 
         CLIENTS = new_users
         log_sys = "New CLIENTS: {0}".format(CLIENTS)
