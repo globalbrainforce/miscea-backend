@@ -46,6 +46,22 @@ async def app(websocket, path):
 
                     # log_sys = "CLIENTS: {0}".format(CLIENTS)
                     # syslog.syslog(log_sys)
+                    if data['type'] == 'settings':
+
+                        system_id = data['system_id']
+
+                        CLIENTS[system_id] = websocket
+
+                        data = {}
+                        data['state'] = True
+
+                        conditions = []
+                        conditions.append({
+                            "col": "syst_id",
+                            "con": "=",
+                            "val": system_id}) 
+
+                        POSTGRES.update('syst', data, conditions)
 
                     if data['type'] == 'child_taps':
 
