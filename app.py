@@ -54,8 +54,8 @@ async def app(websocket, path):
 
                             CLIENTS[system_id] = websocket
 
-                        data = {}
-                        data['state'] = True
+                        data_update = {}
+                        data_update['state'] = True
 
                         conditions = []
                         conditions.append({
@@ -63,7 +63,7 @@ async def app(websocket, path):
                             "con": "=",
                             "val": system_id}) 
 
-                        POSTGRES.update('syst', data, conditions)
+                        POSTGRES.update('syst', data_update, conditions)
 
                     if data['type'] == 'child_taps':
 
@@ -78,8 +78,8 @@ async def app(websocket, path):
 
                                     CLIENTS[response['syst_id']] = websocket
 
-                                data = {}
-                                data['state'] = True
+                                data_update = {}
+                                data_update['state'] = True
 
                                 conditions = []
                                 conditions.append({
@@ -87,7 +87,7 @@ async def app(websocket, path):
                                     "con": "=",
                                     "val": response['syst_id']}) 
 
-                                POSTGRES.update('syst', data, conditions)
+                                POSTGRES.update('syst', data_update, conditions)
 
                     if data['type'] == 'offline':
 
@@ -108,8 +108,8 @@ async def app(websocket, path):
 
                                     else:
 
-                                        data = {}
-                                        data['state'] = False
+                                        data_update = {}
+                                        data_update['state'] = False
 
                                         conditions = []
                                         conditions.append({
@@ -117,7 +117,7 @@ async def app(websocket, path):
                                             "con": "=",
                                             "val": response['syst_id']}) 
 
-                                        POSTGRES.update('syst', data, conditions)
+                                        POSTGRES.update('syst', data_update, conditions)
 
                                 CLIENTS = new_users
                                 log_sys = "New CLIENTS: {0}".format(CLIENTS)
