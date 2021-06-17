@@ -47,6 +47,17 @@ async def app(websocket, path):
                     # log_sys = "CLIENTS: {0}".format(CLIENTS)
                     # syslog.syslog(log_sys)
 
+                    if data['type'] == 'child_taps':
+
+                        for online_tap in data['online_taps']:
+
+                            sql_str = " SELECT syst_id FROM syst where"
+                            sql_str += " syst_id like 'system:{0}%'".format(online_tap)
+                            response = POSTGRES.query_fetch_one(sql_str)
+                            if response:
+
+                                CLIENTS[response['syst_id']] = websocket
+
             if path == '/update-settings':
 
                 # log_sys = "BEFORE CLIENTS: {0}".format(CLIENTS)
