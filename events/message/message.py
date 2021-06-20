@@ -1504,7 +1504,6 @@ def validate_data(data):
                 tmp['stagn_flsh_d'] = '0' + str(data['stagn_flsh_d']) + ":00 minutes"
 
 
-
     if "stagn_flsh_u_dep" in data:
 
         tmp['stagn_flsh_u_dep'] = data['stagn_flsh_u_dep']
