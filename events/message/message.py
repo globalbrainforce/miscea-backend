@@ -398,7 +398,8 @@ def check_settings(data):
         if 'description' in default.keys():
             system['description'] = default['description']
 
-        system['soap_dose'] = default['soap_dose']
+        if 'soap_dose' in default.keys():
+            system['soap_dose'] = default['soap_dose']
 
         if 'disinfect_dose' in default.keys():
             system['disinfect_dose'] = default['disinfect_dose']
