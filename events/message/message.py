@@ -1,4 +1,4 @@
-  """ MESSAGE """
+""" MESSAGE """
 import json
 import time
 import asyncio
