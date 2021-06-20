@@ -38,7 +38,15 @@ SYSTEM_KEYS = [
     'clean_mode',
     'flow_heater_mode',
     'ir_range',
-    'description'
+    'description',
+    'stagn_flsh_up_power',
+    'end_point_filter_mode',
+    'hand_disinfection_tmr',
+    'hand_washing_tmr',
+    'public_mode',
+    'first_wtr_cycle_delay',
+    'first_wtr_cycle_d',
+    'second_wtr_cycle_d',
 ]
 
 async def message(websocket, data):
@@ -426,6 +434,30 @@ def check_settings(data):
         if 'ir_range' in default.keys():
             system['ir_range'] = default['ir_range']
 
+        if 'stagn_flsh_up_power' in default.keys():
+            system['stagn_flsh_up_power'] = default['stagn_flsh_up_power']
+
+        if 'end_point_filter_mode' in default.keys():
+            system['end_point_filter_mode'] = default['end_point_filter_mode']
+
+        if 'hand_disinfection_tmr' in default.keys():
+            system['hand_disinfection_tmr'] = default['hand_disinfection_tmr']
+
+        if 'hand_washing_tmr' in default.keys():
+            system['hand_washing_tmr'] = default['hand_washing_tmr']
+
+        if 'public_mode' in default.keys():
+            system['public_mode'] = default['public_mode']
+
+        if 'first_wtr_cycle_delay' in default.keys():
+            system['first_wtr_cycle_delay'] = default['first_wtr_cycle_delay']
+
+        if 'first_wtr_cycle_d' in default.keys():
+            system['first_wtr_cycle_d'] = default['first_wtr_cycle_d']
+
+        if 'second_wtr_cycle_d' in default.keys():
+            system['second_wtr_cycle_d'] = default['second_wtr_cycle_d']
+
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
         system['network_id'] = network_id
@@ -711,6 +743,30 @@ def check_settings(data):
 
             if 'ir_range' in default.keys():
                 system_info['ir_range'] = default['ir_range']
+
+            if 'stagn_flsh_up_power' in default.keys():
+                system_info['stagn_flsh_up_power'] = default['stagn_flsh_up_power']
+
+            if 'end_point_filter_mode' in default.keys():
+                system_info['end_point_filter_mode'] = default['end_point_filter_mode']
+
+            if 'hand_disinfection_tmr' in default.keys():
+                system_info['hand_disinfection_tmr'] = default['hand_disinfection_tmr']
+
+            if 'hand_washing_tmr' in default.keys():
+                system_info['hand_washing_tmr'] = default['hand_washing_tmr']
+
+            if 'public_mode' in default.keys():
+                system_info['public_mode'] = default['public_mode']
+
+            if 'first_wtr_cycle_delay' in default.keys():
+                system_info['first_wtr_cycle_delay'] = default['first_wtr_cycle_delay']
+
+            if 'first_wtr_cycle_d' in default.keys():
+                system_info['first_wtr_cycle_d'] = default['first_wtr_cycle_d']
+
+            if 'second_wtr_cycle_d' in default.keys():
+                system_info['second_wtr_cycle_d'] = default['second_wtr_cycle_d']
 
             syslog.syslog("++++++++ UPDATE SETTINGS ++++++++")
             syslog.syslog(json.dumps(system_info))
@@ -1696,6 +1752,63 @@ def validate_data(data):
         tmp['ir_range'] = data['ir_range']
         if type(data['ir_range']) in [int, float]:
             tmp['ir_range'] = format_units(data['ir_range'], "centimeter")
+
+    if "stagn_flsh_up_power" in data:
+
+        tmp['stagn_flsh_up_power'] = data['stagn_flsh_up_power']
+        if data['stagn_flsh_up_power'] == 0:
+            tmp['stagn_flsh_up_power'] = "Off"
+
+        if data['stagn_flsh_up_power'] == 1:
+            tmp['stagn_flsh_up_power'] = "ON"
+
+    if "end_point_filter_mode" in data:
+
+        tmp['end_point_filter_mode'] = data['end_point_filter_mode']
+        if data['end_point_filter_mode'] == 0:
+            tmp['end_point_filter_mode'] = "Off"
+
+        if data['end_point_filter_mode'] == 1:
+            tmp['end_point_filter_mode'] = "ON"
+
+    if "hand_disinfection_tmr" in data:
+
+        tmp['hand_disinfection_tmr'] = data['hand_disinfection_tmr']
+        if type(data['hand_disinfection_tmr']) == int:
+            tmp['hand_disinfection_tmr'] = format_units(data['hand_disinfection_tmr'], "second")
+
+    if "hand_washing_tmr" in data:
+
+        tmp['hand_washing_tmr'] = data['hand_washing_tmr']
+        if type(data['hand_washing_tmr']) == int:
+            tmp['hand_washing_tmr'] = format_units(data['hand_washing_tmr'], "second")
+
+    if "public_mode" in data:
+
+        tmp['public_mode'] = data['public_mode']
+        if data['public_mode'] == 0:
+            tmp['public_mode'] = "Off"
+
+        if data['public_mode'] == 1:
+            tmp['public_mode'] = "ON"
+
+    if "first_wtr_cycle_delay" in data:
+
+        tmp['first_wtr_cycle_delay'] = data['first_wtr_cycle_delay']
+        if type(data['first_wtr_cycle_delay']) == int:
+            tmp['first_wtr_cycle_delay'] = format_units(data['first_wtr_cycle_delay'], "second")
+
+    if "first_wtr_cycle_d" in data:
+
+        tmp['first_wtr_cycle_d'] = data['first_wtr_cycle_d']
+        if type(data['first_wtr_cycle_d']) == int:
+            tmp['first_wtr_cycle_d'] = format_units(data['first_wtr_cycle_d'], "second")
+
+    if "second_wtr_cycle_d" in data:
+
+        tmp['second_wtr_cycle_d'] = data['second_wtr_cycle_d']
+        if type(data['second_wtr_cycle_d']) == int:
+            tmp['second_wtr_cycle_d'] = format_units(data['second_wtr_cycle_d'], "second")
 
     for key in tmp.keys():
 
