@@ -93,8 +93,10 @@ async def app(websocket, path):
 
                         for offtap in data['offline_taps'] or []:
 
-                            sql_str = " SELECT syst_id FROM syst where"
-                            sql_str += " syst_id like 'system:{0}%'".format(offtap)
+
+                            sql_str = "SELECT syst_id FROM syst where"
+                            sql_str += " syst_id like 'system:{0}%'".format(offtap[:12])
+                            sql_str += " AND syst_id like '%{0}'".format(offtap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
                             if response:
 
