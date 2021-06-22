@@ -1850,7 +1850,7 @@ def get_system_details(account_id, syst_id, product_type_name):
         if account_syst:
 
             # CREATE NEW SYSTEM NAME
-            system_number = int(account_syst['system_name'].split(' ')[1]) + 1
+            system_number = int(account_syst['system_name'].split(' ')[-1]) + 1
             system_name = "{0} {1}".format(product_type_name, system_number)
 
             # # GET DEFAULT GROUP
