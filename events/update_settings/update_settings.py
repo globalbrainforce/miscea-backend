@@ -374,10 +374,10 @@ def revalidate_data(data):
         if data['light_effect'] == "Off":
             tmp['light_effect'] = 0
 
-        if data['light_effect'] == "On":
+        if data['light_effect'] == "Pulse":
             tmp['light_effect'] = 1
 
-        if data['light_effect'] == "Pulse":
+        if data['light_effect'] == "On":
             tmp['light_effect'] = 2
 
     if "beep_tone" in data:
@@ -430,6 +430,117 @@ def revalidate_data(data):
         else:
 
             tmp['ir_range'] = data['ir_range']
+
+    if "stagn_flsh_up_power" in data:
+
+        if data['stagn_flsh_up_power'] != "":
+
+            tmp['stagn_flsh_up_power'] = data['stagn_flsh_up_power']
+            if data['stagn_flsh_up_power'] == "Off":
+                tmp['stagn_flsh_up_power'] = 0
+
+            if data['stagn_flsh_up_power'] == "ON":
+                tmp['stagn_flsh_up_power'] = 1
+
+        else:
+
+            tmp['stagn_flsh_up_power'] = data['stagn_flsh_up_power']
+
+    if "end_point_filter_mode" in data:
+
+        if data['end_point_filter_mode'] != "":
+
+            tmp['end_point_filter_mode'] = data['end_point_filter_mode']
+            if data['end_point_filter_mode'] == "Off":
+                tmp['end_point_filter_mode'] = 0
+
+            if data['end_point_filter_mode'] == "ON":
+                tmp['end_point_filter_mode'] = 1
+
+        else:
+
+            tmp['end_point_filter_mode'] = data['end_point_filter_mode']
+
+    if "hand_disinfection_tmr" in data:
+
+        tmp['hand_disinfection_tmr'] = data['hand_disinfection_tmr']
+        if not type(data['hand_disinfection_tmr']) == int:
+
+            if data['hand_disinfection_tmr'] != "":
+
+                tmp['hand_disinfection_tmr'] = reformat_units(data['hand_disinfection_tmr'])
+
+            else:
+
+                tmp['hand_disinfection_tmr'] = data['hand_disinfection_tmr']
+
+    if "hand_washing_tmr" in data:
+
+        tmp['hand_washing_tmr'] = data['hand_washing_tmr']
+        if not type(data['hand_washing_tmr']) == int:
+
+            if data['hand_washing_tmr'] != "":
+
+                tmp['hand_washing_tmr'] = reformat_units(data['hand_washing_tmr'])
+
+            else:
+
+                tmp['hand_washing_tmr'] = data['hand_washing_tmr']
+
+    if "public_mode" in data:
+
+        if data['public_mode'] != "":
+
+            tmp['public_mode'] = data['public_mode']
+            if data['public_mode'] == "Off":
+                tmp['public_mode'] = 0
+
+            if data['public_mode'] == "ON":
+                tmp['public_mode'] = 1
+
+        else:
+
+            tmp['public_mode'] = data['public_mode']
+
+    if "first_wtr_cycle_delay" in data:
+
+        tmp['first_wtr_cycle_delay'] = data['first_wtr_cycle_delay']
+        if not type(data['first_wtr_cycle_delay']) == int:
+
+            if data['first_wtr_cycle_delay'] != "":
+
+                tmp['first_wtr_cycle_delay'] = reformat_units(data['first_wtr_cycle_delay'])
+
+            else:
+
+                tmp['first_wtr_cycle_delay'] = data['first_wtr_cycle_delay']
+
+    if "first_wtr_cycle_d" in data:
+
+        tmp['first_wtr_cycle_d'] = data['first_wtr_cycle_d']
+        if not type(data['first_wtr_cycle_d']) == int:
+
+            if data['first_wtr_cycle_d'] != "":
+
+                tmp['first_wtr_cycle_d'] = reformat_units(data['first_wtr_cycle_d'])
+
+            else:
+
+                tmp['first_wtr_cycle_d'] = data['first_wtr_cycle_d']
+
+    if "second_wtr_cycle_d" in data:
+
+        tmp['second_wtr_cycle_d'] = data['second_wtr_cycle_d']
+        if not type(data['second_wtr_cycle_d']) == int:
+
+            if data['second_wtr_cycle_d'] != "":
+
+                tmp['second_wtr_cycle_d'] = reformat_units(data['second_wtr_cycle_d'])
+
+            else:
+
+                tmp['second_wtr_cycle_d'] = data['second_wtr_cycle_d']
+
 
     for key in tmp.keys():
 

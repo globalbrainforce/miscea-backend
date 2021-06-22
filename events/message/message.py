@@ -1713,10 +1713,10 @@ def validate_data(data):
             tmp['light_effect'] = "Off"
 
         if data['light_effect'] == 1:
-            tmp['light_effect'] = "On"
+            tmp['light_effect'] = "Pulse"
 
         if data['light_effect'] == 2:
-            tmp['light_effect'] = "Pulse"
+            tmp['light_effect'] = "On"
 
     if "beep_tone" in data:
 
