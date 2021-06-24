@@ -481,3 +481,8 @@ class Utils():
             data[key] = tmp[key]
 
         return data
+
+def reformat_units(value):
+    """ REFORMAT """
+
+    return float(value.split(" ")[0])
