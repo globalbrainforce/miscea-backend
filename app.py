@@ -88,7 +88,8 @@ async def app(websocket, path):
                             syslog.syslog("PUMAPASOK DITO!!!")
 
                             sql_str = " SELECT syst_id, need_to_update FROM syst where"
-                            sql_str += " syst_id like 'system:{0}%'".format(online_tap)
+                            sql_str += " syst_id like 'system:{0}%'".format(online_tap[:12])
+                            sql_str += " AND syst_id like '%{0}'".format(online_tap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
                             syslog.syslog("response: {0}".format(response))
                             if response:
