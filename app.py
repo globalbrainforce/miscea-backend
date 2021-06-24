@@ -109,6 +109,7 @@ async def app(websocket, path):
                                 POSTGRES.update('syst', data_update, conditions)
 
                                 # CHECK IF TAP SETTINGS NEEDS UPDATE
+                                syslog.syslog("need_to_update: {0} -> {1}".format(response['need_to_update'], tap_id))
                                 if response['need_to_update']:
                                     # msg_id = data['msg_id']
                                     system_info = COUCH_QUERY.get_by_id(tap_id)
