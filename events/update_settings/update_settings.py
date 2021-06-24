@@ -84,9 +84,3 @@ async def update_settings(websocket, data, users):
     await asyncio.wait([websocket.send(message)])
 
     return 1
-
-def reformat_units(value):
-    """ REFORMAT """
-
-    return float(value.split(" ")[0])
-
