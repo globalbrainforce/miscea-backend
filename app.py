@@ -1,4 +1,5 @@
 """ APP """
+import time
 import syslog
 import asyncio
 import json
@@ -9,10 +10,14 @@ from events.auth import auth
 from events.message import message
 from events.update_settings import update_settings
 from library.postgresql_queries import PostgreSQL
+from library.couch_queries import Queries
+from library.utils import Utils
 
 logging.basicConfig()
 CLIENTS = {}
 POSTGRES = PostgreSQL()
+UTILS = Utils()
+COUCH_QUERY = Queries()
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
@@ -69,14 +74,15 @@ async def app(websocket, path):
 
                         for online_tap in data['online_taps'] or []:
 
-                            sql_str = " SELECT syst_id FROM syst where"
+                            sql_str = " SELECT syst_id, need_to_update FROM syst where"
                             sql_str += " syst_id like 'system:{0}%'".format(online_tap)
                             response = POSTGRES.query_fetch_one(sql_str)
                             if response:
+                                tap_id = response['syst_id']
 
                                 if not websocket_id in CLIENTS.keys():
 
-                                    CLIENTS[response['syst_id']] = websocket
+                                    CLIENTS[tap_id] = websocket
 
                                 data_update = {}
                                 data_update['state'] = True
@@ -85,9 +91,24 @@ async def app(websocket, path):
                                 conditions.append({
                                     "col": "syst_id",
                                     "con": "=",
-                                    "val": response['syst_id']}) 
+                                    "val": tap_id}) 
 
                                 POSTGRES.update('syst', data_update, conditions)
+
+                                # CHECK IF TAP SETTINGS NEEDS UPDATE
+                                if response['need_to_update']:
+                                    # msg_id = data['msg_id']
+                                    system_info = COUCH_QUERY.get_by_id(tap_id)
+                                    system_info = UTILS.revalidate_data(system_info)
+                                    syslog.syslog("++++++++ UPDATE TAP SETTINGS ++++++++")
+                                    syslog.syslog(json.dumps(system_info))
+                                    syslog.syslog("======== UPDATE TAP SETTINGS ========")
+                                    system_info['type'] = 'message'
+                                    system_info['system_id'] = tap_id
+                                    system_info['msg_id'] = time.time()
+                                    system_info['status'] = 'update'
+                                    system_info = json.dumps(system_info)
+                                    await asyncio.wait([websocket.send(system_info)])
 
                     if data['type'] == 'offline':
 
