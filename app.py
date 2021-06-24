@@ -19,6 +19,17 @@ POSTGRES = PostgreSQL()
 UTILS = Utils()
 COUCH_QUERY = Queries()
 
+DATA_UPDATE = {}
+DATA_UPDATE['state'] = False
+
+CONDITIONS = []
+CONDITIONS.append({
+    "col": "state",
+    "con": "=",
+    "val": True}) 
+
+POSTGRES.update('syst', DATA_UPDATE, CONDITIONS)
+
 async def app(websocket, path):
     """ MAIN APPLICATION """
 
