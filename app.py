@@ -85,13 +85,10 @@ async def app(websocket, path):
 
                         for online_tap in data['online_taps'] or []:
 
-                            syslog.syslog("PUMAPASOK DITO!!!")
-
                             sql_str = " SELECT syst_id, need_to_update FROM syst where"
                             sql_str += " syst_id like 'system:{0}%'".format(online_tap[:12])
                             sql_str += " AND syst_id like '%{0}'".format(online_tap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
-                            syslog.syslog("response: {0}".format(response))
                             if response:
                                 tap_id = response['syst_id']
 
@@ -111,7 +108,6 @@ async def app(websocket, path):
                                 POSTGRES.update('syst', data_update, conditions)
 
                                 # CHECK IF TAP SETTINGS NEEDS UPDATE
-                                syslog.syslog("need_to_update: {0} -> {1}".format(response['need_to_update'], tap_id))
                                 if response['need_to_update']:
                                     # msg_id = data['msg_id']
                                     system_info = COUCH_QUERY.get_by_id(tap_id)
@@ -125,6 +121,17 @@ async def app(websocket, path):
                                     system_info['status'] = 'update'
                                     system_info = json.dumps(system_info)
                                     await asyncio.wait([websocket.send(system_info)])
+
+                                    data_update = {}
+                                    data_update['need_to_update'] = False
+
+                                    conditions = []
+                                    conditions.append({
+                                        "col": "syst_id",
+                                        "con": "=",
+                                        "val": tap_id}) 
+
+                                    POSTGRES.update('syst', data_update, conditions)
 
                     if data['type'] == 'offline':
 
