@@ -85,6 +85,8 @@ async def app(websocket, path):
 
                         for online_tap in data['online_taps'] or []:
 
+                            syslog.syslog("PUMAPASOK DITO!!!")
+
                             sql_str = " SELECT syst_id, need_to_update FROM syst where"
                             sql_str += " syst_id like 'system:{0}%'".format(online_tap)
                             response = POSTGRES.query_fetch_one(sql_str)
