@@ -23,7 +23,7 @@ class Utils():
 
         return 1
 
-    def revalidate_data(data):
+    def revalidate_data(self, data):
         """ Validate Data"""
 
         tmp = {}
