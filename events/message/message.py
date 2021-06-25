@@ -645,6 +645,8 @@ def check_settings(data):
 
                     # SET SYSTEM NAME FOR USER
                     product_type_name = pname['product_type_name']
+                    if product_type_name.upper() in ['CLASSIC PURE S', 'CLASSIC PURE W']:
+                        product_type_name = "Classic"
 
                     # GET NEXT PRODUCT TYPE NAME
                     system_details = get_system_details(account_id, system_id, product_type_name)
