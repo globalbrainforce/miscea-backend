@@ -516,6 +516,9 @@ def check_settings(data):
             # SET SYSTEM NAME FOR USER
             product_type_name = pname['product_type_name']
 
+            if product_type_name.upper() in ['CLASSIC PURE S', 'CLASSIC PURE W']:
+                product_type_name = "Classic"
+
             # GET NEXT PRODUCT TYPE NAME
             system_details = get_system_details(account_id, system_id, product_type_name)
             system_name = system_details['system_name']
@@ -584,10 +587,9 @@ def check_settings(data):
                     for tap in taps or []:
 
                         tap_product_type_name = tap['system_name'].split(" ")[0]
-                        print(">>>", tap_product_type_name)
                         tap['new_system_name'] = tap_product_type_name + " " + str(tap_names[tap_product_type_name])
                         tap_names[tap_product_type_name] = tap_names[tap_product_type_name] + 1
-                        print("New Sname: ", tap['new_system_name'], tap_names[tap_product_type_name])
+
                         data = {}
                         data['system_name'] = tap['new_system_name']
 
@@ -1851,7 +1853,7 @@ def get_system_details(account_id, syst_id, product_type_name):
         account_syst = POSTGRES.query_fetch_one(sql_str)
 
         if account_syst:
-            print("Product Type: ", product_type_name, "AS", account_syst['system_name'])
+
             # CREATE NEW SYSTEM NAME
             system_number = int(account_syst['system_name'].split(' ')[-1]) + 1
             system_name = "{0} {1}".format(product_type_name, system_number)
