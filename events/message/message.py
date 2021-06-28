@@ -140,6 +140,7 @@ async def message(websocket, data):
                     "con": "=",
                     "val": system_id}) 
 
+                syslog.syslog("Log Update!")
                 POSTGRES.update('syst', data_update, conditions)
                 return 1
 
