@@ -673,7 +673,12 @@ def check_settings(data):
 
                     is_update = True
 
-        if is_update:
+
+        sql_str = "SELECT syst_id, need_to_update FROM syst where"
+        sql_str += " syst_id='{0}'".format(system_id)
+        response = POSTGRES.query_fetch_one(sql_str)
+
+        if is_update or response['need_to_update']:
 
             # SERVER NEED TO UPDATE TOP CODE HERE
             if not default['description'] == system_info['description']:
