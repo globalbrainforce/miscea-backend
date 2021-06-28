@@ -131,6 +131,16 @@ async def message(websocket, data):
                 system_info = json.dumps(system_info)
                 await asyncio.wait([websocket.send(system_info)])
 
+                data_update = {}
+                data_update['need_to_update'] = False
+
+                conditions = []
+                conditions.append({
+                    "col": "syst_id",
+                    "con": "=",
+                    "val": system_id}) 
+
+                POSTGRES.update('syst', data_update, conditions)
                 return 1
 
         elif data['type'] in ['soap-activity', 'soap']:
