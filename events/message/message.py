@@ -800,7 +800,7 @@ def check_settings(data):
 
                 POSTGRES.update('syst', data, conditions)
 
-            return 0
+            return 1
 
         return 0
 
