@@ -45,7 +45,9 @@ async def app(websocket, path):
         async for webs in websocket:
 
             data = json.loads(webs)
-            print("****Logs****", data)
+            syslog.syslog("****Logs****")
+            syslog.syslog(json.dumps(data))
+            syslog.syslog("********")
             if path == '/auth':
 
                 await auth.auth(websocket, data)
@@ -89,7 +91,10 @@ async def app(websocket, path):
                             sql_str += " syst_id like 'system:{0}%'".format(online_tap[:12])
                             sql_str += " AND syst_id like '%{0}'".format(online_tap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
-                            print("Child Taps: ", sql_str)
+
+                            syslog.syslog("***Child*****")
+                            syslog.syslog(sql_str)
+                            syslog.syslog("********")
                             if response:
                                 tap_id = response['syst_id']
 
@@ -143,7 +148,9 @@ async def app(websocket, path):
                             sql_str += " syst_id like 'system:{0}%'".format(offtap[:12])
                             sql_str += " AND syst_id like '%{0}'".format(offtap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
-                            print("Offline Taps: ", sql_str)
+                            syslog.syslog("***Child*****")
+                            syslog.syslog(sql_str)
+                            syslog.syslog("********")
                             if response:
 
                                 new_users = {}
