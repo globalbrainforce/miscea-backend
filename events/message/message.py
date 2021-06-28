@@ -10,12 +10,14 @@ from library.couch_queries import Queries
 from library.sha_security import ShaSecurity
 from library.couch_database import CouchDatabase
 from library.postgresql_queries import PostgreSQL
+from library.utils import Utils
 
 COMMON = Common()
 COUCH_QUERY = Queries()
 POSTGRES = PostgreSQL()
 COUCHDB = CouchDatabase()
 SHA_SECURITY = ShaSecurity()
+UTILS = Utils()
 ESTABLISHMENT = 'establishment:381741ac4b5f4a4785ffdf2e025975fc'
 
 SYSTEM_KEYS = [
