@@ -682,7 +682,7 @@ def check_settings(data):
         sql_str += " syst_id='{0}'".format(system_id)
         response = POSTGRES.query_fetch_one(sql_str)
 
-        if is_update or response['need_to_update']:
+        if is_update:
 
             # SERVER NEED TO UPDATE TOP CODE HERE
             if not default['description'] == system_info['description']:
@@ -804,7 +804,11 @@ def check_settings(data):
 
                 POSTGRES.update('syst', data, conditions)
 
-            return 1
+            if response['need_to_update']:
+
+                return 1
+
+            return 0
 
         return 0
 
