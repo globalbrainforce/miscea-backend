@@ -131,7 +131,7 @@ async def app(websocket, path):
                                         "con": "=",
                                         "val": tap_id}) 
 
-                                    POSTGRES.update('syst', data_update, conditions)
+                                    POSTGRES.update('syst', data_update, conditions, log=True)
 
                     if data['type'] == 'offline':
 
