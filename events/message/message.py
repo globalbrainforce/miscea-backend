@@ -687,10 +687,13 @@ def check_settings(data):
 
                     is_update = True
 
-
         sql_str = "SELECT syst_id, need_to_update FROM syst where"
         sql_str += " syst_id='{0}'".format(system_id)
         response = POSTGRES.query_fetch_one(sql_str)
+
+        if response['need_to_update']:
+
+            return 1
 
         if is_update:
 
@@ -813,10 +816,6 @@ def check_settings(data):
                     "val": system_id})  
 
                 POSTGRES.update('syst', data, conditions)
-
-            if response['need_to_update']:
-
-                return 1
 
             return 0
 
