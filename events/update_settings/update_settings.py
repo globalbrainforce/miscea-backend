@@ -73,6 +73,17 @@ async def update_settings(websocket, data, users):
             system_info = json.dumps(system_info)
             await asyncio.wait([item[1].send(system_info)])
 
+            data_update = {}
+            data_update['need_to_update'] = False
+
+            conditions = []
+            conditions.append({
+                "col": "syst_id",
+                "con": "=",
+                "val": system_id}) 
+
+            POSTGRES.update('syst', data_update, conditions)
+
             return 1
 
     # syslog.syslog("== UPDATEd ==")
