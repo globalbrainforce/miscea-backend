@@ -10,12 +10,14 @@ from library.couch_queries import Queries
 from library.sha_security import ShaSecurity
 from library.couch_database import CouchDatabase
 from library.postgresql_queries import PostgreSQL
+from library.utils import Utils
 
 COMMON = Common()
 COUCH_QUERY = Queries()
 POSTGRES = PostgreSQL()
 COUCHDB = CouchDatabase()
 SHA_SECURITY = ShaSecurity()
+UTILS = Utils()
 ESTABLISHMENT = 'establishment:381741ac4b5f4a4785ffdf2e025975fc'
 
 SYSTEM_KEYS = [
@@ -116,10 +118,12 @@ async def message(websocket, data):
 
         if data['type'] == 'settings':
             mtype = 'settings'
-            system_info = check_settings(data)
+            system_info_set = check_settings(data)
 
-            if system_info:
+            if system_info_set:
 
+                system_info = COUCH_QUERY.get_by_id(system_id)
+                system_info = UTILS.revalidate_data(system_info)
                 system_info['type'] = mtype
                 system_info['system_id'] = system_id
                 system_info['msg_id'] = msg_id
@@ -127,6 +131,16 @@ async def message(websocket, data):
                 system_info = json.dumps(system_info)
                 await asyncio.wait([websocket.send(system_info)])
 
+                data_update = {}
+                data_update['need_to_update'] = False
+
+                conditions = []
+                conditions.append({
+                    "col": "syst_id",
+                    "con": "=",
+                    "val": system_id}) 
+
+                POSTGRES.update('syst', data_update, conditions)
                 return 1
 
         elif data['type'] in ['soap-activity', 'soap']:
@@ -672,6 +686,14 @@ def check_settings(data):
                 if not default[system_key] == system_info[system_key]:
 
                     is_update = True
+
+        sql_str = "SELECT syst_id, need_to_update FROM syst where"
+        sql_str += " syst_id='{0}'".format(system_id)
+        response = POSTGRES.query_fetch_one(sql_str)
+
+        if response['need_to_update']:
+
+            return 1
 
         if is_update:
 
