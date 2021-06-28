@@ -89,7 +89,7 @@ async def app(websocket, path):
                             sql_str += " syst_id like 'system:{0}%'".format(online_tap[:12])
                             sql_str += " AND syst_id like '%{0}'".format(online_tap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
-                            syslog.syslog("Child Taps: ", sql_str)
+                            print("Child Taps: ", sql_str)
                             if response:
                                 tap_id = response['syst_id']
 
@@ -143,7 +143,7 @@ async def app(websocket, path):
                             sql_str += " syst_id like 'system:{0}%'".format(offtap[:12])
                             sql_str += " AND syst_id like '%{0}'".format(offtap[-8:])
                             response = POSTGRES.query_fetch_one(sql_str)
-                            syslog.syslog("Offline Taps: ", sql_str)
+                            print("Offline Taps: ", sql_str)
                             if response:
 
                                 new_users = {}
