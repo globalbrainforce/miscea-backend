@@ -116,10 +116,12 @@ async def message(websocket, data):
 
         if data['type'] == 'settings':
             mtype = 'settings'
-            system_info = check_settings(data)
+            system_info_set = check_settings(data)
 
-            if system_info:
+            if system_info_set:
 
+                system_info = COUCH_QUERY.get_by_id(system_id)
+                system_info = UTILS.revalidate_data(system_info)
                 system_info['type'] = mtype
                 system_info['system_id'] = system_id
                 system_info['msg_id'] = msg_id
