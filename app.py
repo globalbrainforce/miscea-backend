@@ -262,5 +262,5 @@ MAIN = websockets.serve(
 
 # MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
-# asyncio.get_event_loop().run_until_complete(MAIN)
-# asyncio.get_event_loop().run_forever()
+asyncio.get_event_loop().run_until_complete(MAIN)
+asyncio.get_event_loop().run_forever()
