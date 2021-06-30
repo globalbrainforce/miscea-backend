@@ -240,7 +240,7 @@ ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert
 hostname= "websocket.miscea.com"
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ssl_context.wrap_socket(s, server_hostname=hostname)
+ssl_sock = ssl_context.wrap_socket(s, server_hostname=hostname)
 ssl_sock.connect((hostname, 443))
 
 
