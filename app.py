@@ -253,8 +253,7 @@ ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
 
 MAIN = websockets.serve(
-    # app, "0.0.0.0", 8765, ssl=ssl_context
-    app, hostname, 443, ssl=ssl_context
+    app, "0.0.0.0", 8765, ssl=ssl_context
 )
 
 
