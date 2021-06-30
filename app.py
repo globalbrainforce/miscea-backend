@@ -260,7 +260,7 @@ hostname = 'websocket.miscea.com'
 
 
 
-MAIN = websockets.serve(app, "0.0.0.0", 8765)
+MAIN = websockets.serve(app, "0.0.0.0", 5080)
 
 asyncio.get_event_loop().run_until_complete(MAIN)
 asyncio.get_event_loop().run_forever()
