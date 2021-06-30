@@ -6,7 +6,6 @@ import syslog
 import asyncio
 import json
 import logging
-import pathlib
 import websockets
 
 from events.auth import auth
@@ -227,25 +226,20 @@ async def app(websocket, path):
         log_sys = "New CLIENTS: {0}".format(CLIENTS)
         syslog.syslog(log_sys)
 
-# ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-ssl_context.verify_mode = ssl.CERT_REQUIRED
-ssl_context.check_hostname = True
+hostname = 'websocket.miscea.com'
+# PROTOCOL_TLS_CLIENT requires valid cert chain and hostname
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+context.load_verify_locations('/home/admin/cert/ssl-bundle.crt')
 
-# localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.pem")
-# ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert/miscea.key")
-ssl_context.load_cert_chain("/home/admin/cert/miscea.com.crt", "/home/admin/cert/miscea.key")
-
-# MAIN = websockets.serve(app, "0.0.0.0", 6789, ssl=ssl_context)
-hostname= "websocket.miscea.com"
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ssl_sock = ssl_context.wrap_socket(s, server_hostname=hostname)
-ssl_sock.connect((hostname, 443))
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+    with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+        print(ssock.version())
 
 
-# MAIN = websockets.serve(app, "0.0.0.0", ssl=ssl_context)
+
+
+# MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
 # asyncio.get_event_loop().run_until_complete(MAIN)
 # asyncio.get_event_loop().run_forever()
