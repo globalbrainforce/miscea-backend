@@ -53,20 +53,6 @@ SYSTEM_KEYS = [
 
 async def message(websocket, data):
 
-    # system_id = ""
-
-    # if data['type'] == 'settings':
-
-    #     # default = data['system_data']
-    #     default = data
-    #     system_id = default['system_id']
-
-    # else:
-
-    #     # default = data['activity']
-    #     default = data
-    #     system_id = default['system_id']
-
     default = data
     system_id = default['system_id']
     msg_id = default['msg_id']
@@ -159,13 +145,11 @@ async def message(websocket, data):
                 return 1
 
             sda = {}
-            # sda['_id'] = 'data#sa:' + str(SHA_SECURITY.generate_token(False))
             sda['_id'] = 'data#sa:' + str(msg_timestamp) + str(system_id.split(":")[1])
             sda['timestamp'] = activity['timestamp']
             sda['liquid_1_level'] = activity['liquid_1_level']
             sda['liquid_1_dose'] = activity['liquid_1_dose']
             sda['type'] = 'data'
-            # sda['system_id'] = activity['system_id']
             sda['system_id'] = system_id
             sda['establishment_id'] = ESTABLISHMENT
 
@@ -187,7 +171,6 @@ async def message(websocket, data):
 
             msg_timestamp = default['timestamp']
             mtype = 'disinfectant-activity'
-            # activity = data['activity']
             activity = data
 
             # VALIDATE SYSTEM ID
@@ -197,7 +180,6 @@ async def message(websocket, data):
                 return 1
 
             sda = {}
-            # sda['_id'] = 'data#da:' + str(SHA_SECURITY.generate_token(False))
             sda['_id'] = 'data#da:' + str(msg_timestamp) + str(system_id.split(":")[1])
             sda['timestamp'] = activity['timestamp']
             sda['liquid_2_level'] = activity['liquid_2_level']
@@ -224,10 +206,8 @@ async def message(websocket, data):
 
             msg_timestamp = default['timestamp']
             mtype = 'water-activity'
-            # activity = data['activity']
             activity = data
             system_id = activity['system_id']
-            # water_data_id = 'data#wa:' + str(SHA_SECURITY.generate_token(False))
             water_data_id = 'data#wa:' + str(msg_timestamp) + str(system_id.split(":")[1])
 
             # VALIDATE SYSTEM ID
@@ -246,7 +226,6 @@ async def message(websocket, data):
                     activity['reason'] = "Thermal disinfection"
 
             if type(activity['duration']) in [int, float]:
-                # activity['duration'] = format_units(data['duration'], "minute")
                 activity['duration'] = convert_duration(activity['duration'])
 
             if type(activity['temperature']) in [int, float]:
@@ -351,7 +330,6 @@ async def message(websocket, data):
 
 def check_settings(data):
 
-    # default = data['system_data']
     data = validate_data(data)
     default = data
     system_id = default['system_id']
@@ -1467,13 +1445,11 @@ def validate_data(data):
     if "soap_dose" in data:
         tmp['soap_dose'] = data['soap_dose']
         if type(data['soap_dose']) in [int, float]:
-            # if "milliliter" not in data['soap_dose']:
             tmp['soap_dose'] = format_units(data['soap_dose'], "milliliter")
 
     if "disinfect_dose" in data:
         tmp['disinfect_dose'] = data['disinfect_dose']
         if type(data['disinfect_dose']) in [int, float]:
-            # if "milliliter" not in data['disinfect_dose']:
             tmp['disinfect_dose'] = format_units(data['disinfect_dose'], "milliliter")
 
     if "init_wtr_temp" in data:
@@ -1516,8 +1492,6 @@ def validate_data(data):
     if "stagn_flsh_d" in data:
 
         tmp['stagn_flsh_d'] = data['stagn_flsh_d']
-
-        # if "minute"  not in data['stagn_flsh_d']:
         if type(data['stagn_flsh_d']) == int:
 
             if data['stagn_flsh_d'] < 2:
@@ -1706,7 +1680,6 @@ def validate_data(data):
 
         tmp['thrm_flsh_temp'] =  data['thrm_flsh_temp']
         if type(data['thrm_flsh_temp']) == int:
-        # if "Degrees Celsius" not in data['thrm_flsh_temp']:
             tmp['thrm_flsh_temp'] = "{0} Degrees Celsius".format(data['thrm_flsh_temp'])
 
     if "thrm_flsh_d" in data:
@@ -1730,9 +1703,6 @@ def validate_data(data):
                 seconds = '00'
 
             tmp['thrm_flsh_d'] = "{0}:{1} {2}".format(minutes, seconds, period)
-
-            # if float(temp) <= 1:
-            #     tmp['thrm_flsh_d'] = "{0} minute".format(temp)
 
     if "light_effect" in data:
 
@@ -1880,21 +1850,6 @@ def get_system_details(account_id, syst_id, product_type_name):
             # CREATE NEW SYSTEM NAME
             system_number = int(account_syst['system_name'].split(' ')[-1]) + 1
             system_name = "{0} {1}".format(product_type_name, system_number)
-
-            # # GET DEFAULT GROUP
-            # sql_str = "SELECT ag.group_id FROM account_grp ag"
-            # sql_str += " INNER JOIN grps g ON ag.group_id=g.group_id"
-            # sql_str += " WHERE g.group_name='Default Group' AND"
-            # sql_str += " ag.account_id='{0}'".format(account_id)
-            # account_grp = POSTGRES.query_fetch_one(sql_str)
-
-            # # INSERT NEW SYSTEM NUMBER
-            # to_insert = {}
-            # to_insert['account_id'] = account_id
-            # to_insert['group_id'] = account_grp['group_id']
-            # to_insert['syst_id'] = syst_id
-            # to_insert['system_name'] = system_name
-            # POSTGRES.insert('account_syst', to_insert)
 
         data["system_name"] = system_name
 

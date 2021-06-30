@@ -37,11 +37,6 @@ async def app(websocket, path):
 
     try:
 
-        # state_val = {}
-        # state_val['type'] = "state"
-        # state_val['value'] = 1
-
-        # await websocket.send(state_val)
         async for webs in websocket:
 
             data = json.loads(webs)
@@ -59,8 +54,6 @@ async def app(websocket, path):
 
                         CLIENTS[websocket_id] = websocket
 
-                    # log_sys = "CLIENTS: {0}".format(CLIENTS)
-                    # syslog.syslog(log_sys)
                     if data['type'] == 'settings':
 
                         system_id = data['system_id']
@@ -109,7 +102,6 @@ async def app(websocket, path):
 
                                 # CHECK IF TAP SETTINGS NEEDS UPDATE
                                 if response['need_to_update']:
-                                    # msg_id = data['msg_id']
                                     system_info = COUCH_QUERY.get_by_id(tap_id)
                                     system_info = UTILS.revalidate_data(system_info)
                                     syslog.syslog("++++++++ UPDATE TAP SETTINGS ++++++++")
@@ -136,7 +128,6 @@ async def app(websocket, path):
                     if data['type'] == 'offline':
 
                         for offtap in data['offline_taps'] or []:
-
 
                             sql_str = "SELECT syst_id FROM syst where"
                             sql_str += " syst_id like 'system:{0}%'".format(offtap[:12])
@@ -171,8 +162,6 @@ async def app(websocket, path):
 
             if path == '/update-settings':
 
-                # log_sys = "BEFORE CLIENTS: {0}".format(CLIENTS)
-                # syslog.syslog(log_sys)
                 await update_settings.update_settings(websocket, data, CLIENTS)
 
     except:
