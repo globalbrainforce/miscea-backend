@@ -256,8 +256,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ssl_context.wrap_socket(s, server_hostname=hostname)
 
 MAIN = websockets.serve(
-    # app, "0.0.0.0", 8765, ssl=ssl_context
-    app, hostname, ssl=ssl_context
+    app, "0.0.0.0", 8765, ssl=ssl_context
 )
 
 
