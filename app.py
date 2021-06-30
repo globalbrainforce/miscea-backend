@@ -1,12 +1,9 @@
 """ APP """
-import ssl
-import socket
 import time
 import syslog
 import asyncio
 import json
 import logging
-import pathlib
 import websockets
 
 from events.auth import auth
@@ -227,43 +224,7 @@ async def app(websocket, path):
         log_sys = "New CLIENTS: {0}".format(CLIENTS)
         syslog.syslog(log_sys)
 
-
-hostname = 'websocket.miscea.com'
-# # PROTOCOL_TLS_CLIENT requires valid cert chain and hostname
-# context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-# context.load_verify_locations('/home/admin/cert/ssl-bundle.crt')
-
-# with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
-#     with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-#         print(ssock.version())
-
-
-# context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-# context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
-
-# with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
-#     sock.bind(("0.0.0.0", 8443))
-#     sock.listen(5)
-#     with context.wrap_socket(sock, server_side=True) as ssock:
-#         conn, addr = ssock.accept()
-
-
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-# localhost_pem = pathlib.Path(__file__).with_name('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
-ssl_context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ssl_context.wrap_socket(s, server_hostname=hostname)
-
-MAIN = websockets.serve(
-    app, "0.0.0.0", 8765, ssl=ssl_context
-)
-
-
-
-
-
-# MAIN = websockets.serve(app, "0.0.0.0", 6789)
+MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
 asyncio.get_event_loop().run_until_complete(MAIN)
 asyncio.get_event_loop().run_forever()
