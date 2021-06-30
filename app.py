@@ -241,10 +241,10 @@ hostname= "websocket.miscea.com"
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ssl_context.wrap_socket(s, server_hostname=hostname)
-# ssl_sock.connect((hostname, 443))
+ssl_sock.connect((hostname, 443))
 
 
-MAIN = websockets.serve(app, "0.0.0.0", ssl=ssl_context)
+# MAIN = websockets.serve(app, "0.0.0.0", ssl=ssl_context)
 
-asyncio.get_event_loop().run_until_complete(MAIN)
-asyncio.get_event_loop().run_forever()
+# asyncio.get_event_loop().run_until_complete(MAIN)
+# asyncio.get_event_loop().run_forever()
