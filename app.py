@@ -1,4 +1,5 @@
 """ APP """
+import ssl
 import time
 import syslog
 import asyncio
@@ -224,7 +225,11 @@ async def app(websocket, path):
         log_sys = "New CLIENTS: {0}".format(CLIENTS)
         syslog.syslog(log_sys)
 
-MAIN = websockets.serve(app, "0.0.0.0", 6789)
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.crt")
+ssl_context.load_cert_chain(localhost_pem)
+
+MAIN = websockets.serve(app, "0.0.0.0", 6789, ssl=ssl_context)
 
 asyncio.get_event_loop().run_until_complete(MAIN)
 asyncio.get_event_loop().run_forever()
