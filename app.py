@@ -227,8 +227,8 @@ async def app(websocket, path):
         syslog.syslog(log_sys)
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.pem")
-ssl_context.load_cert_chain(localhost_pem)
+# localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.pem")
+ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert/miscea.key")
 
 MAIN = websockets.serve(app, "0.0.0.0", 6789, ssl=ssl_context)
 
