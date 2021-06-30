@@ -248,19 +248,19 @@ hostname = 'websocket.miscea.com'
 #         conn, addr = ssock.accept()
 
 
-# ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-# # localhost_pem = pathlib.Path(__file__).with_name('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
-# ssl_context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+# localhost_pem = pathlib.Path(__file__).with_name('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
+ssl_context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
 
-# MAIN = websockets.serve(
-#     app, "0.0.0.0", 8765, ssl=ssl_context
-# )
-
-
+MAIN = websockets.serve(
+    app, "0.0.0.0", 8765, ssl=ssl_context
+)
 
 
 
-MAIN = websockets.serve(app, "0.0.0.0", 5080)
+
+
+# MAIN = websockets.serve(app, "0.0.0.0", 6789)
 
 asyncio.get_event_loop().run_until_complete(MAIN)
 asyncio.get_event_loop().run_forever()
