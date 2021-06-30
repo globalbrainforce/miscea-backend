@@ -49,19 +49,8 @@ async def update_settings(websocket, data, users):
 
     # CHECK IF TAP IS ONLINE
     system_id = data['system_id']
-    if "message" in data:
-        log_sys = "Message: {0}".format(data['message'])
-        syslog.syslog(log_sys)
-        syslog.syslog(">>>> UPDATE SETTINGS <<<<")
-        log_sys = "SYSTEM ID: {0}".format(system_id)
-        syslog.syslog(log_sys)
-    # log_sys = "USERS LIST HERE: {0}".format(users)
-    # syslog.syslog(log_sys)
 
     for item in users.items():
-
-        # log_sys = "{0} == {1}".format(item[0], system_id)
-        # syslog.syslog(log_sys)
 
         if item[0] == system_id:
 
@@ -91,7 +80,6 @@ async def update_settings(websocket, data, users):
 
             return 1
 
-    # syslog.syslog("== UPDATEd ==")
     message = {}
     message['type'] = 'updated'
     message['time'] = time.time()
