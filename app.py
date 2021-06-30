@@ -6,6 +6,7 @@ import syslog
 import asyncio
 import json
 import logging
+import pathlib
 import websockets
 
 from events.auth import auth
