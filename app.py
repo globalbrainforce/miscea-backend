@@ -249,8 +249,8 @@ hostname = 'websocket.miscea.com'
 
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-localhost_pem = pathlib.Path(__file__).with_name('/home/admin/cert/miscea.com.crt')
-ssl_context.load_cert_chain(localhost_pem)
+# localhost_pem = pathlib.Path(__file__).with_name('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
+ssl_context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
 
 MAIN = websockets.serve(
     app, "localhost", 8765, ssl=ssl_context
