@@ -234,7 +234,8 @@ ssl_context.verify_mode = ssl.CERT_REQUIRED
 ssl_context.check_hostname = True
 
 # localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.pem")
-ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert/miscea.key")
+# ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert/miscea.key")
+ssl_context.load_cert_chain("/home/admin/cert/miscea.com.crt", "/home/admin/cert/miscea.key")
 
 # MAIN = websockets.serve(app, "0.0.0.0", 6789, ssl=ssl_context)
 hostname= "websocket.miscea.com"
