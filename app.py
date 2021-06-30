@@ -237,14 +237,25 @@ hostname = 'websocket.miscea.com'
 #         print(ssock.version())
 
 
-context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
+# context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+# context.load_cert_chain('/home/admin/cert/miscea.com.crt', '/home/admin/cert/miscea.key')
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
-    sock.bind((hostname, 443))
-    sock.listen(5)
-    with context.wrap_socket(sock, server_side=True) as ssock:
-        conn, addr = ssock.accept()
+# with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+#     sock.bind(("0.0.0.0", 8443))
+#     sock.listen(5)
+#     with context.wrap_socket(sock, server_side=True) as ssock:
+#         conn, addr = ssock.accept()
+
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+localhost_pem = pathlib.Path(__file__).with_name('/home/admin/cert/miscea.com.crt')
+ssl_context.load_cert_chain(localhost_pem)
+
+MAIN = websockets.serve(
+    app, "localhost", 8765, ssl=ssl_context
+)
+
+
 
 
 
