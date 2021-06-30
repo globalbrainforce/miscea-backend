@@ -230,7 +230,9 @@ ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 # localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.pem")
 ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert/miscea.key")
 
-MAIN = websockets.serve(app, "0.0.0.0", 6789, ssl=ssl_context)
+# MAIN = websockets.serve(app, "0.0.0.0", 6789, ssl=ssl_context)
+hostname= "websocket.miscea.com"
+MAIN = websockets.serve(app, server_hostname=hostname, ssl=ssl_context)
 
 asyncio.get_event_loop().run_until_complete(MAIN)
 asyncio.get_event_loop().run_forever()
