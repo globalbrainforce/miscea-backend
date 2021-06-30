@@ -227,7 +227,12 @@ async def app(websocket, path):
         log_sys = "New CLIENTS: {0}".format(CLIENTS)
         syslog.syslog(log_sys)
 
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+# ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+ssl_context.verify_mode = ssl.CERT_REQUIRED
+ssl_context.check_hostname = True
+
 # localhost_pem = pathlib.Path(__file__).with_name("/home/admin/cert/miscea.com.pem")
 ssl_context.load_cert_chain("/home/admin/cert/miscea.com.pem", "/home/admin/cert/miscea.key")
 
