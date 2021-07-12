@@ -331,7 +331,7 @@ class Utils():
                 if data['clean_mode'] == "Off":
                     tmp['clean_mode'] = 0
 
-                if data['clean_mode'] == "ON":
+                if data['clean_mode'] == "On":
                     tmp['clean_mode'] = 1
 
             else:
@@ -346,7 +346,7 @@ class Utils():
                 if data['flow_heater_mode'] == "Off":
                     tmp['flow_heater_mode'] = 0
 
-                if data['flow_heater_mode'] == "ON":
+                if data['flow_heater_mode'] == "On":
                     tmp['flow_heater_mode'] = 1
 
             else:
@@ -373,7 +373,7 @@ class Utils():
                 if data['stagn_flsh_up_power'] == "Off":
                     tmp['stagn_flsh_up_power'] = 0
 
-                if data['stagn_flsh_up_power'] == "ON":
+                if data['stagn_flsh_up_power'] == "On":
                     tmp['stagn_flsh_up_power'] = 1
 
             else:
@@ -388,7 +388,7 @@ class Utils():
                 if data['end_point_filter_mode'] == "Off":
                     tmp['end_point_filter_mode'] = 0
 
-                if data['end_point_filter_mode'] == "ON":
+                if data['end_point_filter_mode'] == "On":
                     tmp['end_point_filter_mode'] = 1
 
             else:
@@ -429,7 +429,7 @@ class Utils():
                 if data['public_mode'] == "Off":
                     tmp['public_mode'] = 0
 
-                if data['public_mode'] == "ON":
+                if data['public_mode'] == "On":
                     tmp['public_mode'] = 1
 
             else:

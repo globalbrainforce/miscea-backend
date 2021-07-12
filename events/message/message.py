@@ -1762,7 +1762,7 @@ def validate_data(data):
             tmp['clean_mode'] = "Off"
 
         if data['clean_mode'] == 1:
-            tmp['clean_mode'] = "ON"
+            tmp['clean_mode'] = "On"
 
 
     if "flow_heater_mode" in data:
@@ -1772,7 +1772,7 @@ def validate_data(data):
             tmp['flow_heater_mode'] = "Off"
 
         if data['flow_heater_mode'] == 1:
-            tmp['flow_heater_mode'] = "ON"
+            tmp['flow_heater_mode'] = "On"
 
     if "ir_range" in data:
 
@@ -1787,7 +1787,7 @@ def validate_data(data):
             tmp['stagn_flsh_up_power'] = "Off"
 
         if data['stagn_flsh_up_power'] == 1:
-            tmp['stagn_flsh_up_power'] = "ON"
+            tmp['stagn_flsh_up_power'] = "On"
 
     if "end_point_filter_mode" in data:
 
@@ -1796,7 +1796,7 @@ def validate_data(data):
             tmp['end_point_filter_mode'] = "Off"
 
         if data['end_point_filter_mode'] == 1:
-            tmp['end_point_filter_mode'] = "ON"
+            tmp['end_point_filter_mode'] = "On"
 
     if "hand_disinfection_tmr" in data:
 
@@ -1817,7 +1817,7 @@ def validate_data(data):
             tmp['public_mode'] = "Off"
 
         if data['public_mode'] == 1:
-            tmp['public_mode'] = "ON"
+            tmp['public_mode'] = "On"
 
     if "first_wtr_cycle_delay" in data:
 
