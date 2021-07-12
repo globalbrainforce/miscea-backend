@@ -30,14 +30,11 @@ class Utils():
         if "soap_dose" in data:
             tmp['soap_dose'] = data['soap_dose']
             if not type(data['soap_dose']) in [int, float]:
-                # if "milliliter" not in data['soap_dose']:
                 tmp['soap_dose'] = reformat_units(data['soap_dose'])
 
         if "disinfect_dose" in data:
             tmp['disinfect_dose'] = data['disinfect_dose']
             if not type(data['disinfect_dose']) in [int, float]:
-                # if "milliliter" not in data['disinfect_dose']:
-
                 if data['disinfect_dose'] != "":
 
                     tmp['disinfect_dose'] = reformat_units(data['disinfect_dose'])
@@ -108,7 +105,6 @@ class Utils():
 
             tmp['stagn_flsh_d'] = data['stagn_flsh_d']
             if not type(data['stagn_flsh_d']) == int:
-                # tmp['stagn_flsh_d'] =  reformat_units(data['stagn_flsh_d'])
                 duration = data['stagn_flsh_d'].split(' ')[0]
                 tmp['stagn_flsh_d'] =  int(duration.split(':')[0])
 
@@ -292,7 +288,6 @@ class Utils():
             tmp['thrm_flsh_d'] = data['thrm_flsh_d']
             if not type(data['thrm_flsh_d']) in [int, float]:
 
-                # thrm_flsh_d = float(data['thrm_flsh_d'].split(" ")[0])
                 duration = data['thrm_flsh_d'].split(" ")[0]
                 mduration = duration.split(":")[0]
                 sduration = duration.split(":")[1]
@@ -474,7 +469,6 @@ class Utils():
                 else:
 
                     tmp['second_wtr_cycle_d'] = data['second_wtr_cycle_d']
-
 
         for key in tmp.keys():
 

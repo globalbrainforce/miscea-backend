@@ -93,8 +93,6 @@ class Common():
         """ VALIDATE DEFAULT TOKEN """
 
         sql_str = "SELECT tap_account_id FROM tap_accounts WHERE"
-        # sql_str += " system_id='{0}'".format(system_id)
-        # sql_str += " AND token='{0}'".format(token)
         sql_str += " token='{0}'".format(token)
 
         if self.postgres.query_fetch_one(sql_str):
@@ -145,7 +143,6 @@ class Common():
 
         formatted = {}
 
-        # formatted['date'] = datetime.fromtimestamp(int(epoch_date)).strftime('%Y/%m/%d')
         formatted['date'] = datetime.fromtimestamp(int(epoch_date), tztimestamp).strftime('%d.%m.%Y')
         formatted['time'] = datetime.fromtimestamp(int(epoch_date), tztimestamp).strftime('%I:%M')
         formatted['meridian'] = datetime.fromtimestamp(int(epoch_date), tztimestamp).strftime('%p')
