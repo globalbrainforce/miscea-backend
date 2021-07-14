@@ -470,6 +470,104 @@ class Utils():
 
                     tmp['second_wtr_cycle_d'] = data['second_wtr_cycle_d']
 
+        # AQUAMORE SETTINGS
+        if "usage_mode" in data:
+
+            if data['usage_mode'] != "":
+
+                tmp['usage_mode'] = data['usage_mode']
+                if data['usage_mode'] == "Separate":
+                    tmp['usage_mode'] = 0
+
+                if data['usage_mode'] == "Simultaneous":
+                    tmp['usage_mode'] = 1
+
+            else:
+
+                tmp['usage_mode'] = data['usage_mode']
+
+        if "left_flavor_dose_sep" in data:
+
+            tmp['left_flavor_dose_sep'] = data['left_flavor_dose_sep']
+            if not type(data['left_flavor_dose_sep']) == int:
+
+                if data['left_flavor_dose_sep'] != "":
+
+                    tmp['left_flavor_dose_sep'] = reformat_units(data['left_flavor_dose_sep'])
+
+                else:
+
+                    tmp['left_flavor_dose_sep'] = data['left_flavor_dose_sep']
+
+        if "right_flavor_dose_sep" in data:
+
+            tmp['right_flavor_dose_sep'] = data['right_flavor_dose_sep']
+            if not type(data['right_flavor_dose_sep']) == int:
+
+                if data['right_flavor_dose_sep'] != "":
+
+                    tmp['right_flavor_dose_sep'] = reformat_units(data['right_flavor_dose_sep'])
+
+                else:
+
+                    tmp['right_flavor_dose_sep'] = data['right_flavor_dose_sep']
+
+        if "left_flavor_dose_sim" in data:
+
+            tmp['left_flavor_dose_sim'] = data['left_flavor_dose_sim']
+            if not type(data['left_flavor_dose_sim']) == int:
+
+                if data['left_flavor_dose_sim'] != "":
+
+                    tmp['left_flavor_dose_sim'] = reformat_units(data['left_flavor_dose_sim'])
+
+                else:
+
+                    tmp['left_flavor_dose_sim'] = data['left_flavor_dose_sim']
+
+        if "right_flavor_dose_sim" in data:
+
+            tmp['right_flavor_dose_sim'] = data['right_flavor_dose_sim']
+            if not type(data['right_flavor_dose_sim']) == int:
+
+                if data['right_flavor_dose_sim'] != "":
+
+                    tmp['right_flavor_dose_sim'] = reformat_units(data['right_flavor_dose_sim'])
+
+                else:
+
+                    tmp['right_flavor_dose_sim'] = data['right_flavor_dose_sim']
+
+        if "wtr_type_left_flavor" in data:
+
+            if data['wtr_type_left_flavor'] != "":
+
+                tmp['wtr_type_left_flavor'] = data['wtr_type_left_flavor']
+                if data['wtr_type_left_flavor'] == "Chilled":
+                    tmp['wtr_type_left_flavor'] = 0
+
+                if data['wtr_type_left_flavor'] == "Carbonated":
+                    tmp['wtr_type_left_flavor'] = 1
+
+            else:
+
+                tmp['wtr_type_left_flavor'] = data['wtr_type_left_flavor']
+
+        if "wtr_type_right_flavor" in data:
+
+            if data['wtr_type_right_flavor'] != "":
+
+                tmp['wtr_type_right_flavor'] = data['wtr_type_right_flavor']
+                if data['wtr_type_right_flavor'] == "Chilled":
+                    tmp['wtr_type_right_flavor'] = 0
+
+                if data['wtr_type_right_flavor'] == "Carbonated":
+                    tmp['wtr_type_right_flavor'] = 1
+
+            else:
+
+                tmp['wtr_type_right_flavor'] = data['wtr_type_right_flavor']
+
         for key in tmp.keys():
 
             data[key] = tmp[key]

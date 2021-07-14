@@ -1808,6 +1808,57 @@ def validate_data(data):
         if type(data['second_wtr_cycle_d']) == int:
             tmp['second_wtr_cycle_d'] = format_units(data['second_wtr_cycle_d'], "second")
 
+    if "usage_mode" in data:
+
+        tmp['usage_mode'] = data['usage_mode']
+        if data['usage_mode'] == 0:
+            tmp['usage_mode'] = "Separate"
+
+        if data['usage_mode'] == 1:
+            tmp['usage_mode'] = "Simultaneous"
+
+    if "left_flavor_dose_sep" in data:
+
+        tmp['left_flavor_dose_sep'] = data['left_flavor_dose_sep']
+        if type(data['left_flavor_dose_sep']) in [int, float]:
+            tmp['left_flavor_dose_sep'] = format_units(data['left_flavor_dose_sep'], "milliliter")
+
+    if "right_flavor_dose_sep" in data:
+
+        tmp['right_flavor_dose_sep'] = data['right_flavor_dose_sep']
+        if type(data['right_flavor_dose_sep']) in [int, float]:
+            tmp['right_flavor_dose_sep'] = format_units(data['right_flavor_dose_sep'], "milliliter")
+
+    if "left_flavor_dose_sim" in data:
+
+        tmp['left_flavor_dose_sim'] = data['left_flavor_dose_sim']
+        if type(data['left_flavor_dose_sim']) in [int, float]:
+            tmp['left_flavor_dose_sim'] = format_units(data['left_flavor_dose_sim'], "per mille")
+
+    if "right_flavor_dose_sim" in data:
+
+        tmp['right_flavor_dose_sim'] = data['right_flavor_dose_sim']
+        if type(data['right_flavor_dose_sim']) in [int, float]:
+            tmp['right_flavor_dose_sim'] = format_units(data['right_flavor_dose_sim'], "milliliter")
+
+    if "wtr_type_left_flavor" in data:
+
+        tmp['wtr_type_left_flavor'] = data['wtr_type_left_flavor']
+        if data['wtr_type_left_flavor'] == 0:
+            tmp['wtr_type_left_flavor'] = "Chilled"
+
+        if data['wtr_type_left_flavor'] == 1:
+            tmp['wtr_type_left_flavor'] = "Carbonated"
+
+    if "wtr_type_right_flavor" in data:
+
+        tmp['wtr_type_right_flavor'] = data['wtr_type_right_flavor']
+        if data['wtr_type_right_flavor'] == 0:
+            tmp['wtr_type_right_flavor'] = "Chilled"
+
+        if data['wtr_type_right_flavor'] == 1:
+            tmp['wtr_type_right_flavor'] = "Carbonated"
+
     for key in tmp.keys():
 
         data[key] = tmp[key]
