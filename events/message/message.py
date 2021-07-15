@@ -409,15 +409,32 @@ def check_settings(data):
         if 'bucket_mode_d' in default.keys():
             system['bucket_mode_d'] = default['bucket_mode_d']
 
-        system['tm_b4_stagn_flsh'] = default['tm_b4_stagn_flsh']
-        system['stagn_flsh_d'] = default['stagn_flsh_d']
-        system['stagn_flsh_u_dep'] = default['stagn_flsh_u_dep']
-        system['thrm_flshng_tm'] = default['thrm_flshng_tm']
-        system['thrm_flshng_day'] = default['thrm_flshng_day']
-        system['thrm_flsh_temp'] = default['thrm_flsh_temp']
-        system['thrm_flsh_d'] = default['thrm_flsh_d']
-        system['light_effect'] = default['light_effect']
-        system['beep_tone'] = default['beep_tone']
+        if 'tm_b4_stagn_flsh' in default.keys():
+            system['tm_b4_stagn_flsh'] = default['tm_b4_stagn_flsh']
+
+        if 'stagn_flsh_d' in default.keys():
+            system['stagn_flsh_d'] = default['stagn_flsh_d']
+
+        if 'stagn_flsh_u_dep' in default.keys():
+            system['stagn_flsh_u_dep'] = default['stagn_flsh_u_dep']
+
+        if 'thrm_flshng_tm' in default.keys():
+            system['thrm_flshng_tm'] = default['thrm_flshng_tm']
+
+        if 'thrm_flshng_day' in default.keys():
+            system['thrm_flshng_day'] = default['thrm_flshng_day']
+
+        if 'thrm_flsh_temp' in default.keys():
+            system['thrm_flsh_temp'] = default['thrm_flsh_temp']
+
+        if 'thrm_flsh_d' in default.keys():
+            system['thrm_flsh_d'] = default['thrm_flsh_d']
+
+        if 'light_effect' in default.keys():
+            system['light_effect'] = default['light_effect']
+
+        if 'beep_tone' in default.keys():
+            system['beep_tone'] = default['beep_tone']
 
         if 'clean_mode' in default.keys():
             system['clean_mode'] = default['clean_mode']
@@ -451,6 +468,27 @@ def check_settings(data):
 
         if 'second_wtr_cycle_d' in default.keys():
             system['second_wtr_cycle_d'] = default['second_wtr_cycle_d']
+
+        if 'usage_mode' in default.keys():
+            system['usage_mode'] = default['usage_mode']
+
+        if 'left_flavor_dose_sep' in default.keys():
+            system['left_flavor_dose_sep'] = default['left_flavor_dose_sep']
+
+        if 'right_flavor_dose_sep' in default.keys():
+            system['right_flavor_dose_sep'] = default['right_flavor_dose_sep']
+
+        if 'left_flavor_dose_sim' in default.keys():
+            system['left_flavor_dose_sim'] = default['left_flavor_dose_sim']
+
+        if 'right_flavor_dose_sim' in default.keys():
+            system['right_flavor_dose_sim'] = default['right_flavor_dose_sim']
+
+        if 'wtr_type_left_flavor' in default.keys():
+            system['wtr_type_left_flavor'] = default['wtr_type_left_flavor']
+
+        if 'wtr_type_right_flavor' in default.keys():
+            system['wtr_type_right_flavor'] = default['wtr_type_right_flavor']
 
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
@@ -1832,14 +1870,14 @@ def validate_data(data):
     if "left_flavor_dose_sim" in data:
 
         tmp['left_flavor_dose_sim'] = data['left_flavor_dose_sim']
-        if type(data['left_flavor_dose_sim']) in [int, float]:
-            tmp['left_flavor_dose_sim'] = format_units(data['left_flavor_dose_sim'], "per mille")
+        # if type(data['left_flavor_dose_sim']) in [int, float]:
+        #     tmp['left_flavor_dose_sim'] = format_units(data['left_flavor_dose_sim'], "per mille")
 
     if "right_flavor_dose_sim" in data:
 
         tmp['right_flavor_dose_sim'] = data['right_flavor_dose_sim']
-        if type(data['right_flavor_dose_sim']) in [int, float]:
-            tmp['right_flavor_dose_sim'] = format_units(data['right_flavor_dose_sim'], "milliliter")
+        # if type(data['right_flavor_dose_sim']) in [int, float]:
+        #     tmp['right_flavor_dose_sim'] = format_units(data['right_flavor_dose_sim'], "per mille")
 
     if "wtr_type_left_flavor" in data:
 
