@@ -1088,7 +1088,11 @@ def get_next_timestamp(estab_id, system_id, partition):
             return 0
 
         timestamp = values['timestamp']
+        log = "Log Timestamp: {0}".format(timestamp)
+        syslog.syslog(log)
         timestamp = days_update(timestamp, 1, False)
+        log = "Days Update: {0}".format(timestamp)
+        syslog.syslog(log)
 
     return timestamp
 
