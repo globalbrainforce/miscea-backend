@@ -926,8 +926,8 @@ def reports(estab_id, system_id, partition, activity_data=None):
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
-    # logs = "timestamp: {0}".format(timestamp)
-    # syslog.syslog(logs)
+    logs = "timestamp: {0}".format(timestamp)
+    syslog.syslog(logs)
     if not timestamp:
 
         return 0
@@ -958,7 +958,7 @@ def reports(estab_id, system_id, partition, activity_data=None):
         # GET DATAS
         values = get_all_data(estab_id, system_id, partition, late_st, new_et)
 
-        # syslog.syslog(json.dumps(values))
+        syslog.syslog(json.dumps(values))
         if values:
 
             # CALCULATE
@@ -1353,7 +1353,8 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['date_of_data'] = timestamp
         data['update_on'] = current_time
         data['created_on'] = current_time
-
+        syslog.syslog("SAVE SYRUP")
+        syslog.syslog(json.dumps(data))
         if POSTGRES.insert('left_syrup_activities', data, 'lsyrup_activity_id', log=True):
 
             return 1
@@ -1367,7 +1368,8 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['date_of_data'] = timestamp
         data['update_on'] = current_time
         data['created_on'] = current_time
-
+        syslog.syslog("SAVE SYRUP")
+        syslog.syslog(json.dumps(data))
         if POSTGRES.insert('right_syrup_activities', data, 'rsyrup_activity_id', log=True):
 
             return 1
