@@ -224,6 +224,12 @@ async def message(websocket, data):
                     activity['reason'] = "Stagnation Flush"
                 elif activity['reason'] == 3:
                     activity['reason'] = "Thermal disinfection"
+                elif activity['reason'] == 4:
+                    activity['reason'] = "Carbonated water"
+                elif activity['reason'] == 5:
+                    activity['reason'] = "Chilled water"
+                elif activity['reason'] == 6:
+                    activity['reason'] = "Ambient water"
 
             if type(activity['duration']) in [int, float]:
                 activity['duration'] = convert_duration(activity['duration'])
