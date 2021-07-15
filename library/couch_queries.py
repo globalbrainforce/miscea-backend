@@ -162,7 +162,8 @@ class Queries(Common):
                 couch_query += '&include_docs=true&descending=true'
             else:
                 couch_query += '&include_docs=true&limit=1&descending=true'
-
+        url = " >>> URL: {0} ".format(couch_query)
+        syslog.syslog(url)
         res = requests.get(couch_query)
         json_data = res.json()
         data = []
