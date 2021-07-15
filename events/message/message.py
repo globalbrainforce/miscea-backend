@@ -1243,6 +1243,14 @@ def calculate_values(values, partition):
 
                     pass
 
+                try:
+
+                    left_syrup += float_data(value['left_syrup_dose'])
+
+                except:
+
+                    pass
+
         results['left_syrup'] = left_syrup
 
     elif partition == 'data%23rsa':
@@ -1252,6 +1260,14 @@ def calculate_values(values, partition):
         for value in values:
 
             if value:
+
+                try:
+
+                    right_syrup += float_data(value['right_syrup_dose'])
+
+                except:
+
+                    pass
 
                 try:
 
