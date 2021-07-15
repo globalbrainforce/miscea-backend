@@ -926,8 +926,8 @@ def reports(estab_id, system_id, partition, activity_data=None):
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
-    logs = "timestamp: {0}".format(timestamp)
-    syslog.syslog(logs)
+    # logs = "timestamp: {0}".format(timestamp)
+    # syslog.syslog(logs)
     if not timestamp:
 
         return 0
@@ -958,13 +958,11 @@ def reports(estab_id, system_id, partition, activity_data=None):
         # GET DATAS
         values = get_all_data(estab_id, system_id, partition, late_st, new_et)
 
-        syslog.syslog(json.dumps(values))
         if values:
 
             # CALCULATE
             results = calculate_values(values, partition)
-            syslog.syslog("++++++++ RESULTS ++++++++")
-            syslog.syslog(json.dumps(results))
+
             # SAVE RESULTS
             if not save_results(estab_id, system_id, partition, late_st, results):
                 return 0
@@ -979,7 +977,7 @@ def latest_activities(estab_id, system_id, partition):
         limit=20,
         descending=False
     )
-    # syslog.syslog(json.dumps(values))
+
     if not values:
 
         return 1
@@ -1062,8 +1060,7 @@ def get_next_timestamp(estab_id, system_id, partition):
     sql_str += " ORDER BY date_of_data DESC LIMIT 1"
 
     epoch_date = POSTGRES.query_fetch_one(sql_str)
-    query = "Query: {0}".format(sql_str)
-    syslog.syslog(query)
+
     timestamp = 0
     if epoch_date:
 
@@ -1080,19 +1077,13 @@ def get_next_timestamp(estab_id, system_id, partition):
             flag='one_doc',
             descending=False
         )
-        syslog.syslog("---------Couch Timestamp Values")
-        syslog.syslog(json.dumps(values))
-        syslog.syslog("---------Couch Timestamp Values")
+
         if not values:
 
             return 0
 
         timestamp = values['timestamp']
-        log = "Log Timestamp: {0}".format(timestamp)
-        syslog.syslog(log)
         timestamp = days_update(timestamp, 1, False)
-        log = "Days Update: {0}".format(timestamp)
-        syslog.syslog(log)
 
     return timestamp
 
@@ -1360,8 +1351,7 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['date_of_data'] = timestamp
         data['update_on'] = current_time
         data['created_on'] = current_time
-        syslog.syslog("SAVE SYRUP")
-        syslog.syslog(json.dumps(data))
+
         if POSTGRES.insert('left_syrup_activities', data, 'lsyrup_activity_id', log=True):
 
             return 1
@@ -1375,8 +1365,7 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['date_of_data'] = timestamp
         data['update_on'] = current_time
         data['created_on'] = current_time
-        syslog.syslog("SAVE SYRUP")
-        syslog.syslog(json.dumps(data))
+
         if POSTGRES.insert('right_syrup_activities', data, 'rsyrup_activity_id', log=True):
 
             return 1
