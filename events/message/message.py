@@ -1062,7 +1062,8 @@ def get_next_timestamp(estab_id, system_id, partition):
     sql_str += " ORDER BY date_of_data DESC LIMIT 1"
 
     epoch_date = POSTGRES.query_fetch_one(sql_str)
-
+    query = "Query: {0}".format(sql_str)
+    syslog.syslog(query)
     timestamp = 0
     if epoch_date:
 
@@ -1079,7 +1080,9 @@ def get_next_timestamp(estab_id, system_id, partition):
             flag='one_doc',
             descending=False
         )
-
+        syslog.syslog("---------Couch Timestamp Values")
+        syslog.syslog(json.dumps(values))
+        syslog.syslog("---------Couch Timestamp Values")
         if not values:
 
             return 0
