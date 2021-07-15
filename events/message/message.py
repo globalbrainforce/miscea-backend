@@ -963,7 +963,8 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
             # CALCULATE
             results = calculate_values(values, partition)
-
+            syslog.syslog("++++++++ RESULTS ++++++++")
+            syslog.syslog(json.dumps(results))
             # SAVE RESULTS
             if not save_results(estab_id, system_id, partition, late_st, results):
                 return 0
