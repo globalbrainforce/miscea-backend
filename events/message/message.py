@@ -311,6 +311,76 @@ async def message(websocket, data):
             # SAVE LATEST ACTIVITIES
             latest_activities(ESTABLISHMENT, system_id, 'data%23wa')
 
+        elif data['type'] in ['left-syrup-activity', 'lsyrup']:
+            # DISINFECTANT
+
+            msg_timestamp = default['timestamp']
+            mtype = 'left-syrup-activity'
+            activity = data
+
+            # VALIDATE SYSTEM ID
+            sql_str = "SELECT syst_id FROM syst WHERE"
+            sql_str += " syst_id='{0}'".format(activity['system_id'])
+            if not POSTGRES.query_fetch_one(sql_str):
+                return 1
+
+            lsa = {}
+            lsa['_id'] = 'data#lsa:' + str(msg_timestamp) + str(system_id.split(":")[1])
+            lsa['timestamp'] = activity['timestamp']
+            lsa['left_syrup_level'] = activity['left_syrup_level']
+            lsa['left_syrup_dose'] = activity['left_syrup_dose']
+            lsa['type'] = 'data'
+            lsa['system_id'] = activity['system_id']
+            lsa['establishment_id'] = ESTABLISHMENT
+
+            syslog.syslog("++++++++ LEFT SYRUP ++++++++")
+            syslog.syslog(json.dumps(lsa))
+            syslog.syslog("======== LEFT SYRUP ========")
+
+            couch_url = COUCHDB.couch_db_link()
+            headers = {"Content-Type" : "application/json"}
+            response = requests.post(couch_url, data=json.dumps(lsa), headers=headers)
+
+            response.json()
+
+            # RUN REPORTS FOR SYRUP ACTIVITIES
+            reports(ESTABLISHMENT, system_id, 'data%23lsa', lsa)
+
+        elif data['type'] in ['right-syrup-activity', 'rsyrup']:
+            # DISINFECTANT
+
+            msg_timestamp = default['timestamp']
+            mtype = 'right-syrup-activity'
+            activity = data
+
+            # VALIDATE SYSTEM ID
+            sql_str = "SELECT syst_id FROM syst WHERE"
+            sql_str += " syst_id='{0}'".format(activity['system_id'])
+            if not POSTGRES.query_fetch_one(sql_str):
+                return 1
+
+            rsa = {}
+            rsa['_id'] = 'data#rsa:' + str(msg_timestamp) + str(system_id.split(":")[1])
+            rsa['timestamp'] = activity['timestamp']
+            rsa['right_syrup_level'] = activity['right_syrup_level']
+            rsa['right_syrup_dose'] = activity['right_syrup_dose']
+            rsa['type'] = 'data'
+            rsa['system_id'] = activity['system_id']
+            rsa['establishment_id'] = ESTABLISHMENT
+
+            syslog.syslog("++++++++ RIGHT SYRUP ++++++++")
+            syslog.syslog(json.dumps(rsa))
+            syslog.syslog("======== RIGHT SYRUP ========")
+
+            couch_url = COUCHDB.couch_db_link()
+            headers = {"Content-Type" : "application/json"}
+            response = requests.post(couch_url, data=json.dumps(rsa), headers=headers)
+
+            response.json()
+
+            # RUN REPORTS FOR SYRUP ACTIVITIES
+            reports(ESTABLISHMENT, system_id, 'data%23rsa', rsa)
+
         message = {}
         message['type'] = mtype
         message['system_id'] = system_id
@@ -974,6 +1044,14 @@ def get_next_timestamp(estab_id, system_id, partition):
 
         sql_str = "SELECT date_of_data FROM liquid_2_activities WHERE"
 
+    elif partition == 'data%23lsa':
+
+        sql_str = "SELECT date_of_data FROM left_syrup_activities WHERE"
+
+    elif partition == 'data%23rsa':
+
+        sql_str = "SELECT date_of_data FROM right_syrup_activities WHERE"
+
     else:
 
         sql_str = "SELECT date_of_data FROM w_activities WHERE"
@@ -1149,6 +1227,42 @@ def calculate_values(values, partition):
 
         results['liquid2'] = liquid2
 
+    elif partition == 'data%23lsa':
+
+        left_syrup = 0
+        # EACH VALUES
+        for value in values:
+
+            if value:
+
+                try:
+
+                    left_syrup += float_data(value['left_syrup_dose'])
+
+                except:
+
+                    pass
+
+        results['left_syrup'] = left_syrup
+
+    elif partition == 'data%23rsa':
+
+        right_syrup = 0
+        # EACH VALUES
+        for value in values:
+
+            if value:
+
+                try:
+
+                    right_syrup += float_data(value['right_syrup_dose'])
+
+                except:
+
+                    pass
+
+        results['right_syrup'] = right_syrup
+
     else:
 
         print("Invalid partition: ", partition)
@@ -1210,6 +1324,34 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['created_on'] = current_time
 
         if POSTGRES.insert('liquid_2_activities', data, 'liquid_2_activity_id', log=True):
+
+            return 1
+
+    elif partition == 'data%23lsa':
+
+        data['lsyrup_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+
+        if POSTGRES.insert('left_syrup_activities', data, 'lsyrup_activity_id', log=True):
+
+            return 1
+
+    elif partition == 'data%23rsa':
+
+        data['rsyrup_activity_id'] = SHA_SECURITY.generate_token(False)
+        data['establ_id'] = estab_id
+        data['syst_id'] = system_id
+        data['results'] = json.dumps(results)
+        data['date_of_data'] = timestamp
+        data['update_on'] = current_time
+        data['created_on'] = current_time
+
+        if POSTGRES.insert('right_syrup_activities', data, 'rsyrup_activity_id', log=True):
 
             return 1
 
@@ -1380,6 +1522,60 @@ def get_calculation(partition, value, estab_id, system_id):
 
         results['liquid2'] = liquid2
 
+    elif partition == 'data%23lsa':
+
+        sql_str = "SELECT * FROM left_syrup_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        left_syrup_activities = POSTGRES.query_fetch_one(sql_str)
+
+        left_syrup = 0
+
+        if left_syrup_activities:
+
+            left_syrup = float_data(left_syrup_activities['results']['left_syrup'])
+
+
+        if value:
+
+            try:
+
+                left_syrup += float_data(value['left_syrup_dose'])
+
+            except:
+
+                pass
+
+        results['left_syrup'] = left_syrup
+
+    elif partition == 'data%23rsa':
+
+        sql_str = "SELECT * FROM right_syrup_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        right_syrup_activities = POSTGRES.query_fetch_one(sql_str)
+
+        right_syrup = 0
+
+        if right_syrup_activities:
+
+            right_syrup = float_data(right_syrup_activities['results']['right_syrup'])
+
+
+        if value:
+
+            try:
+
+                right_syrup += float_data(value['right_syrup_dose'])
+
+            except:
+
+                pass
+
+        results['right_syrup'] = right_syrup
+
     else:
 
         print("Invalid partition: ", partition)
@@ -1458,6 +1654,52 @@ def update_results(estab_id, system_id, partition, timestamp, results):
             "val": liquid_2_activities['liquid_2_activity_id']})
 
         if POSTGRES.update('liquid_2_activities', data, conditions):
+
+            return 1
+
+    elif partition == 'data%23lsa':
+
+        sql_str = "SELECT * FROM left_syrup_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        left_syrup_activities = POSTGRES.query_fetch_one(sql_str)
+
+        data['results'] = json.dumps(results)
+        data['update_on'] = current_time
+
+        # CONDITIONS
+        conditions = []
+
+        conditions.append({
+            "col": "lsyrup_activity_id",
+            "con": "=",
+            "val": left_syrup_activities['lsyrup_activity_id']})
+
+        if POSTGRES.update('left_syrup_activities', data, conditions):
+
+            return 1
+
+    elif partition == 'data%23rsa':
+
+        sql_str = "SELECT * FROM right_syrup_activities WHERE"
+        sql_str += " establ_id='{0}' AND".format(estab_id)
+        sql_str += " syst_id='{0}'".format(system_id)
+        sql_str += " ORDER BY date_of_data LIMIT 1"
+        right_syrup_activities = POSTGRES.query_fetch_one(sql_str)
+
+        data['results'] = json.dumps(results)
+        data['update_on'] = current_time
+
+        # CONDITIONS
+        conditions = []
+
+        conditions.append({
+            "col": "rsyrup_activity_id",
+            "con": "=",
+            "val": left_syrup_activities['rsyrup_activity_id']})
+
+        if POSTGRES.update('right_syrup_activities', data, conditions):
 
             return 1
 
