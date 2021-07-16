@@ -962,9 +962,6 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
         if values:
 
-            reason = values[0]['reason']
-            logs = "Reason: {0}".format(values)
-            syslog.syslog(reason)
             # CALCULATE
             results = calculate_values(values, partition)
 
