@@ -962,11 +962,14 @@ def reports(estab_id, system_id, partition, activity_data=None):
 
         if values:
 
+            reason = values[0]['reason']
+            logs = "Reason: {0}".format(values)
+            syslog.syslog(reason)
             # CALCULATE
             results = calculate_values(values, partition)
 
             # SAVE RESULTS
-            if not save_results(estab_id, system_id, partition, late_st, results):
+            if not save_results(estab_id, system_id, partition, late_st, results, reason):
                 return 0
 
 def latest_activities(estab_id, system_id, partition):
@@ -1301,7 +1304,7 @@ def float_data(data):
 
         return 0
 
-def save_results(estab_id, system_id, partition, timestamp, results):
+def save_results(estab_id, system_id, partition, timestamp, results, reason=None):
     """ SAVE RESULTS """
 
     data = {}
@@ -1313,6 +1316,10 @@ def save_results(estab_id, system_id, partition, timestamp, results):
         data['establ_id'] = estab_id
         data['syst_id'] = system_id
         data['results'] = json.dumps(results)
+
+        if reason:
+            data['reason'] = reason
+
         data['date_of_data'] = timestamp
         data['update_on'] = current_time
         data['created_on'] = current_time
