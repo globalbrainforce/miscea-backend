@@ -37,7 +37,7 @@ CONDITIONS.append({
     "val": True}) 
 
 CONDITIONS.append({
-    "col": "state",
+    "col": "syst_id",
     "con": "not in",
     "val": system_ids}) 
 
