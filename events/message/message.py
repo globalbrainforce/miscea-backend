@@ -1492,8 +1492,8 @@ def get_calculation(partition, value, estab_id, system_id):
             POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
 
         elif value['reason'].upper() == 'CHILLED WATER':
-                chilled_water += float_data(value['flow_output'].split("L")[0])
-                is_aquamore = True
+            chilled_water += float_data(value['flow_output'].split("L")[0])
+            is_aquamore = True
     
         elif value['reason'].upper() == 'CARBONATED WATER':
             carbonated_water += float_data(value['flow_output'].split("L")[0])
