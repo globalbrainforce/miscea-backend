@@ -969,7 +969,7 @@ def reports(estab_id, system_id, partition, activity_data=None):
             results = calculate_values(values, partition)
 
             # SAVE RESULTS
-            if not save_results(estab_id, system_id, partition, late_st, results, reason):
+            if not save_results(estab_id, system_id, partition, late_st, results):
                 return 0
 
 def latest_activities(estab_id, system_id, partition):
@@ -1138,6 +1138,10 @@ def calculate_values(values, partition):
     if partition == 'data%23wa':
 
         flow_output = 0
+        chilled_water = 0
+        carbonated_water = 0
+        is_aquamore = False
+
         # EACH VALUES
         for value in values:
 
@@ -1181,7 +1185,19 @@ def calculate_values(values, partition):
                 # SAVE
                 POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
 
+            elif value['reason'].upper() == 'CHILLED WATER':
+                chilled_water += float_data(value['flow_output'].split("L")[0])
+                is_aquamore = True
+    
+            elif value['reason'].upper() == 'CARBONATED WATER':
+                carbonated_water += float_data(value['flow_output'].split("L")[0])
+                is_aquamore = True
+
         results['flow_output'] = flow_output
+
+        if is_aquamore:
+            results['chilled_water'] = chilled_water
+            results['carbonated_water'] = carbonated_water
 
     elif partition == 'data%23sa':
 
@@ -1304,7 +1320,7 @@ def float_data(data):
 
         return 0
 
-def save_results(estab_id, system_id, partition, timestamp, results, reason=None):
+def save_results(estab_id, system_id, partition, timestamp, results):
     """ SAVE RESULTS """
 
     data = {}
@@ -1316,10 +1332,6 @@ def save_results(estab_id, system_id, partition, timestamp, results, reason=None
         data['establ_id'] = estab_id
         data['syst_id'] = system_id
         data['results'] = json.dumps(results)
-
-        if reason:
-            data['reason'] = reason
-
         data['date_of_data'] = timestamp
         data['update_on'] = current_time
         data['created_on'] = current_time
@@ -1431,6 +1443,9 @@ def get_calculation(partition, value, estab_id, system_id):
         w_activities = POSTGRES.query_fetch_one(sql_str)
 
         flow_output = 0
+        chilled_water = 0
+        carbonated_water = 0
+        is_aquamore = False
 
         if w_activities:
 
@@ -1478,6 +1493,18 @@ def get_calculation(partition, value, estab_id, system_id):
 
             # SAVE
             POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
+
+        elif value['reason'].upper() == 'CHILLED WATER':
+                chilled_water += float_data(value['flow_output'].split("L")[0])
+                is_aquamore = True
+    
+            elif value['reason'].upper() == 'CARBONATED WATER':
+                carbonated_water += float_data(value['flow_output'].split("L")[0])
+                is_aquamore = True
+
+        if is_aquamore:
+            results['chilled_water'] = chilled_water
+            results['carbonated_water'] = carbonated_water
 
         results['flow_output'] = flow_output
 
