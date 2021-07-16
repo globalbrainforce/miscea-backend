@@ -1135,10 +1135,6 @@ def calculate_values(values, partition):
     if partition == 'data%23wa':
 
         flow_output = 0
-        chilled_water = 0
-        carbonated_water = 0
-        is_aquamore = False
-
         # EACH VALUES
         for value in values:
 
@@ -1182,19 +1178,7 @@ def calculate_values(values, partition):
                 # SAVE
                 POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
 
-            elif value['reason'].upper() == 'CHILLED WATER':
-                chilled_water += float_data(value['flow_output'].split("L")[0])
-                is_aquamore = True
-
-            elif value['reason'].upper() == 'CARBONATED WATER':
-                carbonated_water += float_data(value['flow_output'].split("L")[0])
-                is_aquamore = True
-
         results['flow_output'] = flow_output
-
-        if is_aquamore:
-            results['chilled_water'] = chilled_water
-            results['carbonated_water'] = carbonated_water
 
     elif partition == 'data%23sa':
 
@@ -1440,9 +1424,6 @@ def get_calculation(partition, value, estab_id, system_id):
         w_activities = POSTGRES.query_fetch_one(sql_str)
 
         flow_output = 0
-        chilled_water = 0
-        carbonated_water = 0
-        is_aquamore = False
 
         if w_activities:
 
@@ -1490,18 +1471,6 @@ def get_calculation(partition, value, estab_id, system_id):
 
             # SAVE
             POSTGRES.insert('wt_activities', wdata, 'wt_activity_id')
-
-        elif value['reason'].upper() == 'CHILLED WATER':
-            chilled_water += float_data(value['flow_output'].split("L")[0])
-            is_aquamore = True
-    
-        elif value['reason'].upper() == 'CARBONATED WATER':
-            carbonated_water += float_data(value['flow_output'].split("L")[0])
-            is_aquamore = True
-
-        if is_aquamore:
-            results['chilled_water'] = chilled_water
-            results['carbonated_water'] = carbonated_water
 
         results['flow_output'] = flow_output
 
@@ -1931,25 +1900,25 @@ def validate_data(data):
             tmp['thrm_flshng_day'] = "Every third Sunday"
 
         if data['thrm_flshng_day'] == 22:
-            tmp['thrm_flshng_day'] = "Coming Monday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Monday (single flush)"
 
         if data['thrm_flshng_day'] == 23:
-            tmp['thrm_flshng_day'] = "Coming Tuesday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Tuesday (single flush)"
 
         if data['thrm_flshng_day'] == 24:
-            tmp['thrm_flshng_day'] = "Coming Wednesday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Wednesday (single flush)"
 
         if data['thrm_flshng_day'] == 25:
-            tmp['thrm_flshng_day'] = "Coming Thursday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Thursday (single flush)"
 
         if data['thrm_flshng_day'] == 26:
-            tmp['thrm_flshng_day'] = "Coming Friday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Friday (single flush)"
 
         if data['thrm_flshng_day'] == 27:
-            tmp['thrm_flshng_day'] = "Coming Saturday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Saturday (single flush)"
 
         if data['thrm_flshng_day'] == 28:
-            tmp['thrm_flshng_day'] = "Coming Sunday (single flush)"
+            tmp['thrm_flshng_day'] = "Coming Sunday (single flush)"
 
         if data['thrm_flshng_day'] == 29:
             tmp['thrm_flshng_day'] = "Monthly every Monday"
