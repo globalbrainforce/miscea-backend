@@ -19,6 +19,14 @@ POSTGRES = PostgreSQL()
 UTILS = Utils()
 COUCH_QUERY = Queries()
 
+sql_str = "SELECT syst_id FROM syst WHERE network_id IN"
+sql_str += " (SELECT network_id FROM network WHERE network_name ='DEFAULT')"
+results = POSTGRES.query_fetch_all(sql_str)
+
+system_ids = []
+if results:
+    system_ids = [res['syst_id'] for res in results]
+
 DATA_UPDATE = {}
 DATA_UPDATE['state'] = False
 
@@ -28,7 +36,29 @@ CONDITIONS.append({
     "con": "=",
     "val": True}) 
 
+CONDITIONS.append({
+    "col": "state",
+    "con": "not in",
+    "val": system_ids}) 
+
 POSTGRES.update('syst', DATA_UPDATE, CONDITIONS)
+
+# MAKE TAPS ONLINE UNDER DEFAULT NETWORK
+TMP_UPDATE = {}
+TMP_UPDATE['state'] = True
+
+CONDITIONS = []
+CONDITIONS.append({
+    "col": "state",
+    "con": "=",
+    "val": False})
+
+CONDITIONS.append({
+    "col": "syst_id",
+    "con": "in",
+    "val": system_ids})
+
+POSTGRES.update('syst', TMP_UPDATE, CONDITIONS)
 
 async def app(websocket, path):
     """ MAIN APPLICATION """
