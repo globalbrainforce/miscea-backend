@@ -1185,7 +1185,7 @@ def calculate_values(values, partition):
             elif value['reason'].upper() == 'CHILLED WATER':
                 chilled_water += float_data(value['flow_output'].split("L")[0])
                 is_aquamore = True
-    
+
             elif value['reason'].upper() == 'CARBONATED WATER':
                 carbonated_water += float_data(value['flow_output'].split("L")[0])
                 is_aquamore = True
@@ -1495,9 +1495,9 @@ def get_calculation(partition, value, estab_id, system_id):
                 chilled_water += float_data(value['flow_output'].split("L")[0])
                 is_aquamore = True
     
-            elif value['reason'].upper() == 'CARBONATED WATER':
-                carbonated_water += float_data(value['flow_output'].split("L")[0])
-                is_aquamore = True
+        elif value['reason'].upper() == 'CARBONATED WATER':
+            carbonated_water += float_data(value['flow_output'].split("L")[0])
+            is_aquamore = True
 
         if is_aquamore:
             results['chilled_water'] = chilled_water
