@@ -926,8 +926,8 @@ def reports(estab_id, system_id, partition, activity_data=None):
     # GET LAST DAY UPDATE
     timestamp = get_next_timestamp(estab_id, system_id, partition)
 
-    # logs = "timestamp: {0}".format(timestamp)
-    # syslog.syslog(logs)
+    logs = "timestamp: {0}".format(timestamp)
+    syslog.syslog(logs)
     if not timestamp:
 
         return 0
@@ -1083,7 +1083,11 @@ def get_next_timestamp(estab_id, system_id, partition):
             return 0
 
         timestamp = values['timestamp']
+        logs = "from couch timestamp: {0}".format(timestamp)
+        syslog.syslog(logs)
         timestamp = days_update(timestamp, 1, False)
+        logs = "days update timestamp: {0}".format(timestamp)
+        syslog.syslog(logs)
 
     return timestamp
 
