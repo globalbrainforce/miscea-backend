@@ -2207,13 +2207,13 @@ def validate_data(data):
 
         tmp['stagn_flsh_d_chilled'] = data['stagn_flsh_d_chilled']
         if type(data['stagn_flsh_d_chilled']) in [int, float]:
-            tmp['stagn_flsh_d_chilled'] = format_units(data['stagn_flsh_d_chilled'], "seconds")
+            tmp['stagn_flsh_d_chilled'] = format_units(data['stagn_flsh_d_chilled'], "second")
 
     if "stagn_flsh_d_sparkling" in data:
 
         tmp['stagn_flsh_d_sparkling'] = data['stagn_flsh_d_sparkling']
         if type(data['stagn_flsh_d_sparkling']) in [int, float]:
-            tmp['stagn_flsh_d_sparkling'] = format_units(data['stagn_flsh_d_sparkling'], "seconds")
+            tmp['stagn_flsh_d_sparkling'] = format_units(data['stagn_flsh_d_sparkling'], "second")
 
     for key in tmp.keys():
 
