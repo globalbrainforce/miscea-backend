@@ -568,6 +568,32 @@ class Utils():
 
                 tmp['wtr_type_right_flavor'] = data['wtr_type_right_flavor']
 
+        if "stagn_flsh_d_chilled" in data:
+
+            tmp['stagn_flsh_d_chilled'] = data['stagn_flsh_d_chilled']
+            if not type(data['stagn_flsh_d_chilled']) == int:
+
+                if data['stagn_flsh_d_chilled'] != "":
+
+                    tmp['stagn_flsh_d_chilled'] = reformat_units(data['stagn_flsh_d_chilled'])
+
+                else:
+
+                    tmp['stagn_flsh_d_chilled'] = data['stagn_flsh_d_chilled']
+
+        if "stagn_flsh_d_sparkling" in data:
+
+            tmp['stagn_flsh_d_sparkling'] = data['stagn_flsh_d_sparkling']
+            if not type(data['stagn_flsh_d_sparkling']) == int:
+
+                if data['stagn_flsh_d_sparkling'] != "":
+
+                    tmp['stagn_flsh_d_sparkling'] = reformat_units(data['stagn_flsh_d_sparkling'])
+
+                else:
+
+                    tmp['stagn_flsh_d_sparkling'] = data['stagn_flsh_d_sparkling']
+
         for key in tmp.keys():
 
             data[key] = tmp[key]

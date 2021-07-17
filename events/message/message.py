@@ -568,6 +568,12 @@ def check_settings(data):
         if 'wtr_type_right_flavor' in default.keys():
             system['wtr_type_right_flavor'] = default['wtr_type_right_flavor']
 
+        if 'stagn_flsh_d_chilled' in default.keys():
+            system['stagn_flsh_d_chilled'] = default['stagn_flsh_d_chilled']
+
+        if 'stagn_flsh_d_sparkling' in default.keys():
+            system['stagn_flsh_d_sparkling'] = default['stagn_flsh_d_sparkling']
+
         system['type'] = "systems_list"
         system['establishment_id'] = ESTABLISHMENT
         system['network_id'] = network_id
@@ -2196,6 +2202,18 @@ def validate_data(data):
 
         if data['wtr_type_right_flavor'] == 1:
             tmp['wtr_type_right_flavor'] = "Carbonated"
+
+      if "stagn_flsh_d_chilled" in data:
+
+        tmp['stagn_flsh_d_chilled'] = data['stagn_flsh_d_chilled']
+        if type(data['stagn_flsh_d_chilled']) in [int, float]:
+            tmp['stagn_flsh_d_chilled'] = format_units(data['stagn_flsh_d_chilled'], "seconds")
+
+    if "stagn_flsh_d_sparkling" in data:
+
+        tmp['stagn_flsh_d_sparkling'] = data['stagn_flsh_d_sparkling']
+        if type(data['stagn_flsh_d_sparkling']) in [int, float]:
+            tmp['stagn_flsh_d_sparkling'] = format_units(data['stagn_flsh_d_sparkling'], "seconds")
 
     for key in tmp.keys():
 
