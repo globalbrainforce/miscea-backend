@@ -2203,7 +2203,7 @@ def validate_data(data):
         if data['wtr_type_right_flavor'] == 1:
             tmp['wtr_type_right_flavor'] = "Carbonated"
 
-      if "stagn_flsh_d_chilled" in data:
+    if "stagn_flsh_d_chilled" in data:
 
         tmp['stagn_flsh_d_chilled'] = data['stagn_flsh_d_chilled']
         if type(data['stagn_flsh_d_chilled']) in [int, float]:
