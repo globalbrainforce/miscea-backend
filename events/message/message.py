@@ -634,6 +634,9 @@ def check_settings(data):
             if product_type_name.upper() in ['CLASSIC PURE S', 'CLASSIC PURE W']:
                 product_type_name = "Classic"
 
+            if product_type_name.upper() in ["AQUAMORE QUATTRO", "AQUAMORE DUO"]:
+                product_type_name = "Aquamore"
+
             # GET NEXT PRODUCT TYPE NAME
             system_details = get_system_details(account_id, system_id, product_type_name)
             system_name = system_details['system_name']
@@ -765,6 +768,9 @@ def check_settings(data):
                     product_type_name = pname['product_type_name']
                     if product_type_name.upper() in ['CLASSIC PURE S', 'CLASSIC PURE W']:
                         product_type_name = "Classic"
+
+                    if product_type_name.upper() in ["AQUAMORE QUATTRO", "AQUAMORE DUO"]:
+                        product_type_name = "Aquamore"
 
                     # GET NEXT PRODUCT TYPE NAME
                     system_details = get_system_details(account_id, system_id, product_type_name)
